@@ -3,7 +3,6 @@ from strategem import strategems
 
 strategemTriggerKey=keyboard.Key.ctrl
 strategemKeys = ["i", "j", "k", "l"]
-macroKeys2 = ["1","2"]
 
 macroKeys = {
     "1": strategems[1],
