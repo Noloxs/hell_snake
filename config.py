@@ -4,8 +4,8 @@ from strategem import strategems
 strategemTriggerKey=keyboard.Key.ctrl
 strategemKeys = ["i", "j", "k", "l"]
 
-triggerDelayMin = 0.035
-triggerDelayMax = 0.06
+triggerDelayMin = 0.05
+triggerDelayMax = 0.075
 
 macroKeys = {
     "1": strategems[1],
