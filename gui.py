@@ -1,36 +1,13 @@
 import sys
-import threading
 from views import Overview, SettingsView
-from config import macroKeys
-from strategem import strategems
-import macro_executer
-
-class Model:
-    def __init__(self):
-        self.settings = {"theme": "light"}
-        self.armed = False
-        self.macros = {
-                        "1": strategems[1],
-                        "2": strategems[2],
-                        "3": strategems[8],
-                        "4": strategems[5],
-                        "5": strategems[6],
-                        "6": strategems[7],
-                        "7": strategems[9],
-                        "8": strategems[4],
-                        "9": strategems[0]
-                        }
-
-    def get_setting(self, setting):
-        return self.settings.get(setting)
-
-    def set_setting(self, setting, value):
-        self.settings[setting] = value
-
+from macro_executer import MacroExecuter
+from model import Model
+    
 class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
+        self.executer = MacroExecuter(self.model)
 
     def open_settings_window(self):
         settings_view = SettingsView(self)
@@ -47,7 +24,7 @@ class Controller:
     def toggle_armed(self):
         self.model.armed = not self.model.armed
         self.view.update_armed()
-        macro_executer.arm(self.model.armed)
+        self.executer.arm(self.model.armed)
     
     def exit(self):
         sys.exit(0)

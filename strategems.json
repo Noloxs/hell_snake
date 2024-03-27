@@ -1,0 +1,63 @@
+{
+    
+    "0": {
+        "name": "Resupply",
+        "category": "Mission",
+        "command": [2,2,0,3],
+        "icon_name": "resupply"
+      },
+    "1": {
+      "name": "Reinforce",
+      "category": "Mission",
+      "command": [0,2,3,1,0],
+      "icon_name": "reinforce"
+    },
+    "2": {
+      "name": "Eagle Cluster Bomb",
+      "category": "Eagle",
+      "command": [0,3,2,2,3],
+      "icon_name": "eagle_cluster_bomb"
+    },
+    "3": {
+      "name": "Orbital 380 Barrage",
+      "category": "Orbital",
+      "command": [3,2,0,0,1,2,2],
+      "icon_name": "orbital_360_barrage"
+    },
+    "4": {
+      "name": "Support Autocannon",
+      "category": "Support",
+      "command": [2,1,2,0,0,3],
+      "icon_name": "ac_8_autocannon"
+    },
+    "5": {
+      "name": "Sentry mortar",
+      "category": "Sentry",
+      "command": [2,0,3,3,2],
+      "icon_name": "sentry_motor"
+    },
+    "6": {
+      "name": "Sentry Autocannon",
+      "category": "Sentry",
+      "command": [2,0,3,0,1,0],
+      "icon_name": "sentry_autocannon"
+    },
+    "7": {
+      "name": "Mission Hellbomb",
+      "category": "Mission",
+      "command": [2,0,1,2,0,3,2,0],
+      "icon_name": "hellbomb"
+    },
+    "8": {
+      "name": "Eagle 500KG Bomb",
+      "category": "Eagle",
+      "command": [0,3,2,2,2],
+      "icon_name": "eagle_500_kg"
+    },
+    "9": {
+      "name": "Support Machine Gun",
+      "category": "Support",
+      "command": [2,1,2,0,3],
+      "icon_name": "mg_43_machine_gun"
+    }
+  }

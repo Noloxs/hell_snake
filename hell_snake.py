@@ -1,14 +1,15 @@
 from pynput import keyboard
 from pynput.keyboard import Key, Controller
-from config import macroKeys
+from model import Model
 
 # Create a keyboard controller
 keyboard_controller = Controller()
+model = Model()
 
 # Function to execute key events when "1" is pressed
 def on_press(key):
     try:
-        macro = macroKeys.get(key.char, None)
+        macro = model.macros.get(key.char, None)
         if macro != None:
             macro.call_strategem(keyboard_controller)
 
@@ -18,7 +19,7 @@ def on_press(key):
 # Print active macros
 print("----- ACTIVE MACROS -----")
 print("-------------------------")
-for key, macro in macroKeys.items():
+for key, macro in model.macros.items():
     print(key, ": ", macro.name)
 print("-------------------------")
 

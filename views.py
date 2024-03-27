@@ -1,6 +1,7 @@
 
 import tkinter as tk
 from PIL import ImageTk, Image
+from tkinter import simpledialog
 
 class Overview(tk.Tk):
     def __init__(self, controller):
@@ -66,49 +67,66 @@ class SettingsView(tk.Toplevel):
         self.title("Settings")
         self.geometry("500x400")
 
-        self.macros_frame = tk.Frame(self)
-        self.macros_frame.pack(pady=10)
+        self.delay_label = tk.Label(self, text="Trigger delay")
+        self.delay_label.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky="w")
 
-        # Add sample values to the hashmap
-        sample_macros = {
-            "Macro1": Macro("path/to/icon1.png", "Macro 1 Name"),
-            "Macro2": Macro("path/to/icon2.png", "Macro 2 Name"),
-            "Macro3": Macro("path/to/icon3.png", "Macro 3 Name")
-        }
+        # Validation command for decimal number input
+        self.validate_decimal_command = (self.register(self.validate_decimal), '%P')
 
-        for key, value in sample_macros.items():
-            self.add_macro_row(key, value)
+        # Max input field
+        self.max_label = tk.Label(self, text="Max:")
+        self.max_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.max_entry = tk.Entry(self, validate='key', validatecommand=self.validate_decimal_command)
+        self.max_entry.grid(row=1, column=1, columnspan=2, padx=5, pady=5, sticky="w")
+        
+        # Min input field
+        self.min_label = tk.Label(self, text="Min:")
+        self.min_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.min_entry = tk.Entry(self, validate='key', validatecommand=self.validate_decimal_command)
+        self.min_entry.grid(row=2, column=1, columnspan=2,  padx=5, pady=5, sticky="w")
+        
+        # List of strings
+        self.strings_label = tk.Label(self, text="List of macro keys:")
+        self.strings_label.grid(row=0, column=4, columnspan=2, padx=5, pady=5, sticky="w")
+        self.strings_listbox = tk.Listbox(self)
+        self.strings_listbox.grid(row=1, column=4, columnspan=2, rowspan=5, padx=5, pady=5)
+        self.add_string_button = tk.Button(self, text="Add", command=self.add_string)
+        self.add_string_button.grid(row=6, column=4, padx=5, pady=5)
+        self.remove_string_button = tk.Button(self, text="Remove", command=self.add_string)
+        self.remove_string_button.grid(row=6, column=5, padx=5, pady=5)
+        
+        # Buttons for arrow keys and trigger
+        self.strategem_keys_label = tk.Label(self, text="Strategem keys")
+        self.strategem_keys_label.grid(row=4, column=0, columnspan=3, padx=5, pady=5, sticky="w")
 
-        self.add_button = tk.Button(self, text="Add Macro", command=self.add_macro_row)
-        self.add_button.pack(pady=5)
-
-        self.save_button = tk.Button(self, text="Save", command=self.save_macros)
-        self.save_button.pack(pady=5)
-
-    def add_macro_row(self, key=None, value=None):
-        row = len(self.macros_frame.winfo_children()) // 2
-
-        key_entry = tk.Entry(self.macros_frame)
-        key_entry.grid(row=row, column=0)
-        key_entry.insert(0, key if key else "")
-
-        name_entry = tk.Entry(self.macros_frame)
-        name_entry.grid(row=row, column=1)
-        name_entry.insert(0, value.name if value else "")
-
-        remove_button = tk.Button(self.macros_frame, text="Remove", command=lambda: self.remove_macro_row(row))
-        remove_button.grid(row=row, column=2)
-
-    def remove_macro_row(self, row):
-        for widget in self.macros_frame.grid_slaves(row=row):
-            widget.grid_forget()
-
-    def save_macros(self):
-        macros = {}
-        for i in range(len(self.macros_frame.winfo_children()) // 2):
-            key = self.macros_frame.grid_slaves(row=i, column=0)[0].get()
-            name = self.macros_frame.grid_slaves(row=i, column=1)[0].get()
-            if key and name:
-                macros[key] = Macro("sample_icon_path", name)  # Sample icon path used for demonstration
-
-        self.controller.save_macros(macros)
+        self.up_button = tk.Button(self, text="UP", command=lambda: self.save_key("UP"))
+        self.up_button.grid(row=5, column=1, padx=5, pady=5)
+        
+        self.down_button = tk.Button(self, text="DOWN", command=lambda: self.save_key("DOWN"))
+        self.down_button.grid(row=6, column=1, padx=5, pady=5)
+        
+        self.left_button = tk.Button(self, text="LEFT", command=lambda: self.save_key("LEFT"))
+        self.left_button.grid(row=6, column=0, padx=5, pady=5)
+        
+        self.right_button = tk.Button(self, text="RIGHT", command=lambda: self.save_key("RIGHT"))
+        self.right_button.grid(row=6, column=2, padx=5, pady=5)
+        
+        self.trigger_button = tk.Button(self, text="TRIGGER", command=lambda: self.save_key("TRIGGER"))
+        self.trigger_button.grid(row=5, column=2, padx=5, pady=5)
+        
+    def add_string(self):
+        string = simpledialog.askstring("Add String", "Enter a single character:")
+        if string and len(string) == 1:
+            self.strings_listbox.insert(tk.END, string)
+    
+    def save_key(self, key):
+        self.last_pressed_label.config(text="Last Pressed: " + key)
+    
+    def validate_decimal(self, value):
+        if value == "":
+            return True
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
