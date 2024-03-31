@@ -7,8 +7,8 @@ class Overview(tk.Tk):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
-        self.title("Simple GUI with Settings")
-        self.geometry("400x300")
+        self.title("Hell Snake")
+        self.geometry("400x610")
 
         self.label = tk.Label(self, font=("Arial", 24, "bold") )
         self.label.pack(side="top", fill="x")
@@ -27,30 +27,39 @@ class Overview(tk.Tk):
 
         self.menu.add_command(label="Arm", command=controller.toggle_armed)
 
+        self.menu.add_command(label="Test", command=controller.change_macro_binding)
+
         self.update_armed()
 
     def update_macros(self):
         for widget in self.macros_frame.winfo_children():
             widget.destroy()
 
-        self.geometry("400x610")
-
         for index, (key, value) in enumerate(self.controller.model.macros.items()):
+            # Add item frame
+            self.macro_frame = tk.Frame(self.macros_frame)
+            self.macro_frame.pack(side="top", anchor="nw", pady=5, fill="x")
+
             # Add icon
             image = Image.open("icons/"+value.icon_name+".webp")
             image = image.resize((50, 50), Image.ANTIALIAS)
             photo = ImageTk.PhotoImage(image)
-            icon_label = tk.Label(self.macros_frame, image=photo)
+            icon_label = tk.Label(self.macro_frame, image=photo)
             icon_label.image = photo
-            icon_label.grid(row=index, column=0, padx=10, pady=5)
+            icon_label.grid(row=index, column=0, padx=10)
+            icon_label.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
 
             # Add key
-            key_label = tk.Label(self.macros_frame, text=key, font=("Arial", 24, "bold"))
+            key_label = tk.Label(self.macro_frame, text=key, font=("Arial", 24, "bold"))
             key_label.grid(row=index, column=1, padx=10)
+            key_label.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
 
             # Add name
-            name_label = tk.Label(self.macros_frame, text=value.name)
+            name_label = tk.Label(self.macro_frame, text=value.name)
             name_label.grid(row=index, column=2, columnspan=3, sticky="w")
+            name_label.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
+
+            self.macro_frame.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
     
     def update_armed(self):
         if self.controller.model.armed:
@@ -130,3 +139,78 @@ class SettingsView(tk.Toplevel):
             return True
         except ValueError:
             return False
+
+class Item:
+    def __init__(self, icon, name, description):
+        self.icon = icon
+        self.name = name
+        self.description = description
+
+class FilterDialog(tk.Toplevel):
+    def __init__(self, controller, key):
+        super().__init__()
+        self.title("Filter Dialog")
+
+        self.geometry("400x400")
+
+        self.key = key
+
+        self.controller = controller
+    
+        self.filter_var = tk.StringVar()
+        self.filter_var.trace("w", self.filter_items)
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        # Input field
+        self.input_label = tk.Label(self, text="Search:")
+        self.input_label.grid(row=0, column=0, padx=5, pady=5)
+        self.input_entry = tk.Entry(self, textvariable=self.filter_var)
+        self.input_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        self.macros_frame = tk.Frame(self)
+        self.macros_frame.grid(row=1, column=0, columnspan=2, pady=5)
+
+        self.update_macros("")
+
+        self.input_entry.focus_set()
+
+    def on_item_click(self, key, id):
+        self.controller.change_macro_binding(key, id)
+        self.destroy()
+
+    def update_macros(self, filter):
+        for widget in self.macros_frame.winfo_children():
+            widget.destroy()
+
+        i = 0
+        for id, strategem in self.controller.model.strategems.items():
+            if filter in strategem.name.lower():
+                # Add item frame
+                self.macro_frame = tk.Frame(self.macros_frame)
+                self.macro_frame.pack(side="top", anchor="nw", pady=1, fill="x")
+
+                # Add icon
+                image = Image.open("icons/"+strategem.icon_name+".webp")
+                image = image.resize((25, 25), Image.ANTIALIAS)
+                photo = ImageTk.PhotoImage(image)
+                icon_label = tk.Label(self.macro_frame, image=photo)
+                icon_label.image = photo
+                icon_label.grid(row=i, column=0, padx=5)
+                icon_label.bind("<Button-1>", lambda event, id=id: self.on_item_click(self.key, id))
+
+                # Add name
+                name_label = tk.Label(self.macro_frame, text=strategem.name)
+                name_label.grid(row=i, column=1, columnspan=3, sticky="w")
+                name_label.bind("<Button-1>", lambda event, id=id: self.on_item_click(self.key, id))
+
+                self.macro_frame.bind("<Button-1>", lambda event, id=id: self.on_item_click(self.key, id))
+
+                i = i+1
+
+    def filter_items(self, *args):
+        # Get the text entered in the input field
+        filter_text = self.filter_var.get().lower()
+
+        self.update_macros(filter_text)

@@ -1,5 +1,5 @@
 import sys
-from views import Overview, SettingsView
+from views import Overview, SettingsView,FilterDialog
 from macro_executer import MacroExecuter
 from model import Model
     
@@ -25,6 +25,14 @@ class Controller:
         self.model.armed = not self.model.armed
         self.view.update_armed()
         self.executer.arm(self.model.armed)
+    
+    def show_change_macro_dialog(self, key):
+        dialog = FilterDialog(self, key)
+        dialog.mainloop()
+
+    def change_macro_binding(self, key, strategemId):
+        self.model.change_macro_binding(key, strategemId)
+        self.view.update_macros()
     
     def exit(self):
         sys.exit(0)

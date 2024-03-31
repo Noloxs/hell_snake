@@ -7,19 +7,22 @@ class Model:
         self.armed = False
 
         with open('strategems.json') as json_file:
-            strategems = json.load(json_file)
+            tmp = json.load(json_file)
+        
+        self.strategems = {}
+        for index, item in tmp.items():
+            name = item['name']
+            strate = Strategem(**item)
+            self.strategems.update({index: strate})
+        
+        self.macroKeys = {"1":"1","2":"2","3":"8","4":"5","5":"6","6":"7","7":"9","8":"4","9":"0"}
 
-        self.macros = {
-                        "1": Strategem(**strategems['1']),
-                        "2": Strategem(**strategems["2"]),
-                        "3": Strategem(**strategems["8"]),
-                        "4": Strategem(**strategems["5"]),
-                        "5": Strategem(**strategems["6"]),
-                        "6": Strategem(**strategems["7"]),
-                        "7": Strategem(**strategems["9"]),
-                        "8": Strategem(**strategems["4"]),
-                        "9": Strategem(**strategems["0"])
-                        }
+        self.macros = {}
+        for key, strategemId in self.macroKeys.items():
+            self.macros.update({key:self.strategems[strategemId]})
+
+    def change_macro_binding(self, key, strategemId):
+        self.macros.update({key:self.strategems[strategemId]})
 
     def get_setting(self, setting):
         return self.settings.get(setting)
