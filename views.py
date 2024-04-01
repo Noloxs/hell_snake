@@ -8,7 +8,6 @@ class Overview(tk.Tk):
         super().__init__()
         self.controller = controller
         self.title("Hell Snake")
-        self.geometry("400x610")
 
         self.label = tk.Label(self, font=("Arial", 24, "bold") )
         self.label.pack(side="top", fill="x")
@@ -36,7 +35,7 @@ class Overview(tk.Tk):
         for index, (key, value) in enumerate(self.controller.model.macros.items()):
             # Add item frame
             self.macro_frame = tk.Frame(self.macros_frame)
-            self.macro_frame.pack(side="top", anchor="nw", pady=5, fill="x")
+            self.macro_frame.pack(side="top", anchor="nw", pady=5, padx=5, fill="x")
 
             # Add icon
             image = Image.open("icons/"+value.icon_name+".webp")
@@ -54,7 +53,7 @@ class Overview(tk.Tk):
 
             # Add name
             name_label = tk.Label(self.macro_frame, text=value.name)
-            name_label.grid(row=index, column=2, columnspan=3, sticky="w")
+            name_label.grid(row=index, column=2, columnspan=3, padx=10, sticky="w")
             name_label.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
 
             self.macro_frame.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
@@ -72,7 +71,6 @@ class SettingsView(tk.Toplevel):
         super().__init__()
         self.controller = controller
         self.title("Settings")
-        self.geometry("500x400")
 
         self.delay_label = tk.Label(self, text="Trigger delay")
         self.delay_label.grid(row=0, column=0, columnspan=3, padx=5, pady=5, sticky="w")
