@@ -22,7 +22,9 @@ class Model:
             self.macros.update({key:self.strategems[strategemId]})
 
     def change_macro_binding(self, key, strategemId):
-        self.macros.update({key:self.strategems[strategemId]})
+        strategem = self.strategems[strategemId]
+        strategem.prepare_strategem()
+        self.macros.update({key:strategem})
 
     def get_setting(self, setting):
         return self.settings.get(setting)

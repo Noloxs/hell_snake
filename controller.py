@@ -23,6 +23,8 @@ class Controller:
 
     def toggle_armed(self):
         self.model.armed = not self.model.armed
+        for key, strategem in self.model.macros.items():
+            strategem.prepare_strategem()
         self.view.update_armed()
         self.executer.arm(self.model.armed)
     
@@ -36,10 +38,3 @@ class Controller:
     
     def exit(self):
         sys.exit(0)
-
-if __name__ == "__main__":
-    model = Model()
-    controller = Controller(model, None)
-    overview = Overview(controller)
-    controller.view = overview
-    overview.mainloop()

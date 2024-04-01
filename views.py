@@ -27,8 +27,6 @@ class Overview(tk.Tk):
 
         self.menu.add_command(label="Arm", command=controller.toggle_armed)
 
-        self.menu.add_command(label="Test", command=controller.change_macro_binding)
-
         self.update_armed()
 
     def update_macros(self):
