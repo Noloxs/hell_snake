@@ -42,7 +42,7 @@ class Overview(tk.Tk):
 
             # Add icon
             image = Image.open("icons/"+value.icon_name+".webp")
-            image = image.resize((50, 50), Image.ANTIALIAS)
+            image = image.resize((50, 50), Image.LANCZOS)
             photo = ImageTk.PhotoImage(image)
             icon_label = tk.Label(self.macro_frame, image=photo)
             icon_label.image = photo
@@ -193,7 +193,7 @@ class FilterDialog(tk.Toplevel):
 
                 # Add icon
                 image = Image.open("icons/"+strategem.icon_name+".webp")
-                image = image.resize((25, 25), Image.ANTIALIAS)
+                image = image.resize((25, 25), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(image)
                 icon_label = tk.Label(self.macro_frame, image=photo)
                 icon_label.image = photo

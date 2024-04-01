@@ -38,6 +38,18 @@ To get started with Hell Snake, follow these steps:
     pip install -r requirements.txt
     ```
 
+Optional: run in python virtual enviroment using:
+    
+    ```
+    python -m venv .venv
+    ```
+
+    and then activate it using:
+
+    ```
+    source .venv/bin/activate
+    ```
+
 ## Usage
 
 1. Ensure that you have Python installed on your system.
