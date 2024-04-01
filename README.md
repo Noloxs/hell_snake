@@ -38,7 +38,7 @@ To get started with Hell Snake, follow these steps:
     pip install -r requirements.txt
     ```
 
-Optional: run in python virtual enviroment using:
+4. __Optional:__ run in python virtual enviroment using:
     
     ```
     python -m venv .venv
@@ -50,11 +50,44 @@ Optional: run in python virtual enviroment using:
     source .venv/bin/activate
     ```
 
+## Configuration
+
+To configure Hell Snake you need to modify the config.py file located in the root of the project folder
+
+### Change keyboard emulator
+Change the value of __selectedKeyboardEmulator__ to one of the supported emulators e.g. __pyautogui__ or __pynput__
+
+```
+selectedKeyboardEmulator='pynput'
+```
+
+### Change strategem control keys
+
+#### Trigger key
+**Note: There is currently to variables depending on the selected emulator**
+To change which keys are used to call in stratgems first start by setting the trigger key
+
+For pytpun change:
+```
+strategemTriggerKey=keyboard.Key.ctrl
+```
+For pyautogui change:
+```
+pyautoguiTriggerKey='ctrl'
+```
+
+#### Command keys
+
+Change the command keys in the order: UP, LEFT, DOWN, RIGHT
+```
+strategemKeys = ["w", "a", "s", "d"]
+```
+
 ## Usage
 
-1. Ensure that you have Python installed on your system.
-2. Launch the Hell Snake program by running `python hell_snake.py`.
-3. Follow the on-screen instructions to create, edit, and execute macros.
+1. Ensure that you have completed the 'Installation' section.
+2. Configure Hell Snake to your preferences. See: 'Configuration'
+3. Launch the Hell Snake program by running `python hell_snake.py` or `./hell_snake.py` if using venv.
 4. Enjoy the enhanced gaming experience with Hell Divers 2!
 
 ## Contributing
