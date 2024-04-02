@@ -36,5 +36,10 @@ class Controller:
         self.model.change_macro_binding(key, strategemId)
         self.view.update_macros()
     
+    def change_active_loadout(self, loadoutId):
+        self.model.set_active_loadout(loadoutId)
+        self.view.update_current_loadout()
+        self.view.update_macros()
+    
     def exit(self):
         sys.exit(0)

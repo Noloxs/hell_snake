@@ -9,6 +9,12 @@ class Overview(tk.Tk):
         self.controller = controller
         self.title("Hell Snake")
 
+        self.minsize("350", "350")
+
+        self.loadoutLabel = tk.Label(self, font=("Arial", 24, "bold") )
+        self.loadoutLabel.pack(side="top", fill="x")
+        self.update_current_loadout()
+
         self.label = tk.Label(self, font=("Arial", 24, "bold") )
         self.label.pack(side="top", fill="x")
 
@@ -25,6 +31,10 @@ class Overview(tk.Tk):
         self.settings_menu.add_command(label="Exit", command=self.controller.exit)
 
         self.menu.add_command(label="Arm", command=controller.toggle_armed)
+
+        self.profiles_menu = tk.Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label="Profiles", menu=self.profiles_menu)
+        self.update_choose_loadouts()
 
         self.update_armed()
 
@@ -65,6 +75,15 @@ class Overview(tk.Tk):
         else:
             self.label.config(text="DISARMED", background="green")
             self.menu.entryconfig(2, label="Arm")
+    
+    def update_choose_loadouts(self):
+        for loadoutId, loadout in self.controller.model.settings.loadouts.items():
+            self.profiles_menu.add_command(label=loadout.name, command=lambda loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
+    
+    def update_current_loadout(self):
+        currentLoadout = self.controller.model.currentLoadout
+        self.loadoutLabel.config(text="Loadout: "+currentLoadout.name)
+
 
 class SettingsView(tk.Toplevel):
     def __init__(self, controller):
@@ -147,8 +166,6 @@ class FilterDialog(tk.Toplevel):
         super().__init__()
         self.title("Filter Dialog")
 
-        self.geometry("400x400")
-
         self.key = key
 
         self.controller = controller
@@ -166,7 +183,7 @@ class FilterDialog(tk.Toplevel):
         self.input_entry.grid(row=0, column=1, padx=5, pady=5)
 
         self.macros_frame = tk.Frame(self)
-        self.macros_frame.grid(row=1, column=0, columnspan=2, pady=5)
+        self.macros_frame.grid(row=1, column=0, columnspan=2, pady=5, padx=5)
 
         self.update_macros("")
 

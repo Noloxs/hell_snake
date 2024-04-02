@@ -7,8 +7,6 @@ class Strategem:
   
   def prepare_strategem(self):
     from config import strategemKeys
-    self.commandString = ""
     self.commandArray=[]
     for input in self.command:
-      self.commandString += strategemKeys[input]
       self.commandArray.append(strategemKeys[input])
