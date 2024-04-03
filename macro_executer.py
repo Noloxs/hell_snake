@@ -33,6 +33,7 @@ class MacroExecuter:
             if macro != None:
                 with pyautogui.hold(pyautoguiTriggerKey):
                     pyautogui.press(macro.commandArray)
+                    time.sleep(random.uniform(triggerDelayMin,triggerDelayMax))
 
         except AttributeError:
             pass

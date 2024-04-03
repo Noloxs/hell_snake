@@ -32,8 +32,8 @@ class Overview(tk.Tk):
 
         self.menu.add_command(label="Arm", command=controller.toggle_armed)
 
-        self.profiles_menu = tk.Menu(self.menu, tearoff=0)
-        self.menu.add_cascade(label="Profiles", menu=self.profiles_menu)
+        self.loadout_menu = tk.Menu(self.menu, tearoff=0)
+        self.menu.add_cascade(label="Loadputs", menu=self.loadout_menu)
         self.update_choose_loadouts()
 
         self.update_armed()
@@ -78,7 +78,7 @@ class Overview(tk.Tk):
     
     def update_choose_loadouts(self):
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
-            self.profiles_menu.add_command(label=loadout.name, command=lambda loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
+            self.loadout_menu.add_command(label=loadout.name, command=lambda loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
     
     def update_current_loadout(self):
         currentLoadout = self.controller.model.currentLoadout
