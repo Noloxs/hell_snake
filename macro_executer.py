@@ -16,7 +16,7 @@ class MacroExecuter:
             macro = self.model.macros.get(key.char, None)
             if macro != None:
                 self.keyboard_controller.press(strategemTriggerKey)
-                time.sleep(random.uniform(triggerDelayMin,triggerDelayMax))
+                time.sleep(0.1)
                 for input in macro.commandArray:
                     self.keyboard_controller.press(input)
                     time.sleep(random.uniform(triggerDelayMin,triggerDelayMax))
