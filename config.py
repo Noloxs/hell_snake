@@ -6,5 +6,5 @@ strategemTriggerKey=keyboard.Key.ctrl
 pyautoguiTriggerKey='ctrl'
 strategemKeys = ["i", "j", "k", "l"]
 
-triggerDelayMin = 0.02
-triggerDelayMax = 0.04
+triggerDelayMin = 0.03
+triggerDelayMax = 0.05

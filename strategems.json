@@ -315,7 +315,7 @@
     "52": {
       "name": "Orbital Gas Strike",
       "category": "Orbital",
-      "command": [3,3,2,1],
+      "command": [3,3,2,3],
       "icon_name": "orbital_gas_strike"
     },
     "53": {

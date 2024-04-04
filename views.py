@@ -11,6 +11,10 @@ class Overview(tk.Tk):
 
         self.minsize("350", "350")
 
+        ico = Image.open('icons/hell_snake.png')
+        photo = ImageTk.PhotoImage(ico)
+        self.wm_iconphoto(False, photo)
+
         self.loadoutLabel = tk.Label(self, font=("Arial", 24, "bold") )
         self.loadoutLabel.pack(side="top", fill="x")
         self.update_current_loadout()
