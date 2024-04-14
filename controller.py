@@ -1,13 +1,15 @@
 import sys
 from views import Overview, SettingsView,FilterDialog
-from macro_executer import MacroExecuter
+from executer_pynput import PynputExecuter
+from listener_pynput import PynputKeyListener
 from model import Model
     
 class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        self.executer = MacroExecuter(self.model)
+        self.executer = PynputExecuter(self.model)
+        self.keyListener = PynputKeyListener(self.model, self)
 
     def open_settings_window(self):
         settings_view = SettingsView(self)
@@ -26,7 +28,7 @@ class Controller:
         for key, strategem in self.model.macros.items():
             strategem.prepare_strategem()
         self.view.update_armed()
-        self.executer.arm(self.model.armed)
+        self.keyListener.arm(self.model.armed)
     
     def show_change_macro_dialog(self, key):
         dialog = FilterDialog(self, key)
@@ -40,6 +42,9 @@ class Controller:
         self.model.set_active_loadout(loadoutId)
         self.view.update_current_loadout()
         self.view.update_macros()
+    
+    def trigger_macro(self, strategem):
+        self.executer.on_macro_triggered(strategem)
     
     def exit(self):
         sys.exit(0)

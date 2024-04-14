@@ -1,9 +1,8 @@
 from pynput import keyboard
 
-# pyautogui, pynput
+# pynput
 selectedKeyboardEmulator='pynput'
 strategemTriggerKey=keyboard.Key.ctrl
-pyautoguiTriggerKey='ctrl'
 strategemKeys = ["i", "j", "k", "l"]
 
 triggerDelayMin = 0.03
