@@ -1,6 +1,7 @@
 import sys
 from views import Overview, SettingsView,FilterDialog
 from executer_pynput import PynputExecuter
+from executer_arduino import ArduinoPassthroughExecuter
 from listener_pynput import PynputKeyListener
 from model import Model
     
@@ -8,7 +9,9 @@ class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        self.executer = PynputExecuter(self.model)
+        #self.executer = PynputExecuter(self.model)
+        self.executer = ArduinoPassthroughExecuter(self.model)
+        self.executer.connect_to_arduino("port")
         self.keyListener = PynputKeyListener(self.model, self)
 
     def open_settings_window(self):

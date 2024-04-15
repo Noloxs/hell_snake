@@ -1,14 +1,14 @@
 from pynput import keyboard
-from pynput.keyboard import Key, Controller
-import pyautogui
+from pynput.keyboard import Controller
 import time
 import random
+from executer_base import BaseExecutor
 from config import strategemTriggerKey, triggerDelayMax, triggerDelayMin
 
-class PynputExecuter:
+class PynputExecuter(BaseExecutor):
     def __init__(self, model):
+        super().__init__()
         self.model = model
-        self.listener = None
         self.keyboard_controller = Controller()
     
     def on_macro_triggered(self, macro):
