@@ -1,5 +1,6 @@
 {
   "triggerKey": "ctrl",
+  "selectedExecutor": "arduino",
   "loadouts": {
     "id": {
       "name": "High lvl",

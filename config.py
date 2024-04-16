@@ -1,7 +1,5 @@
 from pynput import keyboard
 
-# pynput
-selectedKeyboardEmulator='pynput'
 strategemTriggerKey=keyboard.Key.ctrl
 strategemKeys = ["i", "j", "k", "l"]
 

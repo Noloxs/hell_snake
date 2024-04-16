@@ -6,21 +6,24 @@ from listener_pynput import PynputKeyListener
 from model import Model
     
 class Controller:
-    def __init__(self, model, view):
+    def __init__(self, model):
         self.model = model
-        self.view = view
-        #self.executer = PynputExecuter(self.model)
-        self.executer = ArduinoPassthroughExecuter(self.model)
-        self.executer.connect_to_arduino("port")
+        if model.settings.selectedExecutor == "pynput":
+            self.executer = PynputExecuter(self.model)
+        elif model.settings.selectedExecutor == "arduino":
+            self.executer = ArduinoPassthroughExecuter(self.model)
+        else:
+            raise ModuleNotFoundError
+
         self.keyListener = PynputKeyListener(self.model, self)
+    
+    def set_view(self, view):
+        self.view = view
+        self.view.add_executor_settings(self.executer)
 
     def open_settings_window(self):
         settings_view = SettingsView(self)
         settings_view.mainloop()
-
-    def change_theme(self, theme):
-        self.model.set_setting("theme", theme)
-        self.view.update_label(f"Theme changed to {theme}")
     
     def save_macros(self, macros):
         self.model.macros = macros

@@ -5,7 +5,7 @@ from model import Model
 
 if __name__ == "__main__":
     model = Model()
-    controller = Controller(model, None)
+    controller = Controller(model)
     overview = Overview(controller)
-    controller.view = overview
+    controller.set_view(overview)
     overview.mainloop()

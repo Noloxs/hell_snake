@@ -7,7 +7,3 @@ class BaseExecutor(ABC):
   @abstractmethod
   def on_macro_triggered(self):
     raise NotImplementedError
-
-  @abstractmethod
-  def add_settings(self, overview):
-    pass
