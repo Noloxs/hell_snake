@@ -2,6 +2,7 @@
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import simpledialog
+from executer_arduino import ArduinoPassthroughExecuter
 
 class Overview(tk.Tk):
     def __init__(self, controller):
@@ -88,6 +89,14 @@ class Overview(tk.Tk):
         currentLoadout = self.controller.model.currentLoadout
         self.loadoutLabel.config(text="Loadout: "+currentLoadout.name)
 
+    def add_executor_settings(self, executor):
+        if isinstance(executor,ArduinoPassthroughExecuter):
+            self.serial_menu = tk.Menu(self.menu, tearoff=0)
+            self.menu.add_cascade(label="Select serial", menu=self.serial_menu)
+            
+            physical_addresses = executor.get_physical_addresses()
+            for port, desc, hwid in sorted(physical_addresses):
+                self.serial_menu.add_command(label=desc, command=lambda port=port: executor.connect_to_arduino(port))
 
 class SettingsView(tk.Toplevel):
     def __init__(self, controller):

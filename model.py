@@ -39,6 +39,9 @@ class Model:
         if 'triggerKey' in data:
             settings.setTriggerKey(data['triggerKey'])
         
+        if 'selectedExecutor' in data:
+            settings.setExecutor(data['selectedExecutor'])
+        
         if 'loadouts' in data:
             loadouts = {}
             for id, item in data['loadouts'].items():
@@ -52,9 +55,13 @@ class Settings:
     def __init__(self):
         self.loadouts = {"id":Loadout("Profile 1", {"1":"1"})}
         self.triggerKey = "ctrl"
+        self.selectedExecutor = "pynput"
 
     def setTriggerKey(self, key):
         self.triggerKey = key
+    
+    def setExecutor(self, executor_name):
+        self.selectedExecutor = executor_name
     
     def setLoadouts(self, loadouts):
         self.loadouts = loadouts
