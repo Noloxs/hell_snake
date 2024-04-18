@@ -25,7 +25,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         hexToSend += "80" + SEPERATOR_HEX + HOLD_KEY_HEX + SEPERATOR_HEX # Trigger strat
         for key in macro.commandArray:
             hexToSend += self.parse_to_hex(key) + SEPERATOR_HEX # Key press
-            hexToSend += self.delay_to_hex(30) + SEPERATOR_HEX  # Key press delay
+            hexToSend += self.delay_to_hex(50) + SEPERATOR_HEX  # Key press delay
         hexToSend += "80" + SEPERATOR_HEX + RELEASE_KEY_HEX + SEPERATOR_HEX
         hexToSend += TERMINATION_HEX
 
