@@ -32,7 +32,7 @@ class Controller:
     def toggle_armed(self):
         self.model.armed = not self.model.armed
         for key, strategem in self.model.macros.items():
-            strategem.prepare_strategem()
+            strategem.prepare_strategem(self.model, self.executer)
         self.view.update_armed()
         self.keyListener.arm(self.model.armed)
     
@@ -41,7 +41,9 @@ class Controller:
         dialog.mainloop()
 
     def change_macro_binding(self, key, strategemId):
-        self.model.change_macro_binding(key, strategemId)
+        strategem = self.model.strategems[strategemId]
+        strategem.prepare_strategem(self.model, self.executer)
+        self.model.change_macro_binding(key, strategem)
         self.view.update_macros()
     
     def change_active_loadout(self, loadoutId):
