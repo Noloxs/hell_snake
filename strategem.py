@@ -5,8 +5,8 @@ class Strategem:
     self.command = command
     self.icon_name = icon_name
   
-  def prepare_strategem(self):
-    from config import strategemKeys
+  def prepare_strategem(self, model, executer):
     self.commandArray=[]
     for input in self.command:
-      self.commandArray.append(strategemKeys[input])
+      key = model.settings.strategemKeys[input]
+      self.commandArray.append(executer.parse_macro_key(key))

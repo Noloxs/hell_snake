@@ -7,3 +7,7 @@ class BaseExecutor(ABC):
   @abstractmethod
   def on_macro_triggered(self):
     raise NotImplementedError
+  
+  @abstractmethod
+  def parse_macro_key(self, key):
+    raise NotImplementedError
