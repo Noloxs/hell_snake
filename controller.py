@@ -2,6 +2,7 @@ import sys
 from views import Overview, SettingsView,FilterDialog
 from executer_pynput import PynputExecuter
 from executer_arduino import ArduinoPassthroughExecuter
+from executer_pyautogui import PyAutoGuiExecuter
 from listener_pynput import PynputKeyListener
 from model import Model
     
@@ -12,6 +13,8 @@ class Controller:
             self.executer = PynputExecuter(self.model)
         elif model.settings.selectedExecutor == "arduino":
             self.executer = ArduinoPassthroughExecuter(self.model)
+        elif model.settings.selectedExecutor == "pyautogui":
+            self.executer = PyAutoGuiExecuter(self.model)
         else:
             raise ModuleNotFoundError
 
@@ -53,6 +56,11 @@ class Controller:
     
     def trigger_macro(self, strategem):
         self.executer.on_macro_triggered(strategem)
+    
+    def dump_settings(self):
+        import json
+        dump = json.dumps(self.model.settings, default=vars)
+        print(dump)
     
     def exit(self):
         sys.exit(0)

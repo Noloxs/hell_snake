@@ -1,7 +1,5 @@
 from pynput import keyboard
 from pynput.keyboard import Controller
-import time
-import random
 from executer_base import BaseExecutor
 import utilities
 

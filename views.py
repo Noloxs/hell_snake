@@ -33,6 +33,7 @@ class Overview(tk.Tk):
         self.settings_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="File", menu=self.settings_menu)
         self.settings_menu.add_command(label="Settings", command=self.controller.open_settings_window)
+        self.settings_menu.add_command(label="Dump settings", command=self.controller.dump_settings)
         self.settings_menu.add_command(label="Exit", command=self.controller.exit)
 
         self.menu.add_command(label="Arm", command=controller.toggle_armed)
