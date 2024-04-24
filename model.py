@@ -1,5 +1,7 @@
 from strategem import Strategem
+from pynput import keyboard
 import json
+import utilities
 
 class Model:
     def __init__(self):
@@ -15,12 +17,10 @@ class Model:
             self.strategems.update({index: strate})
         
         self.settings = self.load_settings()
-        
+
         self.set_active_loadout(next(iter(self.settings.loadouts.keys())))
 
-    def change_macro_binding(self, key, strategemId):
-        strategem = self.strategems[strategemId]
-        strategem.prepare_strategem()
+    def change_macro_binding(self, key, strategem):
         self.macros.update({key:strategem})
     
     def set_active_loadout(self, id):
@@ -38,6 +38,21 @@ class Model:
 
         if 'triggerKey' in data:
             settings.setTriggerKey(data['triggerKey'])
+
+        if 'triggerDelay' in data:
+            settings.setTriggerDelay(data['triggerDelay'])
+        
+        if 'triggerDelayJitter' in data:
+            settings.setTriggerDelayJitter(data['triggerDelayJitter'])
+        
+        if 'strategemKeys' in data:
+            settings.setStrategemKeys(data['strategemKeys'])
+        
+        if 'strategemKeyDelay' in data:
+            settings.setStrategemKeyDelay(data['strategemKeyDelay'])
+
+        if 'strategemKeyDelayJitter' in data:
+            settings.setStrategemKeyDelayJitter(data['strategemKeyDelayJitter'])
         
         if 'selectedExecutor' in data:
             settings.setExecutor(data['selectedExecutor'])
@@ -53,13 +68,33 @@ class Model:
 
 class Settings:
     def __init__(self):
-        self.loadouts = {"id":Loadout("Profile 1", {"1":"1"})}
-        self.triggerKey = "ctrl"
+        self.loadouts = {utilities.generateUuid():Loadout("Profile 1", {"1":"1"})}
+        self.triggerKey = keyboard.Key.ctrl
+        self.triggerDelay = 100
+        self.triggerDelayJitter = 30
+        self.strategemKeys = ["w", "a", "s", "d"]
+        self.strategemKeyDelay = 30
+        self.strategemKeyDelayJitter = 20
         self.selectedExecutor = "pynput"
 
     def setTriggerKey(self, key):
         self.triggerKey = key
     
+    def setTriggerDelay(self, delay):
+        self.triggerDelay = delay
+    
+    def setTriggerDelayJitter(self, jitter):
+        self.triggerDelayJitter = jitter
+    
+    def setStrategemKeys(self, strategemKeys):
+        self.strategemKeys = strategemKeys
+    
+    def setStrategemKeyDelay(self, delay):
+        self.strategemKeyDelay = delay
+    
+    def setStrategemKeyDelayJitter(self, jitter):
+        self.strategemKeyDelayJitter = jitter
+
     def setExecutor(self, executor_name):
         self.selectedExecutor = executor_name
     
