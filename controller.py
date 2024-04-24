@@ -57,5 +57,10 @@ class Controller:
     def trigger_macro(self, strategem):
         self.executer.on_macro_triggered(strategem)
     
+    def dump_settings(self):
+        import json
+        dump = json.dumps(self.model.settings, default=vars)
+        print(dump)
+    
     def exit(self):
         sys.exit(0)
