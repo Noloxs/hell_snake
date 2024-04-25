@@ -2,10 +2,11 @@ from strategem import Strategem
 from pynput import keyboard
 import json
 import utilities
+import key_parser_pynput
 
 class Model:
     def __init__(self):
-        self.armed = False
+        self.isArmed = False
 
         with open('strategems.json') as json_file:
             tmp = json.load(json_file)
@@ -29,7 +30,10 @@ class Model:
         self.macros = {}
         for key, strategemId in self.macroKeys.items():
             self.macros.update({key:self.strategems[strategemId]})
-    
+
+    def set_armed(self, isArmed):
+        self.isArmed = isArmed
+
     def load_settings(self):
         with open('settings.json') as json_file:
             data = json.load(json_file)
@@ -57,6 +61,13 @@ class Model:
         if 'selectedExecutor' in data:
             settings.setExecutor(data['selectedExecutor'])
         
+        if 'globalArmKey' in data:
+            key = key_parser_pynput.parse_key(data['globalArmKey'])
+            settings.setGlobalArmKey(key)
+        
+        if 'globalArmMode' in data:
+            settings.setGlobalArmMode(data['globalArmMode'])
+        
         if 'loadouts' in data:
             loadouts = {}
             for id, item in data['loadouts'].items():
@@ -76,6 +87,8 @@ class Settings:
         self.strategemKeyDelay = 30
         self.strategemKeyDelayJitter = 20
         self.selectedExecutor = "pynput"
+        self.globalArmKey = None
+        self.globalArmMode = "toggle"
 
     def setTriggerKey(self, key):
         self.triggerKey = key
@@ -97,6 +110,12 @@ class Settings:
 
     def setExecutor(self, executor_name):
         self.selectedExecutor = executor_name
+    
+    def setGlobalArmKey(self, key):
+        self.globalArmKey = key
+    
+    def setGlobalArmMode(self, mode):
+        self.globalArmMode = mode
     
     def setLoadouts(self, loadouts):
         self.loadouts = loadouts
