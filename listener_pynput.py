@@ -8,22 +8,38 @@ class PynputKeyListener:
         self.model = model
         self.listener = None
         self.controller = controller
+        self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
+        self.listener.start()
     
     def on_press(self, key):
-        try:
-            macro = self.model.macros.get(key.char, None)
+        if (key == None):
+            return
+
+        entry = self.parse_key(key)
+        if(self.model.settings.globalArmKey != None and self.model.settings.globalArmKey == entry):
+            if (self.model.settings.globalArmMode == "toggle"):
+                self.controller.toggle_armed()
+            elif (self.model.settings.globalArmMode == "push" and not self.model.isArmed):
+                self.controller.set_armed(True)
+            return
+
+        if(self.model.isArmed):
+            macro = self.model.macros.get(entry, None)
             if macro != None:
                 self.controller.trigger_macro(macro)
-
-        except AttributeError:
-            pass
     
-    def arm(self, isArmed):
-        if isArmed:
-            # Start the listener
-            if self.listener == None:
-                self.listener = keyboard.Listener(on_press=self.on_press, suppress=False)
-                self.listener.start()
-        else:        
-            # Stop the listener
-            self.listener.stop()
+    def on_release(self, key):
+        if (self.model.settings.globalArmMode == "push"):
+            if (key == None):
+                return
+
+            entry = self.parse_key(key)
+            if(self.model.settings.globalArmKey != None and self.model.settings.globalArmKey == entry):
+                self.controller.set_armed(False)
+                return
+
+    def parse_key(self, key):
+        if isinstance(key, keyboard.Key):
+            return key
+        elif isinstance(key, keyboard.KeyCode):
+            return key.char

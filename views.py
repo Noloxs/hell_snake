@@ -75,7 +75,7 @@ class Overview(tk.Tk):
             self.macro_frame.bind("<Button-1>", lambda event, key=key: self.controller.show_change_macro_dialog(key))
     
     def update_armed(self):
-        if self.controller.model.armed:
+        if self.controller.model.isArmed:
             self.label.config(text="ARMED", background="red")
             self.menu.entryconfig(2, label="Disarm")
         else:

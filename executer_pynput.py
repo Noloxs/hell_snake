@@ -1,7 +1,7 @@
-from pynput import keyboard
 from pynput.keyboard import Controller
 from executer_base import BaseExecutor
 import utilities
+import key_parser_pynput
 
 class PynputExecuter(BaseExecutor):
     def __init__(self, model):
@@ -26,10 +26,4 @@ class PynputExecuter(BaseExecutor):
             pass
     
     def parse_macro_key(self, key):
-        if(key == "shift"): return keyboard.Key.shift
-        elif(key == "ctrl"): return keyboard.Key.ctrl
-        elif(key == "up"): return keyboard.Key.up
-        elif(key == "down"): return keyboard.Key.down
-        elif(key == "left"): return keyboard.Key.left
-        elif(key == "right"): return keyboard.Key.right
-        else: return key
+        return key_parser_pynput.parse_key(key)

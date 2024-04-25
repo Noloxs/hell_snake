@@ -33,11 +33,14 @@ class Controller:
         self.view.update_macros()
 
     def toggle_armed(self):
-        self.model.armed = not self.model.armed
-        for key, strategem in self.model.macros.items():
-            strategem.prepare_strategem(self.model, self.executer)
+        self.set_armed(not self.model.isArmed)
+    
+    def set_armed(self, isArmed):
+        self.model.set_armed(isArmed)
+        if(isArmed):
+            for key, strategem in self.model.macros.items():
+                strategem.prepare_strategem(self.model, self.executer)
         self.view.update_armed()
-        self.keyListener.arm(self.model.armed)
     
     def show_change_macro_dialog(self, key):
         dialog = FilterDialog(self, key)
