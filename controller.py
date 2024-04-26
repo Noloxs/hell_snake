@@ -1,5 +1,4 @@
 import sys
-from views import Overview, SettingsView,FilterDialog
 from executer_pynput import PynputExecuter
 from executer_arduino import ArduinoPassthroughExecuter
 from executer_pyautogui import PyAutoGuiExecuter
@@ -25,6 +24,7 @@ class Controller:
         self.view.add_executor_settings(self.executer)
 
     def open_settings_window(self):
+        #TODO Remove
         settings_view = SettingsView(self)
         settings_view.mainloop()
     
@@ -43,8 +43,7 @@ class Controller:
         self.view.update_armed()
     
     def show_change_macro_dialog(self, key):
-        dialog = FilterDialog(self, key)
-        dialog.mainloop()
+        self.view.show_change_macro_dialog(key)
 
     def change_macro_binding(self, key, strategemId):
         strategem = self.model.strategems[strategemId]

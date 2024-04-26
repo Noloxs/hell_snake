@@ -89,6 +89,7 @@ class Settings:
         self.selectedExecutor = "pynput"
         self.globalArmKey = None
         self.globalArmMode = "toggle"
+        self.view_model = "tkinter"
 
     def setTriggerKey(self, key):
         self.triggerKey = key

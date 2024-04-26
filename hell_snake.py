@@ -1,11 +1,14 @@
 #!.venv/bin/python3
-from views import Overview
 from controller import Controller
 from model import Model
 
 if __name__ == "__main__":
     model = Model()
     controller = Controller(model)
-    overview = Overview(controller)
-    controller.set_view(overview)
-    overview.mainloop()
+
+    if model.settings.view_model == "tkinter":
+        from view_tkinter import TkinterView
+        view = TkinterView(model, controller)
+    
+    controller.set_view(view)
+    view.show_interface()

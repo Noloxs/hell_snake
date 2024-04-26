@@ -1,8 +1,35 @@
 
+from view_base import BaseView
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import simpledialog
 from executer_arduino import ArduinoPassthroughExecuter
+
+class TkinterView(BaseView):
+    def __init__(self, model, controller):
+        super().__init__()
+        self.model = model
+        self.controller = controller
+        self.overview = Overview(controller)
+    
+    def update_macros(self):
+        self.overview.update_macros()
+    
+    def add_executor_settings(self, executor):
+        self.overview.add_executor_settings(executor)
+    
+    def update_armed(self):
+        self.overview.update_armed()
+    
+    def show_change_macro_dialog(self, key):
+        dialog = FilterDialog(self.controller, key)
+        dialog.mainloop()
+    
+    def update_current_loadout(self):
+        self.overview.update_current_loadout()
+    
+    def show_interface(self):
+        self.overview.mainloop()
 
 class Overview(tk.Tk):
     def __init__(self, controller):
@@ -36,7 +63,7 @@ class Overview(tk.Tk):
         self.settings_menu.add_command(label="Dump settings", command=self.controller.dump_settings)
         self.settings_menu.add_command(label="Exit", command=self.controller.exit)
 
-        self.menu.add_command(label="Arm", command=controller.toggle_armed)
+        self.menu.add_command(label="Arm", command=self.controller.toggle_armed)
 
         self.loadout_menu = tk.Menu(self.menu, tearoff=0)
         self.menu.add_cascade(label="Loadputs", menu=self.loadout_menu)
