@@ -32,13 +32,7 @@ To get started with Hell Snake, follow these steps:
     cd hell-snake
     ```
 
-3. Install the required dependencies:
-
-    ```
-    pip install -r requirements.txt
-    ```
-
-4. __Optional:__ run in python virtual enviroment using:
+3. __Optional:__ run in python virtual environment using:
     
     ```
     python -m venv .venv
@@ -50,37 +44,109 @@ To get started with Hell Snake, follow these steps:
     source .venv/bin/activate
     ```
 
+4. Install the required dependencies:
+
+    ```
+    pip install -r requirements.txt
+    ```
+
 ## Configuration
 
-To configure Hell Snake you need to modify the config.py file located in the root of the project folder
+To configure Hell Snake you need to create or modify a json file named: **settings.json** file located in the root of the project folder
+
+__The easiest way to get started is using the: Dump settings option found in the menu under files. This will print out all the default options in the terminal__
 
 ### Change keyboard emulator
-Change the value of __selectedKeyboardEmulator__ to one of the supported emulators e.g. __pyautogui__ or __pynput__
+Change the value of __selectedExecutor__ to one of the supported emulators e.g. __pyautogui__, __pynput__ or __arduino__
 
 ```
-selectedKeyboardEmulator='pynput'
+"selectedExecutor": "pynput"
 ```
 
 ### Change strategem control keys
 
 #### Trigger key
-**Note: There is currently to variables depending on the selected emulator**
-To change which keys are used to call in stratgems first start by setting the trigger key
+To change which keys are used to call in stratgems first start by setting the trigger key, this is the key that you hold down while activating your strategems
 
-For pytpun change:
 ```
-strategemTriggerKey=keyboard.Key.ctrl
+"triggerKey": "ctrl"
 ```
-For pyautogui change:
+
+You can also change the delay that is used between holding the triggerKey and starting to activate the strategems in milliseconds using:
+
+__E.g.: 100ms delay with 30ms of jitter, meaning a delay between 100ms and 130ms__
+
 ```
-pyautoguiTriggerKey='ctrl'
+"triggerDelay": 100,
+"triggerDelayJitter": 30
 ```
 
 #### Command keys
+The strategem keys are defined as an array in the order: UP, LEFT, DOWN, RIGHT
 
-Change the command keys in the order: UP, LEFT, DOWN, RIGHT
 ```
-strategemKeys = ["w", "a", "s", "d"]
+strategemKeys": [
+    "w",
+    "a",
+    "s",
+    "d"
+  ]
+```
+You can also change the delay that is used between each strategems key press in milliseconds using:
+
+__E.g.: 30ms delay with 20ms of jitter, meaning a delay between 30ms and 50ms__
+
+```
+"strategemKeyDelay": 30,
+"strategemKeyDelayJitter": 20
+```
+
+### Strategem loadouts
+
+Loadouts are different collections of strategems which you can quickly switch between depending on your preferred loadouts.
+
+They are defined as follows:
+
+- First a unique ID is used for each loadout (**id1** and **id2**)
+- Then a **name** for the loadout (**Loadout 1** and **Loadout 2**)
+- **macroKeys** is an array of trigger keys and strategem IDs found in strategems.json
+
+e.g. "t": "1" will trigger when you press **t** and it will trigger the strategem with ID **1**, which is Reinforce
+
+```
+"loadouts": {
+    "id1": {
+      "name": "Loadout 1",
+      "macroKeys": {
+        "t": "1",
+        "g": "49",
+        "b": "8"
+      }
+    },"id2": {
+        "name": "Loadout 2",
+        "macroKeys": {
+          "1": "1",
+          "2": "2",
+          "3": "8",
+          "4": "5",
+          "5": "6",
+          "6": "7",
+          "7": "9"
+        }
+      }
+  }
+```
+
+### Global arming key
+You can define a key which allows you to arm and disarm the macro execution. __This is default off__.
+You can us any of the valid input keys and switch between the two supported modes:
+
+- "**toggle**" Which toggles between armed and disarmed with each press
+- "**push**" Which arms the macros while the key is pressed down and disarmed when released
+
+```
+"globalArmKey": "n",
+"globalArmMode": "toggle"
 ```
 
 ## Usage
@@ -88,7 +154,8 @@ strategemKeys = ["w", "a", "s", "d"]
 1. Ensure that you have completed the 'Installation' section.
 2. Configure Hell Snake to your preferences. See: 'Configuration'
 3. Launch the Hell Snake program by running `python hell_snake.py` or `./hell_snake.py` if using venv.
-4. Enjoy the enhanced gaming experience with Hell Divers 2!
+4. Arm using the menu button or global key
+5. Enjoy the enhanced gaming experience with Hell Divers 2!
 
 ## Contributing
 
