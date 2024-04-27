@@ -1,4 +1,3 @@
-
 from view_base import BaseView
 import tkinter as tk
 from PIL import ImageTk, Image
@@ -6,9 +5,8 @@ from tkinter import simpledialog
 from executer_arduino import ArduinoPassthroughExecuter
 
 class TkinterView(BaseView):
-    def __init__(self, model, controller):
+    def __init__(self, controller):
         super().__init__()
-        self.model = model
         self.controller = controller
         self.overview = Overview(controller)
     
@@ -66,7 +64,7 @@ class Overview(tk.Tk):
         self.menu.add_command(label="Arm", command=self.controller.toggle_armed)
 
         self.loadout_menu = tk.Menu(self.menu, tearoff=0)
-        self.menu.add_cascade(label="Loadputs", menu=self.loadout_menu)
+        self.menu.add_cascade(label="Loadouts", menu=self.loadout_menu)
         self.update_choose_loadouts()
 
         self.update_armed()
@@ -81,7 +79,7 @@ class Overview(tk.Tk):
             self.macro_frame.pack(side="top", anchor="nw", pady=5, padx=5, fill="x")
 
             # Add icon
-            image = Image.open("icons/"+value.icon_name+".webp")
+            image = Image.open("icons/"+value.icon_name)
             image = image.resize((50, 50), Image.LANCZOS)
             photo = ImageTk.PhotoImage(image)
             icon_label = tk.Label(self.macro_frame, image=photo)
@@ -246,7 +244,7 @@ class FilterDialog(tk.Toplevel):
                 self.macro_frame.pack(side="top", anchor="nw", pady=1, fill="x")
 
                 # Add icon
-                image = Image.open("icons/"+strategem.icon_name+".webp")
+                image = Image.open("icons/"+strategem.icon_name)
                 image = image.resize((25, 25), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(image)
                 icon_label = tk.Label(self.macro_frame, image=photo)

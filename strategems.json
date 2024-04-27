@@ -4,360 +4,360 @@
         "name": "Resupply",
         "category": "Mission",
         "command": [2,2,0,3],
-        "icon_name": "resupply"
+        "icon_name": "resupply.webp"
       },
     "1": {
       "name": "Reinforce",
       "category": "Mission",
       "command": [0,2,3,1,0],
-      "icon_name": "reinforce"
+      "icon_name": "reinforce.webp"
     },
     "2": {
       "name": "Eagle Cluster Bomb",
       "category": "Eagle",
       "command": [0,3,2,2,3],
-      "icon_name": "eagle_cluster_bomb"
+      "icon_name": "eagle_cluster_bomb.webp"
     },
     "3": {
       "name": "Orbital 380MM HE Barrage",
       "category": "Orbital",
       "command": [3,2,0,0,1,2,2],
-      "icon_name": "orbital_360_barrage"
+      "icon_name": "orbital_360_barrage.webp"
     },
     "4": {
       "name": "AC-8 Autocannon",
       "category": "Weapon",
       "command": [2,1,2,0,0,3],
-      "icon_name": "ac_8_autocannon"
+      "icon_name": "ac_8_autocannon.webp"
     },
     "5": {
       "name": "A/M-12 Mortar Sentry",
       "category": "Defensive",
       "command": [2,0,3,3,2],
-      "icon_name": "defensive_mortar"
+      "icon_name": "defensive_mortar.webp"
     },
     "6": {
       "name": "A/AC-8 Autocannon Sentry",
       "category": "Defensive",
       "command": [2,0,3,0,1,0],
-      "icon_name": "sentry_autocannon"
+      "icon_name": "sentry_autocannon.webp"
     },
     "7": {
       "name": "NUX-223 Hellbomb",
       "category": "Mission",
       "command": [2,0,1,2,0,3,2,0],
-      "icon_name": "hellbomb"
+      "icon_name": "hellbomb.webp"
     },
     "8": {
       "name": "Eagle 500KG Bomb",
       "category": "Eagle",
       "command": [0,3,2,2,2],
-      "icon_name": "eagle_500_kg"
+      "icon_name": "eagle_500_kg.webp"
     },
     "9": {
       "name": "MG-43 Machine Gun",
       "category": "Weapon",
       "command": [2,1,2,0,3],
-      "icon_name": "mg_43_machine_gun"
+      "icon_name": "mg_43_machine_gun.webp"
     },
     "10": {
       "name": "LIFT-850 Jump Pack",
       "category": "Support",
       "command": [2,0,0,2,0],
-      "icon_name": "support_lift_jump_pack"
+      "icon_name": "support_lift_jump_pack.webp"
     },
     "11": {
       "name": "B-1 Supply Pack",
       "category": "Support",
       "command": [2,1,2,0,0,2],
-      "icon_name": "support_supply_pack"
+      "icon_name": "support_supply_pack.webp"
     },
     "12": {
       "name": "AX/LAS-5 'Guard Dog' Rover",
       "category": "Support",
       "command": [2,0,1,0,3,3],
-      "icon_name": "support_ax_las_pack"
+      "icon_name": "support_ax_las_pack.webp"
     },
     "13": {
       "name": "SH-20 Ballistic Shield Backpack",
       "category": "Support",
       "command": [2,1,2,2,0,1],
-      "icon_name": "support_ballistic_shield"
+      "icon_name": "support_ballistic_shield.webp"
     },
     "14": {
       "name": "SH-32 Shield Generator Pack",
       "category": "Support",
       "command": [2,0,1,3,1,3],
-      "icon_name": "support_sh_32_shield_generator"
+      "icon_name": "support_sh_32_shield_generator.webp"
     },
     "15": {
       "name": "AX/AR-23 'Guard Dog'",
       "category": "Support",
       "command": [2,0,1,0,3,0],
-      "icon_name": "support_ax_ar_23"
+      "icon_name": "support_ax_ar_23.webp"
     },
     "16": {
       "name": "APW-1 Anti-Materiel Rifle",
       "category": "Weapon",
       "command": [2,1,3,0,2],
-      "icon_name": "weapon_apw_rifle"
+      "icon_name": "weapon_apw_rifle.webp"
     },
     "17": {
       "name": "M-105 Stalwart",
       "category": "Weapon",
       "command": [2,1,2,0,0,1],
-      "icon_name": "weapon_m105_stalwart"
+      "icon_name": "weapon_m105_stalwart.webp"
     },
     "18": {
       "name": "EAT-17 Expendable Anti-tank",
       "category": "Weapon",
       "command": [2,2,1,0,3],
-      "icon_name": "weapon_eat_17"
+      "icon_name": "weapon_eat_17.webp"
     },
     "19": {
       "name": "GR-8 Recoilless Rifle",
       "category": "Weapon",
       "command": [2,1,3,3,1],
-      "icon_name": "weapon_gr_8_recoilless_rifle"
+      "icon_name": "weapon_gr_8_recoilless_rifle.webp"
     },
     "20": {
       "name": "FLAM-40 Flamethrower",
       "category": "Weapon",
       "command": [2,1,0,2,0],
-      "icon_name": "weapon_flam_40"
+      "icon_name": "weapon_flam_40.webp"
     },
     "21": {
       "name": "MG-206 Heavy Machine Gun",
       "category": "Weapon",
       "command": [2,1,0,2,2],
-      "icon_name": "weapon_mg_206_heavy"
+      "icon_name": "weapon_mg_206_heavy.webp"
     },
     "22": {
       "name": "RS-422 Railgun",
       "category": "Weapon",
       "command": [2,3,2,0,1,3],
-      "icon_name": "weapon_rs_422_railgun"
+      "icon_name": "weapon_rs_422_railgun.webp"
     },
     "23": {
       "name": "FAF-14 SPEAR Launcher",
       "category": "Weapon",
       "command": [2,2,0,2,2],
-      "icon_name": "weapon_faf_14_spear"
+      "icon_name": "weapon_faf_14_spear.webp"
     },
     "24": {
       "name": "GL-21 Grenade Launcher",
       "category": "Weapon",
       "command": [2,1,0,1,2],
-      "icon_name": "weapon_gl_21_grenade"
+      "icon_name": "weapon_gl_21_grenade.webp"
     },
     "25": {
       "name": "LAS-98 Laser Cannon",
       "category": "Weapon",
       "command": [2,1,2,0,1],
-      "icon_name": "weapon_las_98"
+      "icon_name": "weapon_las_98.webp"
     },
     "26": {
       "name": "ARC-3 Arc Thrower",
       "category": "Weapon",
       "command": [2,3,2,0,1,1],
-      "icon_name": "weapon_arc_3"
+      "icon_name": "weapon_arc_3.webp"
     },
     "27": {
       "name": "LAS-99 Quasar Cannon",
       "category": "Weapon",
       "command": [2,2,0,1,3],
-      "icon_name": "weapon_las_99"
+      "icon_name": "weapon_las_99.webp"
     },
     "28": {
       "name": "SOS Beacon",
       "category": "Mission",
       "command": [0,2,3,0],
-      "icon_name": "mission_sos"
+      "icon_name": "mission_sos.webp"
     },
     "29": {
       "name": "SSSD Delivery",
       "category": "Mission",
       "command": [2,2,2,0,0],
-      "icon_name": "mission_sssd_delivery"
+      "icon_name": "mission_sssd_delivery.webp"
     },
     "30": {
       "name": "Seismic Probe",
       "category": "Mission",
       "command": [0,0,1,3,2,2],
-      "icon_name": "mission_seismic_probe"
+      "icon_name": "mission_seismic_probe.webp"
     },
     "31": {
       "name": "Upload Data",
       "category": "Mission",
       "command": [0,0,2,2,2],
-      "icon_name": "mission_upload_data"
+      "icon_name": "mission_upload_data.webp"
     },
     "32": {
       "name": "Eagle Rearm",
       "category": "Mission",
       "command": [0,0,1,2,3],
-      "icon_name": "mission_eagle_rearm"
+      "icon_name": "mission_eagle_rearm.webp"
     },
     "33": {
       "name": "Illumination Flare",
       "category": "Mission",
       "command": [3,3,1,1],
-      "icon_name": "mission_illumination_flare"
+      "icon_name": "mission_illumination_flare.webp"
     },
     "34": {
       "name": "SEAF Artillery",
       "category": "Mission",
       "command": [3,0,0,2],
-      "icon_name": "mission_seaf_artillery"
+      "icon_name": "mission_seaf_artillery.webp"
     },
     "35": {
       "name": "Super Earth Flag",
       "category": "Mission",
       "command": [0,2,0,2],
-      "icon_name": "mission_super_earth_flag"
+      "icon_name": "mission_super_earth_flag.webp"
     },
     "36": {
       "name": "E/MG-101 HMG Emplacement",
       "category": "Defensive",
       "command": [2,0,1,3,3,1],
-      "icon_name": "defensive_mg_101_hmg"
+      "icon_name": "defensive_mg_101_hmg.webp"
     },
     "37": {
       "name": "FX-12 Shield Generator Relay",
       "category": "Defensive",
       "command": [2,2,1,3,1,3],
-      "icon_name": "defensive_shield_relay"
+      "icon_name": "defensive_shield_relay.webp"
     },
     "38": {
       "name": "A/ARC-3 Tesla Tower",
       "category": "Defensive",
       "command": [2,0,3,0,1,3],
-      "icon_name": "defensive_tesla_tower"
+      "icon_name": "defensive_tesla_tower.webp"
     },
     "39": {
       "name": "MD-6 Anti-Personnel Minefield",
       "category": "Defensive",
       "command": [2,1,0,3],
-      "icon_name": "defensive_md_6_minefield"
+      "icon_name": "defensive_md_6_minefield.webp"
     },
     "40": {
       "name": "MD-I4 Incendiary Mines",
       "category": "Defensive",
       "command": [2,1,1,2],
-      "icon_name": "defensive_md_i4_incendiary"
+      "icon_name": "defensive_md_i4_incendiary.webp"
     },
     "41": {
       "name": "A/MG-43 Machine Gun Sentry",
       "category": "Defensive",
       "command": [2,0,3,3,0],
-      "icon_name": "defensive_mg_43_sentry"
+      "icon_name": "defensive_mg_43_sentry.webp"
     },
     "42": {
       "name": "A/G-16 Gatling Sentry",
       "category": "Defensive",
       "command": [2,0,3,1],
-      "icon_name": "defensive_a_g_16_sentry"
+      "icon_name": "defensive_a_g_16_sentry.webp"
     },
     "43": {
       "name": "A/MLS-4X Rocket Sentry",
       "category": "Defensive",
       "command": [2,0,3,3,1],
-      "icon_name": "defensive_mls_4x_sentry"
+      "icon_name": "defensive_mls_4x_sentry.webp"
     },
     "44": {
       "name": "A/M-23 EMS Mortar Sentry",
       "category": "Defensive",
       "command": [2,0,3,2,3],
-      "icon_name": "defensive_m_23_ems_mortar"
+      "icon_name": "defensive_m_23_ems_mortar.webp"
     },
     "45": {
       "name": "Orbital Gatling Barrage",
       "category": "Orbital",
       "command": [3,2,1,0,0],
-      "icon_name": "orbital_gatling_barrage"
+      "icon_name": "orbital_gatling_barrage.webp"
     },
     "46": {
       "name": "Orbital Airburst Strike",
       "category": "Orbital",
       "command": [3,3,3],
-      "icon_name": "orbital_airburst_strike"
+      "icon_name": "orbital_airburst_strike.webp"
     },
     "47": {
       "name": "Orbital 120MM HE Barrage",
       "category": "Orbital",
       "command": [3,3,2,1,3,2],
-      "icon_name": "orbital_180_he_barrage"
+      "icon_name": "orbital_180_he_barrage.webp"
     },
     "48": {
       "name": "Orbital Walking Barrage",
       "category": "Orbital",
       "command": [3,2,3,2,3,2],
-      "icon_name": "orbital_walking_barrage"
+      "icon_name": "orbital_walking_barrage.webp"
     },
     "49": {
       "name": "Orbital Laser",
       "category": "Orbital",
       "command": [3,2,0,3,2],
-      "icon_name": "orbital_laser"
+      "icon_name": "orbital_laser.webp"
     },
     "50": {
       "name": "Orbital Railcannon Strike",
       "category": "Orbital",
       "command": [3,0,2,2,3],
-      "icon_name": "orbital_railcannon"
+      "icon_name": "orbital_railcannon.webp"
     },
     "51": {
       "name": "Orbital Precision Strike",
       "category": "Orbital",
       "command": [3,3,0],
-      "icon_name": "orbital_precision_strike"
+      "icon_name": "orbital_precision_strike.webp"
     },
     "52": {
       "name": "Orbital Gas Strike",
       "category": "Orbital",
       "command": [3,3,2,3],
-      "icon_name": "orbital_gas_strike"
+      "icon_name": "orbital_gas_strike.webp"
     },
     "53": {
       "name": "Orbital EMS Strike",
       "category": "Orbital",
       "command": [3,3,1,2],
-      "icon_name": "orbital_ems_strike"
+      "icon_name": "orbital_ems_strike.webp"
     },
     "54": {
       "name": "Orbital Smoke Strike",
       "category": "Orbital",
       "command": [3,3,2,0],
-      "icon_name": "orbital_smoke_strike"
+      "icon_name": "orbital_smoke_strike.webp"
     },
     "55": {
       "name": "Eagle Strafing Run",
       "category": "Eagle",
       "command": [0,3,3],
-      "icon_name": "eagle_strafing_run"
+      "icon_name": "eagle_strafing_run.webp"
     },
     "56": {
       "name": "Eagle Airstrike",
       "category": "Eagle",
       "command": [0,3,2,3],
-      "icon_name": "eagle_airstrike"
+      "icon_name": "eagle_airstrike.webp"
     },
     "57": {
       "name": "Eagle Napalm Airstrike",
       "category": "Eagle",
       "command": [0,3,2,0],
-      "icon_name": "eagle_napalm_airstrike"
+      "icon_name": "eagle_napalm_airstrike.webp"
     },
     "58": {
       "name": "Eagle Smoke Strike",
       "category": "Eagle",
       "command": [0,3,0,2],
-      "icon_name": "eagle_smoke_strike"
+      "icon_name": "eagle_smoke_strike.webp"
     },
     "59": {
       "name": "Eagle 110MM Rocket Pods",
       "category": "Eagle",
       "command": [0,3,0,1],
-      "icon_name": "eagle_110_rocket_pods"
+      "icon_name": "eagle_110_rocket_pods.webp"
     }
   }

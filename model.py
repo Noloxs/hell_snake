@@ -68,6 +68,9 @@ class Model:
         if 'globalArmMode' in data:
             settings.setGlobalArmMode(data['globalArmMode'])
         
+        if 'view_framework' in data:
+            settings.setViewFramework(data['view_framework'])
+        
         if 'loadouts' in data:
             loadouts = {}
             for id, item in data['loadouts'].items():
@@ -89,7 +92,7 @@ class Settings:
         self.selectedExecutor = "pynput"
         self.globalArmKey = None
         self.globalArmMode = "toggle"
-        self.view_model = "tkinter"
+        self.view_framework = "tkinter"
 
     def setTriggerKey(self, key):
         self.triggerKey = key
@@ -117,6 +120,9 @@ class Settings:
     
     def setGlobalArmMode(self, mode):
         self.globalArmMode = mode
+    
+    def setViewFramework(self, framework):
+        self.view_framework = framework
     
     def setLoadouts(self, loadouts):
         self.loadouts = loadouts

@@ -1,7 +1,5 @@
 import sys
-from executer_pynput import PynputExecuter
-from executer_arduino import ArduinoPassthroughExecuter
-from executer_pyautogui import PyAutoGuiExecuter
+
 from listener_pynput import PynputKeyListener
 from model import Model
     
@@ -9,10 +7,13 @@ class Controller:
     def __init__(self, model):
         self.model = model
         if model.settings.selectedExecutor == "pynput":
+            from executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self.model)
         elif model.settings.selectedExecutor == "arduino":
+            from executer_arduino import ArduinoPassthroughExecuter
             self.executer = ArduinoPassthroughExecuter(self.model)
         elif model.settings.selectedExecutor == "pyautogui":
+            from executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
         else:
             raise ModuleNotFoundError
