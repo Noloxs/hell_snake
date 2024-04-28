@@ -25,6 +25,7 @@ class Model:
         self.macros.update({key:strategem})
     
     def set_active_loadout(self, id):
+        # TODO Persist current loadout id to settings
         self.currentLoadout = self.settings.loadouts[id]
         self.macroKeys = self.currentLoadout.macroKeys
         self.macros = {}
