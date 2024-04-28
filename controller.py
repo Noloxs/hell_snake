@@ -62,7 +62,6 @@ class Controller:
     
     def dump_settings(self):
         import json
-        # TODO Cannot handle underscore in caps_lock in global arm key
         dump = json.dumps(self.model.settings, default=vars, indent=2)
         print(dump)
     
