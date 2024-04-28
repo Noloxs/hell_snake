@@ -1,5 +1,5 @@
 from view_base import BaseView
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QPixmap, QFont
 from PyQt5.Qt import QSizePolicy
@@ -74,17 +74,24 @@ class MainWindow(QMainWindow):
         self.listwidget = QListWidget()
         self.listwidget.setSelectionMode(QAbstractItemView.NoSelection)
         self.listwidget.setFocusPolicy(Qt.NoFocus)
+        self.listwidget.itemDoubleClicked.connect(self.on_macro_clicked)
         self.vBox.addWidget(self.listwidget)
     
+    def on_macro_clicked(self, item):
+        dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole))
+        dialog.exec_()
+
     def update_macros(self):
         self.listwidget.clear()
 
         for index, (key, value) in enumerate(self.controller.model.macros.items()):
             listAdapter = QLoadoutListAdapter()
             listAdapter.setKey(key)
+            listAdapter.setStyleSheet("background-color: transparent")
             listAdapter.setStrategem(value)
 
             listAdapterItem = QListWidgetItem(self.listwidget)
+            listAdapterItem.setData(Qt.UserRole,key)
             listAdapterItem.setSizeHint(listAdapter.sizeHint())
             self.listwidget.addItem(listAdapterItem)
             self.listwidget.setItemWidget(listAdapterItem, listAdapter)
@@ -158,4 +165,81 @@ class QLoadoutListAdapter(QWidget):
         self.icon.setPixmap(QPixmap("icons/"+strategem.icon_name))     
     
     def setKey(self, key):
+        self.id = key
         self.key.setText(key)
+
+class FilteredListDialog(QDialog):
+    def __init__(self, controller, key):
+        super().__init__()
+ 
+        self.controller = controller
+        self.key = key
+        self.setMinimumSize(300, 300)
+        self.resize(300,800)
+
+        self.setWindowTitle("Select new strategem for: "+self.key)
+
+        # Create a layout for the dialog
+        layout = QVBoxLayout(self)
+
+        # Create an edit field
+        self.edit_field = QLineEdit()
+        self.edit_field.setPlaceholderText("Search...")
+        self.edit_field.textChanged.connect(self.filter_items)
+        layout.addWidget(self.edit_field)
+
+        # Create a QListWidget for the list of items
+        self.list_widget = QListWidget()
+        self.list_widget.itemDoubleClicked.connect(self.on_item_clicked)
+        layout.addWidget(self.list_widget)
+
+        # Populate the QListWidget with items
+        self.update_macros("")
+    
+    def on_item_clicked(self, item):
+        data = item.data(Qt.UserRole)
+        self.controller.change_macro_binding(data[0], data[1])
+        self.close()
+
+    def filter_items(self, text):
+        self.update_macros(text.lower())
+
+    def update_macros(self, filter):
+        # Clear the current items in the QListWidget
+        self.list_widget.clear()
+
+        # Add all items to the QListWidget
+        for id, strategem in self.controller.model.strategems.items():
+            if filter in strategem.name.lower():
+                listAdapter = QFilterListAdapter()
+                listAdapter.setStyleSheet("background-color: transparent")
+                listAdapter.setStrategem(strategem)
+
+                listAdapterItem = QListWidgetItem(self.list_widget)
+                listAdapterItem.setData(Qt.UserRole, [self.key, id])
+                listAdapterItem.setSizeHint(listAdapter.sizeHint())
+                self.list_widget.addItem(listAdapterItem)
+                self.list_widget.setItemWidget(listAdapterItem, listAdapter)
+
+class QFilterListAdapter(QWidget):
+    def __init__ (self, parent = None):
+        super(QFilterListAdapter, self).__init__(parent)
+
+        self.hBox  = QHBoxLayout()
+        self.hBox.setContentsMargins(5,5,5,0)
+
+        self.icon = QLabel()
+        self.icon.setFixedSize(25, 25)
+        self.icon.setAlignment(Qt.AlignCenter)
+        self.icon.setScaledContents(True)
+        self.hBox.addWidget(self.icon)
+        
+        self.name = QLabel()
+        self.name.setFixedHeight(25)
+        self.hBox.addWidget(self.name)
+           
+        self.setLayout(self.hBox)
+
+    def setStrategem(self, strategem):
+        self.name.setText(strategem.name)
+        self.icon.setPixmap(QPixmap("icons/"+strategem.icon_name))
