@@ -1,5 +1,5 @@
 #Hell snake specific ignores
-settings.json
+/settings.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
@@ -12,6 +12,9 @@ __pycache__/
 
 # C extensions
 *.so
+
+# VS Code
+.vscode/
 
 # Distribution / packaging
 .Python

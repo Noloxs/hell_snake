@@ -33,7 +33,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.arduino.write(bytes)
 
     def parse_to_hex(self, key):
-        return format(ord(key), 'X')
+        return hex(ord(key))[2:]
 
     def delay_to_hex(self, delay):
         # Handle delays outside of range
@@ -50,4 +50,4 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         elif(key == "down"): return "D9"
         elif(key == "left"): return "D8"
         elif(key == "right"): return "D7"
-        else: self.parse_to_hex(key)
+        else: return self.parse_to_hex(key)
