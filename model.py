@@ -63,8 +63,7 @@ class Model:
             settings.setExecutor(data['selectedExecutor'])
         
         if 'globalArmKey' in data:
-            key = key_parser_pynput.parse_key(data['globalArmKey'])
-            settings.setGlobalArmKey(key)
+            settings.setGlobalArmKey(data['globalArmKey'])
         
         if 'globalArmMode' in data:
             settings.setGlobalArmMode(data['globalArmMode'])

@@ -2,10 +2,12 @@ from pynput import keyboard
 from pynput.keyboard import Key
 import time
 import random
+import key_parser_pynput
 
 class PynputKeyListener:
     def __init__(self, model, controller):
         self.model = model
+        self.globalArmKey = key_parser_pynput.parse_key(self.model.settings.globalArmKey)
         self.listener = None
         self.controller = controller
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
@@ -16,7 +18,7 @@ class PynputKeyListener:
             return
 
         entry = self.parse_key(key)
-        if(self.model.settings.globalArmKey != None and self.model.settings.globalArmKey == entry):
+        if(self.globalArmKey != None and self.globalArmKey == entry):
             if (self.model.settings.globalArmMode == "toggle"):
                 self.controller.toggle_armed()
             elif (self.model.settings.globalArmMode == "push" and not self.model.isArmed):
@@ -34,7 +36,7 @@ class PynputKeyListener:
                 return
 
             entry = self.parse_key(key)
-            if(self.model.settings.globalArmKey != None and self.model.settings.globalArmKey == entry):
+            if(self.globalArmKey != None and self.globalArmKey == entry):
                 self.controller.set_armed(False)
                 return
 
