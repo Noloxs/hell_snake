@@ -258,8 +258,8 @@ class QFilterListAdapter(QWidget):
 
         self.icon = QLabel()
         self.icon.setFixedSize(25, 25)
+        self.icon.setStyleSheet("background-color: #ff1f2832")
         self.icon.setAlignment(Qt.AlignCenter)
-        self.icon.setScaledContents(True)
         self.hBox.addWidget(self.icon)
         
         self.name = QLabel()
@@ -270,4 +270,7 @@ class QFilterListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        self.icon.setPixmap(QPixmap("icons/"+strategem.icon_name))
+        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget.setFixedSize(20,20)
+        svg_widget.setStyleSheet("background-color: transparent")
+        self.icon.setPixmap(svg_widget.grab())  
