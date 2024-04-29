@@ -1,9 +1,10 @@
 from view_base import BaseView
 from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QPixmap, QFont
+from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence
 from PyQt5.Qt import QSizePolicy
 from strategem import Strategem
+from executer_arduino import ArduinoPassthroughExecuter
 
 class PyQT5View(BaseView):
     def __init__(self, controller):
@@ -13,13 +14,9 @@ class PyQT5View(BaseView):
         self.window = MainWindow(controller)
     
     def add_executor_settings(self, executor):
-        pass
+        self.window.add_executor_settings(executor)
 
     def show_interface(self):
-        self.window.update_macros()
-        self.window.setup_toolbar_menu()
-        self.window.update_current_loadout()
-        self.window.update_armed()
         self.window.show()
         self.gui.exec()
     
@@ -76,6 +73,11 @@ class MainWindow(QMainWindow):
         self.listwidget.setFocusPolicy(Qt.NoFocus)
         self.listwidget.itemDoubleClicked.connect(self.on_macro_clicked)
         self.vBox.addWidget(self.listwidget)
+
+        self.setup_toolbar_menu()
+        self.update_macros()
+        self.update_current_loadout()
+        self.update_armed()
     
     def on_macro_clicked(self, item):
         dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole))
@@ -132,6 +134,16 @@ class MainWindow(QMainWindow):
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
             loadout_menu.addAction(loadout_action)
+
+    def add_executor_settings(self, executor):
+        if isinstance(executor,ArduinoPassthroughExecuter):
+            select_serial = self.menuBar().addMenu("Select serial")
+
+            physical_addresses = executor.get_physical_addresses()
+            for port, desc, hwid in sorted(physical_addresses):
+                serial = QAction(desc, self)
+                serial.triggered.connect(lambda checked, port=port: executor.connect_to_arduino(port))
+                select_serial.addAction(serial)
 
 class QLoadoutListAdapter(QWidget):
     def __init__ (self, parent = None):
@@ -190,18 +202,30 @@ class FilteredListDialog(QDialog):
 
         # Create a QListWidget for the list of items
         self.list_widget = QListWidget()
+        self.list_widget.setSelectionMode(QAbstractItemView.SingleSelection)
         self.list_widget.itemDoubleClicked.connect(self.on_item_clicked)
+        self.list_widget.installEventFilter(self)
         layout.addWidget(self.list_widget)
 
         # Populate the QListWidget with items
         self.update_macros("")
     
+    def eventFilter(self, watched, event):
+        if event.type() == QEvent.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
+            i = self.list_widget.selectedItems()
+            self.on_item_clicked(i[0])
+            return True
+        else:
+            return False
+
     def on_item_clicked(self, item):
-        data = item.data(Qt.UserRole)
-        self.controller.change_macro_binding(data[0], data[1])
+        id = item.data(Qt.UserRole)
+        self.controller.change_macro_binding(self.key, id)
         self.close()
 
     def filter_items(self, text):
+        #TODO Filter list here so it can be tested
+        #TODO Sort the filtered list before updating macros
         self.update_macros(text.lower())
 
     def update_macros(self, filter):
@@ -216,7 +240,7 @@ class FilteredListDialog(QDialog):
                 listAdapter.setStrategem(strategem)
 
                 listAdapterItem = QListWidgetItem(self.list_widget)
-                listAdapterItem.setData(Qt.UserRole, [self.key, id])
+                listAdapterItem.setData(Qt.UserRole, id)
                 listAdapterItem.setSizeHint(listAdapter.sizeHint())
                 self.list_widget.addItem(listAdapterItem)
                 self.list_widget.setItemWidget(listAdapterItem, listAdapter)
