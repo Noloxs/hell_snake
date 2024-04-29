@@ -168,6 +168,7 @@ Hell Snake is licensed under the [GNU General Public License v3.0](LICENSE.md).
 ## Acknowledgements
 
 - Special thanks to the developers of Hell Divers 2 for creating such an exciting game.
+- Thank you to @nvigneux for creating and sharing the awesome strategem icons. See his repository here: [Helldivers-2-Stratagems-icons-svg](https://github.com/nvigneux/Helldivers-2-Stratagems-icons-svg)
 - Thanks to all contributors who have helped improve Hell Snake.
 
 ## Support
