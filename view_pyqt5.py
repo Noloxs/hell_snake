@@ -1,7 +1,8 @@
 from view_base import BaseView
 from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel
 from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence
+from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
+from PyQt5.QtSvg import QSvgWidget
 from PyQt5.Qt import QSizePolicy
 from strategem import Strategem
 from executer_arduino import ArduinoPassthroughExecuter
@@ -151,11 +152,11 @@ class QLoadoutListAdapter(QWidget):
 
         self.hBox  = QHBoxLayout()
         self.hBox.setContentsMargins(5,5,5,0)
-
+        
         self.icon = QLabel()
         self.icon.setFixedSize(50, 50)
         self.icon.setAlignment(Qt.AlignCenter)
-        self.icon.setScaledContents(True)
+        self.icon.setStyleSheet("background-color: #ff1f2832")
         self.hBox.addWidget(self.icon)
         
         self.key = QLabel()
@@ -174,7 +175,10 @@ class QLoadoutListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        self.icon.setPixmap(QPixmap("icons/"+strategem.icon_name))     
+        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget.setFixedSize(40,40)
+        svg_widget.setStyleSheet("background-color: transparent")
+        self.icon.setPixmap(svg_widget.grab())  
     
     def setKey(self, key):
         self.id = key
@@ -254,8 +258,8 @@ class QFilterListAdapter(QWidget):
 
         self.icon = QLabel()
         self.icon.setFixedSize(25, 25)
+        self.icon.setStyleSheet("background-color: #ff1f2832")
         self.icon.setAlignment(Qt.AlignCenter)
-        self.icon.setScaledContents(True)
         self.hBox.addWidget(self.icon)
         
         self.name = QLabel()
@@ -266,4 +270,7 @@ class QFilterListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        self.icon.setPixmap(QPixmap("icons/"+strategem.icon_name))
+        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget.setFixedSize(20,20)
+        svg_widget.setStyleSheet("background-color: transparent")
+        self.icon.setPixmap(svg_widget.grab())  
