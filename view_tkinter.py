@@ -1,8 +1,33 @@
-
+from view_base import BaseView
 import tkinter as tk
 from PIL import ImageTk, Image
 from tkinter import simpledialog
 from executer_arduino import ArduinoPassthroughExecuter
+
+class TkinterView(BaseView):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+        self.overview = Overview(controller)
+    
+    def update_macros(self):
+        self.overview.update_macros()
+    
+    def add_executor_settings(self, executor):
+        self.overview.add_executor_settings(executor)
+    
+    def update_armed(self):
+        self.overview.update_armed()
+    
+    def show_change_macro_dialog(self, key):
+        dialog = FilterDialog(self.controller, key)
+        dialog.mainloop()
+    
+    def update_current_loadout(self):
+        self.overview.update_current_loadout()
+    
+    def show_interface(self):
+        self.overview.mainloop()
 
 class Overview(tk.Tk):
     def __init__(self, controller):
@@ -36,10 +61,10 @@ class Overview(tk.Tk):
         self.settings_menu.add_command(label="Dump settings", command=self.controller.dump_settings)
         self.settings_menu.add_command(label="Exit", command=self.controller.exit)
 
-        self.menu.add_command(label="Arm", command=controller.toggle_armed)
+        self.menu.add_command(label="Arm", command=self.controller.toggle_armed)
 
         self.loadout_menu = tk.Menu(self.menu, tearoff=0)
-        self.menu.add_cascade(label="Loadputs", menu=self.loadout_menu)
+        self.menu.add_cascade(label="Loadouts", menu=self.loadout_menu)
         self.update_choose_loadouts()
 
         self.update_armed()
@@ -54,7 +79,7 @@ class Overview(tk.Tk):
             self.macro_frame.pack(side="top", anchor="nw", pady=5, padx=5, fill="x")
 
             # Add icon
-            image = Image.open("icons/"+value.icon_name+".webp")
+            image = Image.open("icons/"+value.icon_name)
             image = image.resize((50, 50), Image.LANCZOS)
             photo = ImageTk.PhotoImage(image)
             icon_label = tk.Label(self.macro_frame, image=photo)
@@ -219,7 +244,7 @@ class FilterDialog(tk.Toplevel):
                 self.macro_frame.pack(side="top", anchor="nw", pady=1, fill="x")
 
                 # Add icon
-                image = Image.open("icons/"+strategem.icon_name+".webp")
+                image = Image.open("icons/"+strategem.icon_name)
                 image = image.resize((25, 25), Image.LANCZOS)
                 photo = ImageTk.PhotoImage(image)
                 icon_label = tk.Label(self.macro_frame, image=photo)
