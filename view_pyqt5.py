@@ -26,6 +26,7 @@ class PyQT5View(BaseView):
     
     def update_current_loadout(self):
         self.window.update_current_loadout()
+        self.window.update_macros()
 
     def update_armed(self):
         self.window.update_armed()
@@ -76,8 +77,6 @@ class MainWindow(QMainWindow):
         self.vBox.addWidget(self.listwidget)
 
         self.setup_toolbar_menu()
-        self.update_macros()
-        self.update_current_loadout()
         self.update_armed()
     
     def on_macro_clicked(self, item):
@@ -133,7 +132,7 @@ class MainWindow(QMainWindow):
         loadout_menu = self.menuBar().addMenu("Loadouts")
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
-            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
+            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             loadout_menu.addAction(loadout_action)
 
     def add_executor_settings(self, executor):

@@ -1,5 +1,4 @@
 from strategem import Strategem
-from pynput import keyboard
 import json
 import utilities
 import key_parser_pynput
@@ -19,13 +18,12 @@ class Model:
         
         self.settings = self.load_settings()
 
-        self.set_active_loadout(next(iter(self.settings.loadouts.keys())))
-
-    def change_macro_binding(self, key, strategem):
+    def change_macro_binding(self, key, strategemId):
+        strategem = self.strategems[strategemId]
+        self.currentLoadout.macroKeys[key] = strategemId
         self.macros.update({key:strategem})
     
     def set_active_loadout(self, id):
-        # TODO Persist current loadout id to settings
         self.currentLoadout = self.settings.loadouts[id]
         self.macroKeys = self.currentLoadout.macroKeys
         self.macros = {}
@@ -83,7 +81,7 @@ class Model:
 class Settings:
     def __init__(self):
         self.loadouts = {utilities.generateUuid():Loadout("Profile 1", {"1":"1"})}
-        self.triggerKey = keyboard.Key.ctrl
+        self.triggerKey = "ctrl"
         self.triggerDelay = 100
         self.triggerDelayJitter = 30
         self.strategemKeys = ["w", "a", "s", "d"]
