@@ -73,7 +73,7 @@ class MainWindow(QMainWindow):
         self.listwidget = QListWidget()
         self.listwidget.setSelectionMode(QAbstractItemView.NoSelection)
         self.listwidget.setFocusPolicy(Qt.NoFocus)
-        self.listwidget.itemDoubleClicked.connect(self.on_macro_clicked)
+        self.listwidget.itemClicked.connect(self.on_macro_clicked)
         self.vBox.addWidget(self.listwidget)
 
         self.setup_toolbar_menu()
@@ -210,9 +210,10 @@ class FilteredListDialog(QDialog):
         layout.addWidget(self.edit_field)
 
         # Create a QListWidget for the list of items
+        # TODO On tab, the first item isn't selected
         self.list_widget = QListWidget()
         self.list_widget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.list_widget.itemDoubleClicked.connect(self.on_item_clicked)
+        self.list_widget.itemClicked.connect(self.on_item_clicked)
         self.list_widget.installEventFilter(self)
         layout.addWidget(self.list_widget)
 
@@ -222,10 +223,11 @@ class FilteredListDialog(QDialog):
     def eventFilter(self, watched, event):
         if event.type() == QEvent.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
             i = self.list_widget.selectedItems()
-            self.on_item_clicked(i[0])
-            return True
-        else:
-            return False
+            if(len(i) > 0):
+                self.on_item_clicked(i[0])
+                return True
+        
+        return False
 
     def on_item_clicked(self, item):
         id = item.data(Qt.UserRole)
@@ -253,6 +255,7 @@ class FilteredListDialog(QDialog):
                 listAdapterItem.setSizeHint(listAdapter.sizeHint())
                 self.list_widget.addItem(listAdapterItem)
                 self.list_widget.setItemWidget(listAdapterItem, listAdapter)
+        self.list_widget.setCurrentRow(0)
 
 class QFilterListAdapter(QWidget):
     def __init__ (self, parent = None):
