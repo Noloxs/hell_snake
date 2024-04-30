@@ -117,9 +117,15 @@ class MainWindow(QMainWindow):
         # Create a Files menu
         files_menu = self.menuBar().addMenu("Files")
 
+        settingsOptions = files_menu.addMenu("Settings")
+
         dump_action = QAction("Dump settings", self)
         dump_action.triggered.connect(self.controller.dump_settings)
-        files_menu.addAction(dump_action)
+        settingsOptions.addAction(dump_action)
+
+        save_action = QAction("Save settings", self)
+        save_action.triggered.connect(self.controller.save_settings)
+        settingsOptions.addAction(save_action)
 
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.controller.exit)
