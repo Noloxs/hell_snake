@@ -26,6 +26,7 @@ class PyQT5View(BaseView):
     
     def update_current_loadout(self):
         self.window.update_current_loadout()
+        self.window.update_macros()
 
     def update_armed(self):
         self.window.update_armed()
@@ -72,12 +73,10 @@ class MainWindow(QMainWindow):
         self.listwidget = QListWidget()
         self.listwidget.setSelectionMode(QAbstractItemView.NoSelection)
         self.listwidget.setFocusPolicy(Qt.NoFocus)
-        self.listwidget.itemDoubleClicked.connect(self.on_macro_clicked)
+        self.listwidget.itemClicked.connect(self.on_macro_clicked)
         self.vBox.addWidget(self.listwidget)
 
         self.setup_toolbar_menu()
-        self.update_macros()
-        self.update_current_loadout()
         self.update_armed()
     
     def on_macro_clicked(self, item):
@@ -118,9 +117,15 @@ class MainWindow(QMainWindow):
         # Create a Files menu
         files_menu = self.menuBar().addMenu("Files")
 
+        settingsOptions = files_menu.addMenu("Settings")
+
         dump_action = QAction("Dump settings", self)
         dump_action.triggered.connect(self.controller.dump_settings)
-        files_menu.addAction(dump_action)
+        settingsOptions.addAction(dump_action)
+
+        save_action = QAction("Save settings", self)
+        save_action.triggered.connect(self.controller.save_settings)
+        settingsOptions.addAction(save_action)
 
         exit_action = QAction("Exit", self)
         exit_action.triggered.connect(self.controller.exit)
@@ -133,7 +138,7 @@ class MainWindow(QMainWindow):
         loadout_menu = self.menuBar().addMenu("Loadouts")
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
-            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.change_active_loadout(loadoutId))
+            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             loadout_menu.addAction(loadout_action)
 
     def add_executor_settings(self, executor):
@@ -205,9 +210,10 @@ class FilteredListDialog(QDialog):
         layout.addWidget(self.edit_field)
 
         # Create a QListWidget for the list of items
+        # TODO On tab, the first item isn't selected
         self.list_widget = QListWidget()
         self.list_widget.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.list_widget.itemDoubleClicked.connect(self.on_item_clicked)
+        self.list_widget.itemClicked.connect(self.on_item_clicked)
         self.list_widget.installEventFilter(self)
         layout.addWidget(self.list_widget)
 
@@ -217,10 +223,11 @@ class FilteredListDialog(QDialog):
     def eventFilter(self, watched, event):
         if event.type() == QEvent.KeyPress and event.matches(QKeySequence.InsertParagraphSeparator):
             i = self.list_widget.selectedItems()
-            self.on_item_clicked(i[0])
-            return True
-        else:
-            return False
+            if(len(i) > 0):
+                self.on_item_clicked(i[0])
+                return True
+        
+        return False
 
     def on_item_clicked(self, item):
         id = item.data(Qt.UserRole)
@@ -248,6 +255,7 @@ class FilteredListDialog(QDialog):
                 listAdapterItem.setSizeHint(listAdapter.sizeHint())
                 self.list_widget.addItem(listAdapterItem)
                 self.list_widget.setItemWidget(listAdapterItem, listAdapter)
+        self.list_widget.setCurrentRow(0)
 
 class QFilterListAdapter(QWidget):
     def __init__ (self, parent = None):
