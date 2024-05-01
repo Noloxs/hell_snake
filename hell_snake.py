@@ -14,4 +14,3 @@ if __name__ == "__main__":
         view = PyQT5View(controller)
     
     controller.set_view(view)
-    view.show_interface()

@@ -18,12 +18,16 @@ class Model:
         
         self.settings = self.load_settings()
 
-    def change_macro_binding(self, key, strategemId):
+    def update_macro_binding(self, key, strategemId):
         strategem = self.strategems[strategemId]
         self.currentLoadout.macroKeys[key] = strategemId
         self.macros.update({key:strategem})
     
+    def update_loadout(self, id, loadout):
+        self.settings.loadouts[id] = loadout
+
     def set_active_loadout(self, id):
+        self.currentLoadoutId = id
         self.currentLoadout = self.settings.loadouts[id]
         self.macroKeys = self.currentLoadout.macroKeys
         self.macros = {}

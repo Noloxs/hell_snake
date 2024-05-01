@@ -23,3 +23,7 @@ def show_change_macro_dialog(self, key):
 @abstractmethod
 def update_current_loadout(self):
     raise NotImplementedError
+
+@abstractmethod
+def on_loadout_changed(self):
+    raise NotImplementedError
