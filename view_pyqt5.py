@@ -1,11 +1,12 @@
 from view_base import BaseView
-from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.Qt import QSizePolicy
 from strategem import Strategem
 from executer_arduino import ArduinoPassthroughExecuter
+from copy import copy
 
 class PyQT5View(BaseView):
     def __init__(self, controller):
@@ -30,6 +31,10 @@ class PyQT5View(BaseView):
 
     def update_armed(self):
         self.window.update_armed()
+    
+    def on_loadout_changed(self, id):
+        self.window.update_loadout_menu_items()
+
 
 class MainWindow(QMainWindow):
     def __init__(self, controller):
@@ -39,6 +44,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('icons/hell_snake.png'))
         self.setMinimumSize(350, 225)
         self.resize(350,225)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         central_widget = QWidget()
         central_widget.setStyleSheet("background-color: white")
@@ -117,17 +123,20 @@ class MainWindow(QMainWindow):
         # Create a Files menu
         files_menu = self.menuBar().addMenu("Files")
 
-        settingsOptions = files_menu.addMenu("Settings")
+        settingsOptions = files_menu.addMenu(QIcon("icons/settings.svg"), "Settings")
 
-        dump_action = QAction("Dump settings", self)
+        dump_action = QAction(QIcon("icons/settings_print.svg"), "Print settings", self)
         dump_action.triggered.connect(self.controller.dump_settings)
         settingsOptions.addAction(dump_action)
 
-        save_action = QAction("Save settings", self)
+        save_action = QAction(QIcon("icons/settings_save.svg"), "Save settings", self)
         save_action.triggered.connect(self.controller.save_settings)
         settingsOptions.addAction(save_action)
 
-        exit_action = QAction("Exit", self)
+        files_menu.addSeparator()
+
+        # TODO Replace icon
+        exit_action = QAction(QIcon("icons/exit.svg"),"Exit", self)
         exit_action.triggered.connect(self.controller.exit)
         files_menu.addAction(exit_action)
 
@@ -135,11 +144,19 @@ class MainWindow(QMainWindow):
         arm_action.triggered.connect(self.controller.toggle_armed)
         self.menuBar().addAction(arm_action)
 
-        loadout_menu = self.menuBar().addMenu("Loadouts")
+        self.loadout_menu = self.menuBar().addMenu("Loadouts")
+        self.update_loadout_menu_items()
+    
+    def update_loadout_menu_items(self):
+        self.loadout_menu.clear()
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
-            loadout_menu.addAction(loadout_action)
+            self.loadout_menu.addAction(loadout_action)
+        
+        loadout_edit_action = QAction(QIcon("icons/edit_loadout.svg"), "Edit loadouts", self)
+        loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
+        self.loadout_menu.addAction(loadout_edit_action)
 
     def add_executor_settings(self, executor):
         if isinstance(executor,ArduinoPassthroughExecuter):
@@ -150,6 +167,10 @@ class MainWindow(QMainWindow):
                 serial = QAction(desc, self)
                 serial.triggered.connect(lambda checked, port=port: executor.connect_to_arduino(port))
                 select_serial.addAction(serial)
+    
+    def open_edit_loadout_dialog(self):
+        dialog = EditLoadoutDialog(self.controller)
+        dialog.exec_()
 
 class QLoadoutListAdapter(QWidget):
     def __init__ (self, parent = None):
@@ -231,7 +252,7 @@ class FilteredListDialog(QDialog):
 
     def on_item_clicked(self, item):
         id = item.data(Qt.UserRole)
-        self.controller.change_macro_binding(self.key, id)
+        self.controller.update_macro_binding(self.key, id)
         self.close()
 
     def filter_items(self, text):
@@ -281,4 +302,62 @@ class QFilterListAdapter(QWidget):
         svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
-        self.icon.setPixmap(svg_widget.grab())  
+        self.icon.setPixmap(svg_widget.grab())
+
+class EditLoadoutDialog(QDialog):
+    def __init__(self, controller):
+        super().__init__()
+
+        self.controller = controller
+        
+        self.setWindowTitle("Edit loadouts")
+
+        # Layout
+        layout = QVBoxLayout(self)
+
+        # Dropdown selector
+        self.dropdown = QComboBox()
+        self.loadouts = self.controller.model.settings.loadouts
+        for id, loadout in self.loadouts.items():
+            self.dropdown.addItem(loadout.name, id)
+        self.dropdown.setCurrentIndex(0)
+        self.dropdown.currentIndexChanged.connect(self.set_loadout)
+        layout.addWidget(self.dropdown)
+
+        # Edit field
+        self.edit_field = QLineEdit()
+        self.edit_field.textChanged.connect(self.on_loadout_name_changed)
+        layout.addWidget(self.edit_field)
+
+        # List widget
+        self.list_widget = QListWidget()
+        layout.addWidget(self.list_widget)
+
+        buttons_layout = QHBoxLayout()
+        layout.addLayout(buttons_layout)
+        
+        self.btn_cancel = QPushButton("Cancel")
+        self.btn_save = QPushButton("Save")
+        buttons_layout.addStretch(1)
+        buttons_layout.addWidget(self.btn_cancel)
+        buttons_layout.addWidget(self.btn_save)
+
+        self.set_loadout()
+
+        self.btn_cancel.clicked.connect(self.close)
+        self.btn_save.clicked.connect(self.update_loadout)
+
+    def update_loadout(self):
+        self.controller.update_loadout(self.loadoutId, self.editLoadout)
+
+    def set_loadout(self):
+        self.loadoutId = self.dropdown.currentData()
+        self.editLoadout = copy(self.loadouts[self.loadoutId])
+        self.edit_field.setText(self.editLoadout.name)
+
+        # Update list widget based on selected item
+        self.list_widget.clear()
+        self.list_widget.addItems([f"{self.editLoadout.name} - Item {i}" for i in range(1, 6)])
+
+    def on_loadout_name_changed(self, name):
+        self.editLoadout.name = name
