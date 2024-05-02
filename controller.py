@@ -42,11 +42,15 @@ class Controller:
         self.model.update_macro_binding(key, strategemId)
         self.view.update_macros()
     
+    def add_loadout(self, loadoutName):
+        self.model.add_loadout(loadoutName)
+        self.view.on_loadout_changed()
+
     def update_loadout(self, id, loadout):
         self.model.update_loadout(id,loadout)
         if self.model.currentLoadoutId == id:
             self.set_active_loadout(id)
-        self.view.on_loadout_changed(id)
+        self.view.on_loadout_changed()
     
     def set_active_loadout(self, loadoutId):
         self.model.set_active_loadout(loadoutId)

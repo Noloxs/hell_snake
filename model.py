@@ -23,6 +23,9 @@ class Model:
         self.currentLoadout.macroKeys[key] = strategemId
         self.macros.update({key:strategem})
     
+    def add_loadout(self, loadoutName):
+        self.settings.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
+
     def update_loadout(self, id, loadout):
         self.settings.loadouts[id] = loadout
 

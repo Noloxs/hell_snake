@@ -1,5 +1,5 @@
 from view_base import BaseView
-from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton
+from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton, QMenuBar, QInputDialog
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
 from PyQt5.QtSvg import QSvgWidget
@@ -32,7 +32,7 @@ class PyQT5View(BaseView):
     def update_armed(self):
         self.window.update_armed()
     
-    def on_loadout_changed(self, id):
+    def on_loadout_changed(self):
         self.window.update_loadout_menu_items()
 
 
@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)
         
-        loadout_edit_action.addSeparator()
+        self.loadout_menu.addSeparator()
 
         loadout_edit_action = QAction(QIcon("icons/edit_loadout.svg"), "Edit loadouts", self)
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
@@ -312,17 +312,15 @@ class EditLoadoutDialog(QDialog):
         self.controller = controller
         
         self.setWindowTitle("Edit loadouts")
+        self.setMinimumSize(300, 300)
+        self.resize(300,600)
 
         # Layout
         layout = QVBoxLayout(self)
 
         # Dropdown selector
         self.dropdown = QComboBox()
-        self.loadouts = self.controller.model.settings.loadouts
-        for id, loadout in self.loadouts.items():
-            self.dropdown.addItem(loadout.name, id)
-        self.dropdown.setCurrentIndex(0)
-        self.dropdown.currentIndexChanged.connect(self.set_loadout)
+        self.set_loadout_dropdown_items()
         layout.addWidget(self.dropdown)
 
         # Edit field
@@ -343,22 +341,66 @@ class EditLoadoutDialog(QDialog):
         buttons_layout.addWidget(self.btn_cancel)
         buttons_layout.addWidget(self.btn_save)
 
-        self.set_loadout()
-
         self.btn_cancel.clicked.connect(self.close)
         self.btn_save.clicked.connect(self.update_loadout)
 
+        # Menu bar
+        menu_bar = QMenuBar()
+        add_loadout_action = QAction("Add Loadout", self)
+        add_loadout_action.triggered.connect(self.add_loadout)
+        menu_bar.addAction(add_loadout_action)
+        
+        add_macro_action = QAction("Add Macro", self)
+        add_macro_action.triggered.connect(lambda: print("Add Macro clicked"))
+        menu_bar.addAction(add_macro_action)
+
+        layout.setMenuBar(menu_bar)
+
+        self.set_loadout()
+
     def update_loadout(self):
         self.controller.update_loadout(self.loadoutId, self.editLoadout)
+        self.dropdown.setItemText(self.dropdown.currentIndex(), self.editLoadout.name)
+
+    def add_loadout(self):
+        loadoutName, ok = QInputDialog.getText(self, 'Add Loadout', 'Enter loadout name:')
+        if ok:
+            self.controller.add_loadout(loadoutName)
+            self.set_loadout_dropdown_items()
+            self.dropdown.setCurrentIndex(self.dropdown.count() - 1)
+
+    def set_loadout_dropdown_items(self):
+        self.dropdown.clear()
+        for id, loadout in self.controller.model.settings.loadouts.items():
+            self.dropdown.addItem(loadout.name, id)
+        self.dropdown.setCurrentIndex(0)
+        self.dropdown.currentIndexChanged.connect(self.set_loadout)
 
     def set_loadout(self):
         self.loadoutId = self.dropdown.currentData()
-        self.editLoadout = copy(self.loadouts[self.loadoutId])
+        if self.loadoutId == None:
+            return
+        
+        self.editLoadout = copy(self.controller.model.settings.loadouts[self.loadoutId])
         self.edit_field.setText(self.editLoadout.name)
 
         # Update list widget based on selected item
         self.list_widget.clear()
-        self.list_widget.addItems([f"{self.editLoadout.name} - Item {i}" for i in range(1, 6)])
+        # Add all items to the QListWidget
+        self.editMacros = {}
+        for key, strategemId in self.editLoadout.macroKeys.items():
+            self.editMacros.update({key:self.controller.model.strategems[strategemId]})
+
+        for index, (key, value) in enumerate(self.editMacros.items()):
+            listAdapter = QFilterListAdapter()
+            listAdapter.setStyleSheet("background-color: transparent")
+            listAdapter.setStrategem(value)
+
+            listAdapterItem = QListWidgetItem(self.list_widget)
+            listAdapterItem.setData(Qt.UserRole,key)
+            listAdapterItem.setSizeHint(listAdapter.sizeHint())
+            self.list_widget.addItem(listAdapterItem)
+            self.list_widget.setItemWidget(listAdapterItem, listAdapter)
 
     def on_loadout_name_changed(self, name):
         self.editLoadout.name = name
