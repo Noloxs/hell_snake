@@ -23,7 +23,7 @@ class Controller:
         self.view = view
         self.view.add_executor_settings(self.executer)
         #TODO Replace with last used loadout
-        self.set_active_loadout(next(iter(self.model.settings.loadouts.keys())))
+        self.set_active_loadout(self.model.get_next_loadout())
         self.view.show_interface()
 
     def toggle_armed(self):
@@ -44,7 +44,15 @@ class Controller:
     
     def add_loadout(self, loadoutName):
         self.model.add_loadout(loadoutName)
+        if self.model.currentLoadoutId is None:
+            self.set_active_loadout(self.model.get_next_loadout())
         self.view.on_loadout_changed()
+    
+    def delete_loadout(self, loadoutId):
+        self.model.delete_loadout(loadoutId)
+        self.view.on_loadout_changed()
+        if self.model.currentLoadoutId == loadoutId:
+            self.set_active_loadout(self.model.get_next_loadout())
 
     def update_loadout(self, id, loadout):
         self.model.update_loadout(id,loadout)

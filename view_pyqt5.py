@@ -1,12 +1,12 @@
 from view_base import BaseView
-from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton, QMenuBar, QInputDialog
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton, QMenuBar, QMessageBox, QInputDialog
+from PyQt5.QtCore import Qt, QEvent, QSize, QObject, pyqtSignal, QThread
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.Qt import QSizePolicy
 from strategem import Strategem
 from executer_arduino import ArduinoPassthroughExecuter
-from copy import copy
+from copy import deepcopy
 
 class PyQT5View(BaseView):
     def __init__(self, controller):
@@ -85,8 +85,11 @@ class MainWindow(QMainWindow):
         self.setup_toolbar_menu()
         self.update_armed()
     
+    def on_strategem_selected(self, key, id):
+        self.controller.update_macro_binding(key, id)
+
     def on_macro_clicked(self, item):
-        dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole))
+        dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole), self.on_strategem_selected)
         dialog.exec_()
 
     def update_macros(self):
@@ -117,7 +120,10 @@ class MainWindow(QMainWindow):
     
     def update_current_loadout(self):
         currentLoadout = self.controller.model.currentLoadout
-        self.loadout.setText(currentLoadout.name)
+        if currentLoadout is not None:
+            self.loadout.setText(currentLoadout.name) 
+        else:
+            self.loadout.setText("")
 
     def setup_toolbar_menu(self):
         # Create a Files menu
@@ -212,8 +218,9 @@ class QLoadoutListAdapter(QWidget):
         self.key.setText(key)
 
 class FilteredListDialog(QDialog):
-    def __init__(self, controller, key):
+    def __init__(self, controller, key, callback = None):
         super().__init__()
+        self.callback = callback
  
         self.controller = controller
         self.key = key
@@ -221,6 +228,7 @@ class FilteredListDialog(QDialog):
         self.resize(300,800)
 
         self.setWindowTitle("Select new strategem for: "+self.key)
+        self.setWindowIcon(QIcon('icons/hell_snake.png'))
 
         # Create a layout for the dialog
         layout = QVBoxLayout(self)
@@ -253,7 +261,7 @@ class FilteredListDialog(QDialog):
 
     def on_item_clicked(self, item):
         id = item.data(Qt.UserRole)
-        self.controller.update_macro_binding(self.key, id)
+        self.callback(self.key, id)
         self.close()
 
     def filter_items(self, text):
@@ -312,9 +320,11 @@ class EditLoadoutDialog(QDialog):
         self.controller = controller
         
         self.setWindowTitle("Edit loadouts")
+        self.setWindowIcon(QIcon('icons/hell_snake.png'))
         self.setMinimumSize(300, 300)
         self.resize(300,600)
 
+        iconSize = QSize(30, 30)
         # Layout
         layout = QVBoxLayout(self)
 
@@ -323,44 +333,132 @@ class EditLoadoutDialog(QDialog):
         self.set_loadout_dropdown_items()
         layout.addWidget(self.dropdown)
 
+        loadout_buttons_layout = QHBoxLayout()
+        loadout_buttons_layout.setContentsMargins(0,10,0,0)
+
         # Edit field
         self.edit_field = QLineEdit()
+        self.edit_field.setFixedHeight(30)
         self.edit_field.textChanged.connect(self.on_loadout_name_changed)
-        layout.addWidget(self.edit_field)
+        loadout_buttons_layout.addWidget(self.edit_field)
+
+        delete_loadout_button = QPushButton("")
+        delete_loadout_button.setIcon(QIcon("icons/settings_delete"))
+        delete_loadout_button.setFixedSize(30,30)
+        delete_loadout_button.clicked.connect(self.delete_current_loadout)
+        loadout_buttons_layout.addWidget(delete_loadout_button)
+        layout.addLayout(loadout_buttons_layout)
 
         # List widget
         self.list_widget = QListWidget()
+        self.list_widget.model().rowsMoved.connect(self.macro_rearranged)
+        self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
         layout.addWidget(self.list_widget)
 
+        # Create macro control buttons
         buttons_layout = QHBoxLayout()
+        
+        delete_button = QPushButton("")
+        delete_button.setIcon(QIcon("icons/settings_delete"))
+        delete_button.setIconSize(iconSize)
+        delete_button.clicked.connect(self.delete_current_macro)
+        buttons_layout.addWidget(delete_button)
+        
+        change_button = QPushButton("")
+        change_button.setIcon(QIcon("icons/settings_swap"))
+        change_button.setIconSize(iconSize)
+        change_button.clicked.connect(self.change_current_macro)
+        buttons_layout.addWidget(change_button)
+
+        add_button = QPushButton("")
+        add_button.setIcon(QIcon("icons/settings_add"))
+        add_button.setIconSize(iconSize)
+        add_button.clicked.connect(self.add_macro)
+        buttons_layout.addWidget(add_button)
+
         layout.addLayout(buttons_layout)
+
+        # Create confirmation buttons
+        confirm_buttons_layout = QHBoxLayout()
+        margin = confirm_buttons_layout.setContentsMargins(0,30,0,0)
+        layout.addLayout(confirm_buttons_layout)
         
         self.btn_cancel = QPushButton("Cancel")
         self.btn_save = QPushButton("Save")
-        buttons_layout.addStretch(1)
-        buttons_layout.addWidget(self.btn_cancel)
-        buttons_layout.addWidget(self.btn_save)
+        confirm_buttons_layout.addStretch(1)
+        confirm_buttons_layout.addWidget(self.btn_cancel)
+        confirm_buttons_layout.addWidget(self.btn_save)
 
         self.btn_cancel.clicked.connect(self.close)
         self.btn_save.clicked.connect(self.update_loadout)
+        self.dropdown.currentIndexChanged.connect(self.set_loadout)
 
         # Menu bar
         menu_bar = QMenuBar()
         add_loadout_action = QAction("Add Loadout", self)
         add_loadout_action.triggered.connect(self.add_loadout)
         menu_bar.addAction(add_loadout_action)
-        
-        add_macro_action = QAction("Add Macro", self)
-        add_macro_action.triggered.connect(lambda: print("Add Macro clicked"))
-        menu_bar.addAction(add_macro_action)
 
         layout.setMenuBar(menu_bar)
 
         self.set_loadout()
+    
+    def delete_current_macro(self):
+        macro = self.list_widget.currentItem()
+        if macro != None:
+            key = macro.data(Qt.UserRole)
+            self.editLoadout.macroKeys.pop(key)
+            self.update_macros()
+    
+    def change_current_macro(self):
+        currentMacro = self.list_widget.currentItem()
+        if currentMacro is not None:
+            key = currentMacro.data(Qt.UserRole)
+            dialog = FilteredListDialog(self.controller, key, self.on_strategem_selected)
+            dialog.exec_()
+    
+    def on_strategem_selected(self, key, id):
+        self.editLoadout.macroKeys[key] = id
+        self.update_macros()
+
+    def on_next_key(self, key):
+        self.add_macro_box.close()
+        self.thread.quit()
+        if key not in self.editLoadout.macroKeys:
+            self.editLoadout.macroKeys.update({key:"0"})
+            self.update_macros()
+
+    def start_task(self):
+        self.thread = QThread()
+        self.worker = Worker(self.controller)
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.run_task)
+        self.worker.finished.connect(self.on_next_key)
+        self.thread.start()
+
+    def add_macro(self):
+        # Create a QMessageBox
+        self.start_task()
+        self.add_macro_box = QMessageBox()
+        self.add_macro_box.setText("Press key for new macro")
+        self.add_macro_box.exec_()
+
+    def macro_rearranged(self, parent, start, end, destination, row):
+        key = self.list_widget.currentItem().data(Qt.UserRole)
+        row = self.list_widget.currentRow()
 
     def update_loadout(self):
-        self.controller.update_loadout(self.loadoutId, self.editLoadout)
-        self.dropdown.setItemText(self.dropdown.currentIndex(), self.editLoadout.name)
+        if self.loadoutId is not None:
+            before = deepcopy(self.editLoadout.macroKeys)
+            self.editLoadout.macroKeys.clear()
+            for i in range(self.list_widget.count()):
+                item = self.list_widget.item(i)
+                key = item.data(Qt.UserRole)
+                strategemId = before[key]
+                self.editLoadout.macroKeys.update({key:strategemId})
+
+            self.controller.update_loadout(self.loadoutId, self.editLoadout)
+            self.dropdown.setItemText(self.dropdown.currentIndex(), self.editLoadout.name)
 
     def add_loadout(self):
         loadoutName, ok = QInputDialog.getText(self, 'Add Loadout', 'Enter loadout name:')
@@ -368,33 +466,47 @@ class EditLoadoutDialog(QDialog):
             self.controller.add_loadout(loadoutName)
             self.set_loadout_dropdown_items()
             self.dropdown.setCurrentIndex(self.dropdown.count() - 1)
+    
+    def delete_current_loadout(self):
+        if self.loadoutId is not None:
+            self.controller.delete_loadout(self.loadoutId)
+            self.set_loadout_dropdown_items()
 
     def set_loadout_dropdown_items(self):
         self.dropdown.clear()
         for id, loadout in self.controller.model.settings.loadouts.items():
             self.dropdown.addItem(loadout.name, id)
-        self.dropdown.setCurrentIndex(0)
-        self.dropdown.currentIndexChanged.connect(self.set_loadout)
+        if self.dropdown.count() > 0:
+            self.dropdown.setCurrentIndex(0)
+        else:
+            self.set_loadout()
 
     def set_loadout(self):
         self.loadoutId = self.dropdown.currentData()
         if self.loadoutId == None:
+            self.edit_field.setText("")
+            self.editLoadout = None
+            self.update_macros()
             return
         
-        self.editLoadout = copy(self.controller.model.settings.loadouts[self.loadoutId])
+        self.editLoadout = deepcopy(self.controller.model.settings.loadouts[self.loadoutId])
         self.edit_field.setText(self.editLoadout.name)
+        self.update_macros()
 
+    def update_macros(self):
         # Update list widget based on selected item
         self.list_widget.clear()
         # Add all items to the QListWidget
         self.editMacros = {}
-        for key, strategemId in self.editLoadout.macroKeys.items():
-            self.editMacros.update({key:self.controller.model.strategems[strategemId]})
+        if self.editLoadout is not None:
+            for key, strategemId in self.editLoadout.macroKeys.items():
+                self.editMacros.update({key:self.controller.model.strategems[strategemId]})
 
         for index, (key, value) in enumerate(self.editMacros.items()):
-            listAdapter = QFilterListAdapter()
+            listAdapter = QEditLoadoutListAdapter()
             listAdapter.setStyleSheet("background-color: transparent")
             listAdapter.setStrategem(value)
+            listAdapter.setKey(key)
 
             listAdapterItem = QListWidgetItem(self.list_widget)
             listAdapterItem.setData(Qt.UserRole,key)
@@ -404,3 +516,55 @@ class EditLoadoutDialog(QDialog):
 
     def on_loadout_name_changed(self, name):
         self.editLoadout.name = name
+
+class Worker(QObject):
+    finished = pyqtSignal(str)
+
+    def __init__ (self, controller):
+        super().__init__()
+        self.controller = controller
+
+    def run_task(self):
+        self.controller.keyListener.get_next_key(self.on_next_key)
+        
+        # Emit signal with result
+    def on_next_key(self, key):
+        self.finished.emit(key)
+
+class QEditLoadoutListAdapter(QWidget):
+    def __init__ (self, parent = None):
+        super(QEditLoadoutListAdapter, self).__init__(parent)
+
+        self.hBox  = QHBoxLayout()
+        self.hBox.setContentsMargins(5,5,5,0)
+        
+        self.icon = QLabel()
+        self.icon.setFixedSize(25, 25)
+        self.icon.setAlignment(Qt.AlignCenter)
+        self.icon.setStyleSheet("background-color: #ff1f2832")
+        self.hBox.addWidget(self.icon)
+        
+        self.key = QLabel()
+        self.key.setFixedSize(25, 25)
+        self.key.setAlignment(Qt.AlignCenter)
+        font = QFont('Arial', 18)
+        font.setBold(True)
+        self.key.setFont(font)
+        self.hBox.addWidget(self.key)
+        
+        self.name = QLabel()
+        self.name.setFixedHeight(25)
+        self.hBox.addWidget(self.name)
+           
+        self.setLayout(self.hBox)
+
+    def setStrategem(self, strategem):
+        self.name.setText(strategem.name)
+        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget.setFixedSize(20,20)
+        svg_widget.setStyleSheet("background-color: transparent")
+        self.icon.setPixmap(svg_widget.grab())  
+    
+    def setKey(self, key):
+        self.id = key
+        self.key.setText(key)

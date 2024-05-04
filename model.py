@@ -26,16 +26,28 @@ class Model:
     def add_loadout(self, loadoutName):
         self.settings.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
 
+    def delete_loadout(self, loadoutId):
+        self.settings.loadouts.pop(loadoutId)
+    
+    def get_next_loadout(self):
+        if len(self.settings.loadouts) > 0:
+            return next(iter(self.settings.loadouts.keys()))
+        return None
+
     def update_loadout(self, id, loadout):
         self.settings.loadouts[id] = loadout
 
     def set_active_loadout(self, id):
         self.currentLoadoutId = id
-        self.currentLoadout = self.settings.loadouts[id]
-        self.macroKeys = self.currentLoadout.macroKeys
         self.macros = {}
-        for key, strategemId in self.macroKeys.items():
-            self.macros.update({key:self.strategems[strategemId]})
+        if id == None:
+            self.currentLoadout = None
+            self.macroKeys = None
+        else:
+            self.currentLoadout = self.settings.loadouts[id]
+            self.macroKeys = self.currentLoadout.macroKeys
+            for key, strategemId in self.macroKeys.items():
+                self.macros.update({key:self.strategems[strategemId]})      
 
     def set_armed(self, isArmed):
         self.isArmed = isArmed
