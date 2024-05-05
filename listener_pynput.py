@@ -12,8 +12,15 @@ class PynputKeyListener:
         self.controller = controller
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
         self.listener.start()
+        self.getNextCallbacks = []
     
     def on_press(self, key):
+        if len(self.getNextCallbacks) > 0:
+            entry = self.parse_key(key)
+            for callback in self.getNextCallbacks:
+                callback(entry)
+            self.getNextCallbacks.clear()
+        
         if (key == None):
             return
 
@@ -45,3 +52,6 @@ class PynputKeyListener:
             return key
         elif isinstance(key, keyboard.KeyCode):
             return key.char
+    
+    def get_next_key(self, callback):
+        self.getNextCallbacks.append(callback)

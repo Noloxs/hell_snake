@@ -23,7 +23,8 @@ class Controller:
         self.view = view
         self.view.add_executor_settings(self.executer)
         #TODO Replace with last used loadout
-        self.set_active_loadout(next(iter(self.model.settings.loadouts.keys())))
+        self.set_active_loadout(self.model.get_next_loadout())
+        self.view.show_interface()
 
     def toggle_armed(self):
         self.set_armed(not self.model.isArmed)
@@ -35,11 +36,29 @@ class Controller:
     def show_change_macro_dialog(self, key):
         self.view.show_change_macro_dialog(key)
 
-    def change_macro_binding(self, key, strategemId):
+    def update_macro_binding(self, key, strategemId):
         strategem = self.model.strategems[strategemId]
         strategem.prepare_strategem(self.model, self.executer)
-        self.model.change_macro_binding(key, strategemId)
+        self.model.update_macro_binding(key, strategemId)
         self.view.update_macros()
+    
+    def add_loadout(self, loadoutName):
+        self.model.add_loadout(loadoutName)
+        if self.model.currentLoadoutId is None:
+            self.set_active_loadout(self.model.get_next_loadout())
+        self.view.on_loadout_changed()
+    
+    def delete_loadout(self, loadoutId):
+        self.model.delete_loadout(loadoutId)
+        self.view.on_loadout_changed()
+        if self.model.currentLoadoutId == loadoutId:
+            self.set_active_loadout(self.model.get_next_loadout())
+
+    def update_loadout(self, id, loadout):
+        self.model.update_loadout(id,loadout)
+        if self.model.currentLoadoutId == id:
+            self.set_active_loadout(id)
+        self.view.on_loadout_changed()
     
     def set_active_loadout(self, loadoutId):
         self.model.set_active_loadout(loadoutId)
@@ -49,14 +68,14 @@ class Controller:
     
     def trigger_macro(self, strategem):
         self.executer.on_macro_triggered(strategem)
-    
+
     def save_settings(self):
         import json
         settings = json.dumps(self.model.settings, default=vars, indent=2)
         with open("settings.json", "w") as file:
             file.write(settings)
     
-    def dump_settings(self):
+    def print_settings(self):
         import json
         settings = json.dumps(self.model.settings, default=vars, indent=2)
         print(settings)
