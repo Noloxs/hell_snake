@@ -1,6 +1,6 @@
 import pyautogui
-from executer_base import BaseExecutor
-import utilities
+from src.executer_base import BaseExecutor
+from src import utilities
 
 class PyAutoGuiExecuter(BaseExecutor):
     def __init__(self, model):

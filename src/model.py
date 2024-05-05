@@ -1,18 +1,17 @@
-from strategem import Strategem
+from src.strategem import Strategem
 import json
-import utilities
-import key_parser_pynput
+from src import utilities, key_parser_pynput, constants
 
 class Model:
     def __init__(self):
         self.isArmed = False
 
-        with open('strategems.json') as json_file:
+        with open(constants.RESOURCE_PATH+"strategems.json") as json_file:
             tmp = json.load(json_file)
         
         self.strategems = {}
         for index, item in tmp.items():
-            name = item['name']
+            name = item["name"]
             strate = Strategem(**item)
             self.strategems.update({index: strate})
         
@@ -53,44 +52,44 @@ class Model:
         self.isArmed = isArmed
 
     def load_settings(self):
-        with open('settings.json') as json_file:
+        with open(constants.SETTINGS_PATH) as json_file:
             data = json.load(json_file)
 
         settings = Settings()
 
-        if 'triggerKey' in data:
-            settings.setTriggerKey(data['triggerKey'])
+        if "triggerKey" in data:
+            settings.setTriggerKey(data["triggerKey"])
 
-        if 'triggerDelay' in data:
-            settings.setTriggerDelay(data['triggerDelay'])
+        if "triggerDelay" in data:
+            settings.setTriggerDelay(data["triggerDelay"])
         
-        if 'triggerDelayJitter' in data:
-            settings.setTriggerDelayJitter(data['triggerDelayJitter'])
+        if "triggerDelayJitter" in data:
+            settings.setTriggerDelayJitter(data["triggerDelayJitter"])
         
-        if 'strategemKeys' in data:
-            settings.setStrategemKeys(data['strategemKeys'])
+        if "strategemKeys" in data:
+            settings.setStrategemKeys(data["strategemKeys"])
         
-        if 'strategemKeyDelay' in data:
-            settings.setStrategemKeyDelay(data['strategemKeyDelay'])
+        if "strategemKeyDelay" in data:
+            settings.setStrategemKeyDelay(data["strategemKeyDelay"])
 
-        if 'strategemKeyDelayJitter' in data:
-            settings.setStrategemKeyDelayJitter(data['strategemKeyDelayJitter'])
+        if "strategemKeyDelayJitter" in data:
+            settings.setStrategemKeyDelayJitter(data["strategemKeyDelayJitter"])
         
-        if 'selectedExecutor' in data:
-            settings.setExecutor(data['selectedExecutor'])
+        if "selectedExecutor" in data:
+            settings.setExecutor(data["selectedExecutor"])
         
-        if 'globalArmKey' in data:
-            settings.setGlobalArmKey(data['globalArmKey'])
+        if "globalArmKey" in data:
+            settings.setGlobalArmKey(data["globalArmKey"])
         
-        if 'globalArmMode' in data:
-            settings.setGlobalArmMode(data['globalArmMode'])
+        if "globalArmMode" in data:
+            settings.setGlobalArmMode(data["globalArmMode"])
         
-        if 'view_framework' in data:
-            settings.setViewFramework(data['view_framework'])
+        if "view_framework" in data:
+            settings.setViewFramework(data["view_framework"])
         
-        if 'loadouts' in data:
+        if "loadouts" in data:
             loadouts = {}
-            for id, item in data['loadouts'].items():
+            for id, item in data["loadouts"].items():
                 loadout = Loadout(**item)
                 loadouts.update({id: loadout})
             settings.setLoadouts(loadouts)
@@ -99,17 +98,17 @@ class Model:
 
 class Settings:
     def __init__(self):
-        self.loadouts = {utilities.generateUuid():Loadout("Profile 1", {"1":"1"})}
+        self.loadouts = {utilities.generateUuid():Loadout("Loadout 1", {"1":"1"})}
         self.triggerKey = "ctrl"
         self.triggerDelay = 100
         self.triggerDelayJitter = 30
         self.strategemKeys = ["w", "a", "s", "d"]
         self.strategemKeyDelay = 30
         self.strategemKeyDelayJitter = 20
-        self.selectedExecutor = "pynput"
+        self.selectedExecutor = constants.EXECUTOR_PYNPUT
         self.globalArmKey = None
-        self.globalArmMode = "toggle"
-        self.view_framework = "pyqt5"
+        self.globalArmMode = constants.ARM_MODE_TOGGLE
+        self.view_framework = constants.VIEW_PYQT5
 
     def setTriggerKey(self, key):
         self.triggerKey = key

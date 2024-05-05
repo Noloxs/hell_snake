@@ -1,12 +1,13 @@
-from view_base import BaseView
+from src.view_base import BaseView
 from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton, QMenuBar, QMessageBox, QInputDialog
 from PyQt5.QtCore import Qt, QEvent, QSize, QObject, pyqtSignal, QThread
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.Qt import QSizePolicy
-from strategem import Strategem
-from executer_arduino import ArduinoPassthroughExecuter
+from src.strategem import Strategem
+from src.executer_arduino import ArduinoPassthroughExecuter
 from copy import deepcopy
+from src import constants
 
 class PyQT5View(BaseView):
     def __init__(self, controller):
@@ -41,7 +42,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.controller = controller
         self.setWindowTitle("Hell snake")
-        self.setWindowIcon(QIcon('icons/hell_snake.png'))
+        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(350, 225)
         self.resize(350,225)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -66,7 +67,7 @@ class MainWindow(QMainWindow):
         self.loadout = QLabel()
         self.loadout.setFixedHeight(70)
         self.loadout.setAlignment(Qt.AlignVCenter|Qt.AlignLeft)
-        font = QFont('Arial', 24)
+        font = QFont("Arial", 24)
         font.setBold(True)
         self.loadout.setFont(font)
         self.hBox.addWidget(self.loadout)
@@ -112,10 +113,10 @@ class MainWindow(QMainWindow):
 
     def update_armed(self):
         if self.controller.model.isArmed:
-            self.armedIcon.setPixmap(QPixmap("icons/armed.png"))
+            self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"armed.png"))
             self.armedBar.setStyleSheet("background-color: red")
         else: 
-            self.armedIcon.setPixmap(QPixmap("icons/disarmed.png"))     
+            self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"disarmed.png"))     
             self.armedBar.setStyleSheet("background-color: gray")
     
     def update_current_loadout(self):
@@ -129,19 +130,19 @@ class MainWindow(QMainWindow):
         # Create a Files menu
         files_menu = self.menuBar().addMenu("Files")
 
-        settingsOptions = files_menu.addMenu(QIcon("icons/settings.svg"), "Settings")
+        settingsOptions = files_menu.addMenu(QIcon(constants.ICON_BASE_PATH+"settings.svg"), "Settings")
 
-        print_action = QAction(QIcon("icons/settings_print.svg"), "Print settings", self)
+        print_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_print.svg"), "Print settings", self)
         print_action.triggered.connect(self.controller.print_settings)
         settingsOptions.addAction(print_action)
 
-        save_action = QAction(QIcon("icons/settings_save.svg"), "Save settings", self)
+        save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save settings", self)
         save_action.triggered.connect(self.controller.save_settings)
         settingsOptions.addAction(save_action)
 
         files_menu.addSeparator()
 
-        exit_action = QAction(QIcon("icons/exit.svg"),"Exit", self)
+        exit_action = QAction(QIcon(constants.ICON_BASE_PATH+"exit.svg"),"Exit", self)
         exit_action.triggered.connect(self.controller.exit)
         files_menu.addAction(exit_action)
 
@@ -161,7 +162,7 @@ class MainWindow(QMainWindow):
         
         self.loadout_menu.addSeparator()
 
-        loadout_edit_action = QAction(QIcon("icons/edit_loadout.svg"), "Edit loadouts", self)
+        loadout_edit_action = QAction(QIcon(constants.ICON_BASE_PATH+"edit_loadout.svg"), "Edit loadouts", self)
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
         self.loadout_menu.addAction(loadout_edit_action)
 
@@ -195,7 +196,7 @@ class QLoadoutListAdapter(QWidget):
         self.key = QLabel()
         self.key.setFixedSize(50, 50)
         self.key.setAlignment(Qt.AlignCenter)
-        font = QFont('Arial', 24)
+        font = QFont("Arial", 24)
         font.setBold(True)
         self.key.setFont(font)
         self.hBox.addWidget(self.key)
@@ -208,7 +209,7 @@ class QLoadoutListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
         svg_widget.setFixedSize(40,40)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  
@@ -228,7 +229,7 @@ class FilteredListDialog(QDialog):
         self.resize(300,800)
 
         self.setWindowTitle("Select new strategem for: "+self.key)
-        self.setWindowIcon(QIcon('icons/hell_snake.png'))
+        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
 
         # Create a layout for the dialog
         layout = QVBoxLayout(self)
@@ -317,7 +318,7 @@ class QFilterListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())
@@ -329,7 +330,7 @@ class EditLoadoutDialog(QDialog):
         self.controller = controller
         
         self.setWindowTitle("Edit loadouts")
-        self.setWindowIcon(QIcon('icons/hell_snake.png'))
+        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(300, 300)
         self.resize(300,600)
 
@@ -352,7 +353,7 @@ class EditLoadoutDialog(QDialog):
         loadout_buttons_layout.addWidget(self.edit_field)
 
         delete_loadout_button = QPushButton("")
-        delete_loadout_button.setIcon(QIcon("icons/settings_delete"))
+        delete_loadout_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_delete"))
         delete_loadout_button.setFixedSize(30,30)
         delete_loadout_button.clicked.connect(self.delete_current_loadout)
         loadout_buttons_layout.addWidget(delete_loadout_button)
@@ -368,19 +369,19 @@ class EditLoadoutDialog(QDialog):
         buttons_layout = QHBoxLayout()
         
         delete_button = QPushButton("")
-        delete_button.setIcon(QIcon("icons/settings_delete"))
+        delete_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_delete"))
         delete_button.setIconSize(iconSize)
         delete_button.clicked.connect(self.delete_current_macro)
         buttons_layout.addWidget(delete_button)
         
         change_button = QPushButton("")
-        change_button.setIcon(QIcon("icons/settings_swap"))
+        change_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_swap"))
         change_button.setIconSize(iconSize)
         change_button.clicked.connect(self.change_current_macro)
         buttons_layout.addWidget(change_button)
 
         add_button = QPushButton("")
-        add_button.setIcon(QIcon("icons/settings_add"))
+        add_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_add"))
         add_button.setIconSize(iconSize)
         add_button.clicked.connect(self.add_macro)
         buttons_layout.addWidget(add_button)
@@ -393,7 +394,7 @@ class EditLoadoutDialog(QDialog):
         layout.addLayout(confirm_buttons_layout)
         
         self.btn_cancel = QPushButton("Cancel")
-        self.btn_save = QPushButton("Save")
+        self.btn_save = QPushButton("Apply")
         confirm_buttons_layout.addStretch(1)
         confirm_buttons_layout.addWidget(self.btn_cancel)
         confirm_buttons_layout.addWidget(self.btn_save)
@@ -470,7 +471,7 @@ class EditLoadoutDialog(QDialog):
             self.dropdown.setItemText(self.dropdown.currentIndex(), self.editLoadout.name)
 
     def add_loadout(self):
-        loadoutName, ok = QInputDialog.getText(self, 'Add Loadout', 'Enter loadout name:')
+        loadoutName, ok = QInputDialog.getText(self, "Add Loadout", "Enter loadout name:")
         if ok:
             self.controller.add_loadout(loadoutName)
             self.set_loadout_dropdown_items()
@@ -556,7 +557,7 @@ class QEditLoadoutListAdapter(QWidget):
         self.key = QLabel()
         self.key.setFixedSize(25, 25)
         self.key.setAlignment(Qt.AlignCenter)
-        font = QFont('Arial', 18)
+        font = QFont("Arial", 18)
         font.setBold(True)
         self.key.setFont(font)
         self.hBox.addWidget(self.key)
@@ -569,7 +570,7 @@ class QEditLoadoutListAdapter(QWidget):
 
     def setStrategem(self, strategem):
         self.name.setText(strategem.name)
-        svg_widget = QSvgWidget("icons/strategems/"+strategem.icon_name)
+        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  

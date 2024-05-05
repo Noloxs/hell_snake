@@ -1,7 +1,6 @@
 from pynput.keyboard import Controller
-from executer_base import BaseExecutor
-import utilities
-import key_parser_pynput
+from src.executer_base import BaseExecutor
+from src import utilities, key_parser_pynput
 
 class PynputExecuter(BaseExecutor):
     def __init__(self, model):
