@@ -268,7 +268,7 @@
       "name": "A/M-23 EMS Mortar Sentry",
       "category": "Defensive",
       "command": [2,0,3,2,3],
-      "icon_name": "Mortar Sentry.svg"
+      "icon_name": "EMS Mortar Sentry.svg"
     },
     "45": {
       "name": "Orbital Gatling Barrage",
