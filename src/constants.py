@@ -1,0 +1,2 @@
+ICON_BASE_PATH = "src/icons/"
+STRATEGEM_ICON_PATH = ICON_BASE_PATH+"strategems/"
