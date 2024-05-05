@@ -103,39 +103,23 @@ __E.g.: 30ms delay with 20ms of jitter, meaning a delay between 30ms and 50ms__
 
 ### Strategem loadouts
 
-Loadouts are different collections of strategems which you can quickly switch between depending on your preferred loadouts.
+Your loadouts can all be managed through the GUI going to **Loadouts** -> **Edit loadouts**
 
-They are defined as follows:
+__The blue options are applied immediately, where as green are only applied after pressing the save button__
 
-- First a unique ID is used for each loadout (**id1** and **id2**)
-- Then a **name** for the loadout (**Loadout 1** and **Loadout 2**)
-- **macroKeys** is an array of trigger keys and strategem IDs found in strategems.json
+#### Loadout options
+1) Add a new loadout to your configuration
+2) Change which loadout is being edited
+3) Rename the loadout
+4) Delete the loadout from your configuration
+5) Drag and drop to rearrange the macros
+6) Click on a macro to select one for editing
+7) Press to delete the selected macro from the loadout
+8) Press to change strategem assigned to the selected macro
+9) Press to add a new macro key
+10) Press to apply changes to current loadout
 
-e.g. "t": "1" will trigger when you press **t** and it will trigger the strategem with ID **1**, which is Reinforce
-
-```
-"loadouts": {
-    "id1": {
-      "name": "Loadout 1",
-      "macroKeys": {
-        "t": "1",
-        "g": "49",
-        "b": "8"
-      }
-    },"id2": {
-        "name": "Loadout 2",
-        "macroKeys": {
-          "1": "1",
-          "2": "2",
-          "3": "8",
-          "4": "5",
-          "5": "6",
-          "6": "7",
-          "7": "9"
-        }
-      }
-  }
-```
+![Image of the edit loadouts menu](docs/edit_loadouts.png)
 
 ### Global arming key
 You can define a key which allows you to arm and disarm the macro execution. __This is default off__.

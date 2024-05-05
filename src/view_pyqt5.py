@@ -394,7 +394,7 @@ class EditLoadoutDialog(QDialog):
         layout.addLayout(confirm_buttons_layout)
         
         self.btn_cancel = QPushButton("Cancel")
-        self.btn_save = QPushButton("Save")
+        self.btn_save = QPushButton("Apply")
         confirm_buttons_layout.addStretch(1)
         confirm_buttons_layout.addWidget(self.btn_cancel)
         confirm_buttons_layout.addWidget(self.btn_save)
