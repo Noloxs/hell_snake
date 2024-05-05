@@ -2,7 +2,7 @@ from pynput import keyboard
 from pynput.keyboard import Key
 import time
 import random
-import key_parser_pynput
+from src import key_parser_pynput
 
 class PynputKeyListener:
     def __init__(self, model, controller):

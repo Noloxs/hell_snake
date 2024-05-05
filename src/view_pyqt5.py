@@ -1,11 +1,11 @@
-from view_base import BaseView
+from src.view_base import BaseView
 from PyQt5.QtWidgets import QApplication, QDialog, QLineEdit, QMainWindow, QAction, QFileDialog, QHBoxLayout,QVBoxLayout, QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QLabel, QComboBox, QPushButton, QMenuBar, QMessageBox, QInputDialog
 from PyQt5.QtCore import Qt, QEvent, QSize, QObject, pyqtSignal, QThread
 from PyQt5.QtGui import QIcon, QPixmap, QFont, QKeySequence, QColor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.Qt import QSizePolicy
-from strategem import Strategem
-from executer_arduino import ArduinoPassthroughExecuter
+from src.strategem import Strategem
+from src.executer_arduino import ArduinoPassthroughExecuter
 from copy import deepcopy
 
 class PyQT5View(BaseView):

@@ -1,13 +1,12 @@
-from strategem import Strategem
+from src.strategem import Strategem
 import json
-import utilities
-import key_parser_pynput
+from src import utilities, key_parser_pynput
 
 class Model:
     def __init__(self):
         self.isArmed = False
 
-        with open('strategems.json') as json_file:
+        with open('src/strategems.json') as json_file:
             tmp = json.load(json_file)
         
         self.strategems = {}
