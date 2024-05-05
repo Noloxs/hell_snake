@@ -236,7 +236,7 @@ class FilteredListDialog(QDialog):
         # Create an edit field
         self.edit_field = QLineEdit()
         self.edit_field.setPlaceholderText("Search...")
-        self.edit_field.textChanged.connect(self.filter_items)
+        self.edit_field.textChanged.connect(self.update_macros)
         layout.addWidget(self.edit_field)
 
         # Create a QListWidget for the list of items
@@ -264,27 +264,36 @@ class FilteredListDialog(QDialog):
         self.callback(self.key, id)
         self.close()
 
-    def filter_items(self, text):
-        #TODO Filter list here so it can be tested
-        #TODO Sort the filtered list before updating macros
-        self.update_macros(text.lower())
+    def filter_strategems(self, filter_text):
+        filtered_list = {}
+        for id, strategem in self.controller.model.strategems.items():
+            if filter_text in strategem.name.lower():
+                filtered_list.update({id:strategem})
 
-    def update_macros(self, filter):
+        return filtered_list
+    
+    def sort_strategems(self, strategemDict):
+        return dict(sorted(strategemDict.items(), key=lambda value:(value[1].category, value[1].name)))
+
+    def update_macros(self, text):
         # Clear the current items in the QListWidget
         self.list_widget.clear()
 
-        # Add all items to the QListWidget
-        for id, strategem in self.controller.model.strategems.items():
-            if filter in strategem.name.lower():
-                listAdapter = QFilterListAdapter()
-                listAdapter.setStyleSheet("background-color: transparent")
-                listAdapter.setStrategem(strategem)
+        # Filter and sort items
+        strategem_list = self.filter_strategems(text)
+        strategem_list = self.sort_strategems(strategem_list)
 
-                listAdapterItem = QListWidgetItem(self.list_widget)
-                listAdapterItem.setData(Qt.UserRole, id)
-                listAdapterItem.setSizeHint(listAdapter.sizeHint())
-                self.list_widget.addItem(listAdapterItem)
-                self.list_widget.setItemWidget(listAdapterItem, listAdapter)
+        # Add all items to the QListWidget
+        for id, strategem in strategem_list.items():
+            listAdapter = QFilterListAdapter()
+            listAdapter.setStyleSheet("background-color: transparent")
+            listAdapter.setStrategem(strategem)
+
+            listAdapterItem = QListWidgetItem(self.list_widget)
+            listAdapterItem.setData(Qt.UserRole, id)
+            listAdapterItem.setSizeHint(listAdapter.sizeHint())
+            self.list_widget.addItem(listAdapterItem)
+            self.list_widget.setItemWidget(listAdapterItem, listAdapter)
         self.list_widget.setCurrentRow(0)
 
 class QFilterListAdapter(QWidget):
