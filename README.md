@@ -119,7 +119,7 @@ __The blue options are applied immediately, where as green are only applied afte
 9) Press to add a new macro key
 10) Press to apply changes to current loadout
 
-![Image of the edit loadouts menu](docs/edit_loadouts.png)
+![Image of the edit loadouts menu](https://raw.githubusercontent.com/Noloxs/hell_snake/task/restructure_files/docs/edit_loadouts.png)
 
 ### Global arming key
 You can define a key which allows you to arm and disarm the macro execution. __This is default off__.
