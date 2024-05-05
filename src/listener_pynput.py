@@ -2,7 +2,7 @@ from pynput import keyboard
 from pynput.keyboard import Key
 import time
 import random
-from src import key_parser_pynput
+from src import key_parser_pynput, constants
 
 class PynputKeyListener:
     def __init__(self, model, controller):
@@ -26,9 +26,9 @@ class PynputKeyListener:
 
         entry = self.parse_key(key)
         if(self.globalArmKey != None and self.globalArmKey == entry):
-            if (self.model.settings.globalArmMode == "toggle"):
+            if (self.model.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
                 self.controller.toggle_armed()
-            elif (self.model.settings.globalArmMode == "push" and not self.model.isArmed):
+            elif (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
                 self.controller.set_armed(True)
             return
 
@@ -38,7 +38,7 @@ class PynputKeyListener:
                 self.controller.trigger_macro(macro)
     
     def on_release(self, key):
-        if (self.model.settings.globalArmMode == "push"):
+        if (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH):
             if (key == None):
                 return
 

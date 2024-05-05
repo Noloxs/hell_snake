@@ -1,17 +1,18 @@
 import sys
 from src.listener_pynput import PynputKeyListener
 from src.model import Model
+from src import constants
     
 class Controller:
     def __init__(self, model):
         self.model = model
-        if model.settings.selectedExecutor == "pynput":
+        if model.settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self.model)
-        elif model.settings.selectedExecutor == "arduino":
+        elif model.settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
             self.executer = ArduinoPassthroughExecuter(self.model)
-        elif model.settings.selectedExecutor == "pyautogui":
+        elif model.settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
         else:
@@ -72,7 +73,7 @@ class Controller:
     def save_settings(self):
         import json
         settings = json.dumps(self.model.settings, default=vars, indent=2)
-        with open("settings.json", "w") as file:
+        with open(constants.SETTINGS_PATH, "w") as file:
             file.write(settings)
     
     def print_settings(self):
