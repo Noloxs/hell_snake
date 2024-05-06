@@ -169,12 +169,14 @@ class MainWindow(QMainWindow):
     def add_executor_settings(self, executor):
         if isinstance(executor,ArduinoPassthroughExecuter):
             select_serial = self.menuBar().addMenu("Select serial")
-
+            connection = executor.get_current_connection()
             physical_addresses = executor.get_physical_addresses()
             for port, desc, hwid in sorted(physical_addresses):
                 serial = QAction(desc, self)
                 serial.triggered.connect(lambda checked, port=port: executor.connect_to_arduino(port))
                 select_serial.addAction(serial)
+                if port == connection:
+                    serial.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_save.svg")) # TODO Change icon to a selected icon
     
     def open_edit_loadout_dialog(self):
         dialog = EditLoadoutDialog(self.controller)
