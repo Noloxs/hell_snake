@@ -12,6 +12,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.arduino = None
         self.triggerKey = self.parse_macro_key(self.model.settings.triggerKey)
 
     def connect_to_arduino(self, port):
@@ -30,7 +31,8 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.send_bytes(bytes.fromhex(hexToSend))
 
     def send_bytes(self, bytes):
-        self.arduino.write(bytes)
+        if self.arduino != None:
+            self.arduino.write(bytes)
 
     def parse_to_hex(self, key):
         return hex(ord(key))[2:]
@@ -42,6 +44,12 @@ class ArduinoPassthroughExecuter(BaseExecutor):
     def get_physical_addresses(self):
         ports = serial.tools.list_ports.comports()
         return ports
+    
+    def get_current_connection(self):
+        if self.arduino == None:
+            return None
+        else:
+            return self.arduino.port # TODO How to get port from serial
     
     def parse_macro_key(self, key):
         if(key == "shift"): return "81" # Left shift
