@@ -43,26 +43,13 @@ class ArduinoPassthroughExecuter(BaseExecutor):
     
     def get_physical_addresses(self):
         ports = serial.tools.list_ports.comports()
-        for port in ports:
-            print("List port information")
-            print(port.device)
-            print(port.name)
-            print(port.description)
-            print(port.hwid)
-            print(port.vid)
-            print(port.pid)
-            print(port.serial_number)
-            print(port.location)
-            print(port.manufacturer)
-            print(port.product)
-            print(port.interface)
         return ports
     
     def get_current_connection(self):
         if self.arduino == None:
             return None
         else:
-            return arduino.port # TODO How to get port from serial
+            return self.arduino.port # TODO How to get port from serial
     
     def parse_macro_key(self, key):
         if(key == "shift"): return "81" # Left shift

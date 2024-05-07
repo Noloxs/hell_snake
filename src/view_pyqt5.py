@@ -166,18 +166,28 @@ class MainWindow(QMainWindow):
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
         self.loadout_menu.addAction(loadout_edit_action)
 
-    def add_executor_settings(self, executor):
+    def add_executor_settings(self):
+        executor = self.controller.executer
         if isinstance(executor,ArduinoPassthroughExecuter):
-            select_serial = self.menuBar().addMenu("Select serial")
-            connection = executor.get_current_connection()
-            physical_addresses = executor.get_physical_addresses()
-            for port, desc, hwid in sorted(physical_addresses):
-                serial = QAction(desc, self)
-                serial.triggered.connect(lambda checked, port=port: executor.connect_to_arduino(port))
-                select_serial.addAction(serial)
-                if port == connection:
-                    serial.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_save.svg")) # TODO Change icon to a selected icon
+            self.select_serial = self.menuBar().addMenu("Select serial")
+            self.update_serial_menu()
     
+    def update_serial_menu(self):
+        executor = self.controller.executer
+        self.select_serial.clear()
+        connection = executor.get_current_connection()
+        physical_addresses = executor.get_physical_addresses()
+        for port, desc, hwid in sorted(physical_addresses):
+            serial = QAction(desc, self)
+            serial.triggered.connect(lambda checked, port=port: self.connect_to_serial(port))
+            if port == connection:
+                serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected")) # TODO Change icon to a selected icon
+            self.select_serial.addAction(serial)
+    
+    def connect_to_serial(self, port):
+        self.controller.executer.connect_to_arduino(port)
+        self.update_serial_menu()
+
     def open_edit_loadout_dialog(self):
         dialog = EditLoadoutDialog(self.controller)
         dialog.exec_()
@@ -270,7 +280,7 @@ class FilteredListDialog(QDialog):
     def filter_strategems(self, filter_text):
         filtered_list = {}
         for id, strategem in self.controller.model.strategems.items():
-            if filter_text in strategem.name.lower():
+            if filter_text.lower() in strategem.name.lower():
                 filtered_list.update({id:strategem})
 
         return filtered_list
