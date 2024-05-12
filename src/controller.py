@@ -15,6 +15,9 @@ class Controller:
         elif model.settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
+        elif model.settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
+            from src.executer_xdotool import XdotoolExecuter
+            self.executer = XdotoolExecuter(self.model)
         else:
             raise ModuleNotFoundError
 
