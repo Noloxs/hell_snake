@@ -1,6 +1,7 @@
 from src.strategem import Strategem
 import json
-from src import utilities, key_parser_pynput, constants
+from src import utilities, constants
+from src.classes.settings import Settings,Loadout
 
 class Model:
     def __init__(self):
@@ -15,7 +16,8 @@ class Model:
             strate = Strategem(**item)
             self.strategems.update({index: strate})
         
-        self.settings = self.load_settings()
+        self.settings = Settings.getInstance()
+        self.settings.loadFromFile()
 
     def update_macro_binding(self, key, strategemId):
         strategem = self.strategems[strategemId]
@@ -50,100 +52,3 @@ class Model:
 
     def set_armed(self, isArmed):
         self.isArmed = isArmed
-
-    def load_settings(self):
-        with open(constants.SETTINGS_PATH) as json_file:
-            data = json.load(json_file)
-
-        settings = Settings()
-
-        if "triggerKey" in data:
-            settings.setTriggerKey(data["triggerKey"])
-
-        if "triggerDelay" in data:
-            settings.setTriggerDelay(data["triggerDelay"])
-        
-        if "triggerDelayJitter" in data:
-            settings.setTriggerDelayJitter(data["triggerDelayJitter"])
-        
-        if "strategemKeys" in data:
-            settings.setStrategemKeys(data["strategemKeys"])
-        
-        if "strategemKeyDelay" in data:
-            settings.setStrategemKeyDelay(data["strategemKeyDelay"])
-
-        if "strategemKeyDelayJitter" in data:
-            settings.setStrategemKeyDelayJitter(data["strategemKeyDelayJitter"])
-        
-        if "selectedExecutor" in data:
-            settings.setExecutor(data["selectedExecutor"])
-        
-        if "globalArmKey" in data:
-            settings.setGlobalArmKey(data["globalArmKey"])
-        
-        if "globalArmMode" in data:
-            settings.setGlobalArmMode(data["globalArmMode"])
-        
-        if "view_framework" in data:
-            settings.setViewFramework(data["view_framework"])
-        
-        if "loadouts" in data:
-            loadouts = {}
-            for id, item in data["loadouts"].items():
-                loadout = Loadout(**item)
-                loadouts.update({id: loadout})
-            settings.setLoadouts(loadouts)
-
-        return settings
-
-class Settings:
-    def __init__(self):
-        self.loadouts = {utilities.generateUuid():Loadout("Loadout 1", {"1":"1"})}
-        self.triggerKey = "ctrl"
-        self.triggerDelay = 100
-        self.triggerDelayJitter = 30
-        self.strategemKeys = ["w", "a", "s", "d"]
-        self.strategemKeyDelay = 30
-        self.strategemKeyDelayJitter = 20
-        self.selectedExecutor = constants.EXECUTOR_PYNPUT
-        self.globalArmKey = None
-        self.globalArmMode = constants.ARM_MODE_TOGGLE
-        self.view_framework = constants.VIEW_PYQT5
-
-    def setTriggerKey(self, key):
-        self.triggerKey = key
-    
-    def setTriggerDelay(self, delay):
-        self.triggerDelay = delay
-    
-    def setTriggerDelayJitter(self, jitter):
-        self.triggerDelayJitter = jitter
-    
-    def setStrategemKeys(self, strategemKeys):
-        self.strategemKeys = strategemKeys
-    
-    def setStrategemKeyDelay(self, delay):
-        self.strategemKeyDelay = delay
-    
-    def setStrategemKeyDelayJitter(self, jitter):
-        self.strategemKeyDelayJitter = jitter
-
-    def setExecutor(self, executor_name):
-        self.selectedExecutor = executor_name
-    
-    def setGlobalArmKey(self, key):
-        self.globalArmKey = key
-    
-    def setGlobalArmMode(self, mode):
-        self.globalArmMode = mode
-    
-    def setViewFramework(self, framework):
-        self.view_framework = framework
-    
-    def setLoadouts(self, loadouts):
-        self.loadouts = loadouts
-
-class Loadout:
-    def __init__(self, name, macroKeys):
-        self.name = name
-        self.macroKeys = macroKeys

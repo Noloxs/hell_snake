@@ -1,4 +1,5 @@
 import sys
+from src.classes.settings import Settings
 from src.listener_pynput import PynputKeyListener
 from src.model import Model
 from src import constants
@@ -71,10 +72,7 @@ class Controller:
         self.executer.on_macro_triggered(strategem)
 
     def save_settings(self):
-        import json
-        settings = json.dumps(self.model.settings, default=vars, indent=2)
-        with open(constants.SETTINGS_PATH, "w") as file:
-            file.write(settings)
+        Settings.getInstance().saveToFile()
     
     def print_settings(self):
         import json
