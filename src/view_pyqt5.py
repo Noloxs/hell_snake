@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
         self.loadout_menu.clear()
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
-            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
+            loadout_action.triggered.connect(lambda loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)
         
         self.loadout_menu.addSeparator()
@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         physical_addresses = executor.get_physical_addresses()
         for port, desc, hwid in sorted(physical_addresses):
             serial = QAction(desc, self)
-            serial.triggered.connect(lambda checked, port=port: self.connect_to_serial(port))
+            serial.triggered.connect(lambda port=port: self.connect_to_serial(port))
             if port == connection:
                 serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected")) # TODO Change icon to a selected icon
             self.select_serial.addAction(serial)
@@ -230,6 +230,17 @@ class QLoadoutListAdapter(QWidget):
         self.id = key
         self.key.setText(key)
 
+def filter_strategems(obj, filter_text):
+    filtered_list = {}
+    for id, strategem in obj.controller.model.strategems.items():
+        if filter_text.lower() in strategem.name.lower():
+            filtered_list.update({id:strategem})
+
+    return filtered_list
+
+def sort_strategems(strategemDict):
+    return dict(sorted(strategemDict.items(), key=lambda value:(value[1].category, value[1].name)))
+
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):
         super().__init__()
@@ -277,24 +288,13 @@ class FilteredListDialog(QDialog):
         self.callback(self.key, id)
         self.close()
 
-    def filter_strategems(self, filter_text):
-        filtered_list = {}
-        for id, strategem in self.controller.model.strategems.items():
-            if filter_text.lower() in strategem.name.lower():
-                filtered_list.update({id:strategem})
-
-        return filtered_list
-    
-    def sort_strategems(self, strategemDict):
-        return dict(sorted(strategemDict.items(), key=lambda value:(value[1].category, value[1].name)))
-
     def update_macros(self, text):
         # Clear the current items in the QListWidget
         self.list_widget.clear()
 
         # Filter and sort items
-        strategem_list = self.filter_strategems(text)
-        strategem_list = self.sort_strategems(strategem_list)
+        strategem_list = filter_strategems(self, text)
+        strategem_list = sort_strategems(strategem_list)
 
         # Add all items to the QListWidget
         for id, strategem in strategem_list.items():
@@ -334,6 +334,22 @@ class QFilterListAdapter(QWidget):
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())
+
+def show_capture_key_dialog(obj, controller, callback, msg):
+    # Create a dialog for capturing a key input
+    add_macro_box = QMessageBox()
+
+    thread = QThread()
+    obj.listener = KeyListener(controller)
+    obj.listener.moveToThread(thread)
+    thread.started.connect(obj.listener.run_task)
+    obj.listener.finished.connect(add_macro_box.close)
+    obj.listener.finished.connect(callback)
+    obj.listener.finished.connect(thread.quit)
+    thread.start()
+    
+    add_macro_box.setText(msg)
+    add_macro_box.exec_()
 
 class EditLoadoutDialog(QDialog):
     def __init__(self, controller):
@@ -425,6 +441,9 @@ class EditLoadoutDialog(QDialog):
 
         self.set_loadout()
     
+    def add_macro(self):
+        show_capture_key_dialog(self, self.controller, self.on_next_key, "Press key for new macro")
+    
     def delete_current_macro(self):
         macro = self.list_widget.currentItem()
         if macro != None:
@@ -444,26 +463,9 @@ class EditLoadoutDialog(QDialog):
         self.update_macros()
 
     def on_next_key(self, key):
-        self.add_macro_box.close()
-        self.thread.quit()
         if key not in self.editLoadout.macroKeys:
             self.editLoadout.macroKeys.update({key:"0"})
             self.update_macros()
-
-    def start_task(self):
-        self.thread = QThread()
-        self.worker = Worker(self.controller)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.run_task)
-        self.worker.finished.connect(self.on_next_key)
-        self.thread.start()
-
-    def add_macro(self):
-        # Create a QMessageBox
-        self.start_task()
-        self.add_macro_box = QMessageBox()
-        self.add_macro_box.setText("Press key for new macro")
-        self.add_macro_box.exec_()
 
     def macro_rearranged(self, parent, start, end, destination, row):
         key = self.list_widget.currentItem().data(Qt.UserRole)
@@ -539,7 +541,7 @@ class EditLoadoutDialog(QDialog):
     def on_loadout_name_changed(self, name):
         self.editLoadout.name = name
 
-class Worker(QObject):
+class KeyListener(QObject):
     finished = pyqtSignal(str)
 
     def __init__ (self, controller):
