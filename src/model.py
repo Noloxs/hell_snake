@@ -17,7 +17,6 @@ class Model:
             self.strategems.update({index: strate})
         
         self.settings = Settings.getInstance()
-        self.settings.loadFromFile()
 
     def update_macro_binding(self, key, strategemId):
         strategem = self.strategems[strategemId]

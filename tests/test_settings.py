@@ -28,16 +28,21 @@ class TestSettings:
     @patch("builtins.open", new_callable=mock_open, read_data='{"triggerKey": "shift", "triggerDelay": 50}')
     def test_configuration_should_change_when_loaded_from_file(self, mock_file):
         settings = Settings.getInstance()
-        # settings.loadFromFile()
         assert settings.triggerKey == "shift"
         assert settings.triggerDelay == 50
 
+    @patch("builtins.open", new_callable=mock_open, read_data='{"triggerKey": "shift", "triggerDelay": 50}')
+    def test_unknown_property_should_be_stored_when_created(self, mock_file):
+        settings = Settings.getInstance()
+        settings.testProp = "ctrl"
+        assert settings.testProp == "ctrl"
 
     @patch("builtins.open", mock_open())
     def test_should_save_correct_settings_to_file_when_modified(self):
         settings = Settings.getInstance()
         settings.triggerKey = 'alt'
         settings.triggerDelay = 200
+        settings.testProp = "test"
         
         settings.saveToFile()
 
@@ -49,6 +54,7 @@ class TestSettings:
         # Verify specific values are accurately written to the file
         assert written_data["triggerKey"] == "alt"
         assert written_data["triggerDelay"] == 200
+        assert written_data["testProp"] == "test"
 
     def teardown_method(self, method):
         # Reset the singleton instance for isolated tests
