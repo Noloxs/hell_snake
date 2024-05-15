@@ -42,16 +42,11 @@ class Settings:
         print("Requested unknown value for for %s"%(name))
         return "unknown"
 
-    # def __setattr__(self, name, value):
-    #     print("Updated value for %s with value %s"%(name, value))
-    #     return "unknown"
-
     def loadFromFile(self):
         try:
             with open(constants.SETTINGS_PATH) as json_file:
                 data = json.load(json_file)
                 for attribute, value in data.items():
-                    # if hasattr(self, attribute):
                     setattr(self, attribute, value)
                     if attribute == "loadouts":
                         loadouts = {}
