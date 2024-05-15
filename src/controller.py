@@ -7,15 +7,19 @@ from src import constants
 class Controller:
     def __init__(self, model):
         self.model = model
-        if model.settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
+        settings = Settings.getInstance()
+        if settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self.model)
-        elif model.settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
+        elif settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
             self.executer = ArduinoPassthroughExecuter(self.model)
-        elif model.settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
+        elif settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
+        elif settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
+            from src.executer_xdotool import XdotoolExecuter
+            self.executer = XdotoolExecuter(self.model)
         else:
             raise ModuleNotFoundError
 
