@@ -3,4 +3,9 @@ Pillow==10.3.0
 pyserial==3.5
 PyAutoGUI==0.9.54
 PyQt5==5.15.10
+
+## Tests and linting
 pytest==8.2.0
+pytest-cov==5.0.0
+ruff==0.4.4
+coverage-badge==1.1.1
