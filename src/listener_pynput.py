@@ -16,9 +16,9 @@ class PynputKeyListener:
     
     def on_press(self, key):
         if len(self.getNextCallbacks) > 0:
-            entry = self.parse_key(key)
+            strKey = self.parse_key_to_string(key)
             for callback in self.getNextCallbacks:
-                callback(entry)
+                callback(strKey)
             self.getNextCallbacks.clear()
         
         if (key == None):
@@ -53,5 +53,11 @@ class PynputKeyListener:
         elif isinstance(key, keyboard.KeyCode):
             return key.char
     
+    def parse_key_to_string(self, key):
+        if isinstance(key, keyboard.Key):
+            return key.name
+        elif isinstance(key, keyboard.KeyCode):
+            return key.char
+
     def get_next_key(self, callback):
         self.getNextCallbacks.append(callback)

@@ -157,7 +157,7 @@ class MainWindow(QMainWindow):
         self.loadout_menu.clear()
         for loadoutId, loadout in self.controller.model.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
-            loadout_action.triggered.connect(lambda loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
+            loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)
         
         self.loadout_menu.addSeparator()
@@ -179,7 +179,7 @@ class MainWindow(QMainWindow):
         physical_addresses = executor.get_physical_addresses()
         for port, desc, hwid in sorted(physical_addresses):
             serial = QAction(desc, self)
-            serial.triggered.connect(lambda port=port: self.connect_to_serial(port))
+            serial.triggered.connect(lambda checked, port=port: self.connect_to_serial(port))
             if port == connection:
                 serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected")) # TODO Change icon to a selected icon
             self.select_serial.addAction(serial)
@@ -337,19 +337,23 @@ class QFilterListAdapter(QWidget):
 
 def show_capture_key_dialog(obj, controller, callback, msg):
     # Create a dialog for capturing a key input
-    add_macro_box = QMessageBox()
+    key_dialog = QMessageBox()
+    key_dialog.setContentsMargins(10,10,10,10)
+    key_dialog.setStandardButtons(QMessageBox.Cancel)
+    key_dialog.setDefaultButton(QMessageBox.Cancel)
+    key_dialog.setText(msg)
 
     thread = QThread()
     obj.listener = KeyListener(controller)
     obj.listener.moveToThread(thread)
     thread.started.connect(obj.listener.run_task)
-    obj.listener.finished.connect(add_macro_box.close)
+    obj.listener.finished.connect(key_dialog.reject)
     obj.listener.finished.connect(callback)
-    obj.listener.finished.connect(thread.quit)
     thread.start()
-    
-    add_macro_box.setText(msg)
-    add_macro_box.exec_()
+
+    key_dialog.rejected.connect(obj.listener.disconnect)
+    key_dialog.finished.connect(thread.quit)
+    key_dialog.exec_()
 
 class EditLoadoutDialog(QDialog):
     def __init__(self, controller):
