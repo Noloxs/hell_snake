@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
-from src.view.pyqt5.util import filter_strategems, sort_strategems
+from src.view.view_utilities import filter_strategems, sort_strategems
 
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):
@@ -57,7 +57,7 @@ class FilteredListDialog(QDialog):
         self.list_widget.clear()
 
         # Filter and sort items
-        strategem_list = filter_strategems(self, text)
+        strategem_list = filter_strategems(self.controller.model.strategems, text)
         strategem_list = sort_strategems(strategem_list)
 
         # Add all items to the QListWidget

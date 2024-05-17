@@ -1,17 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
 
-def filter_strategems(obj, filter_text):
-    filtered_list = {}
-    for id, strategem in obj.controller.model.strategems.items():
-        if filter_text.lower() in strategem.name.lower():
-            filtered_list.update({id:strategem})
-
-    return filtered_list
-
-def sort_strategems(strategemDict):
-    return dict(sorted(strategemDict.items(), key=lambda value:(value[1].category, value[1].name)))
-
 def show_capture_key_dialog(obj, controller, callback, msg):
     # Create a dialog for capturing a key input
     key_dialog = QMessageBox()
