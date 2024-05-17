@@ -15,7 +15,7 @@ def main():
 
     # Initialize our presentation
     if settings.view_framework == constants.VIEW_PYQT5:
-        from src.view_pyqt5 import PyQT5View
+        from src.view.pyqt5.pyqt5 import PyQT5View
         view = PyQT5View(controller)
     else:
         # If the view framework is not supported or recognized, print an error and exit.
