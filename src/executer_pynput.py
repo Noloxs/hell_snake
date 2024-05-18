@@ -16,9 +16,9 @@ class PynputExecuter(BaseExecutor):
                 utilities.sleepTriggerKey(self.model)
                 for input in macro.commandArray:
                     self.keyboard_controller.press(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                     self.keyboard_controller.release(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                 self.keyboard_controller.release(self.triggerKey)
 
         except AttributeError:

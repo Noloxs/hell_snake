@@ -19,9 +19,9 @@ class XdotoolExecuter(BaseExecutor):
         utilities.sleepTriggerKey(self.model)
         for input in macro.commandArray:
             subprocess.call(["xdotool", "keydown", input])
-            utilities.sleepStrategemKey(self.model)
+            utilities.sleepStratagemKey(self.model)
             subprocess.call(["xdotool", "keyup", input])
-            utilities.sleepStrategemKey(self.model)
+            utilities.sleepStratagemKey(self.model)
         subprocess.call(["xdotool", "keyup", self.triggerKey])
         self.isExecuting = False
 

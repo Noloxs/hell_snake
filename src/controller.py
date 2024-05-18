@@ -42,10 +42,10 @@ class Controller:
     def show_change_macro_dialog(self, key):
         self.view.show_change_macro_dialog(key)
 
-    def update_macro_binding(self, key, strategemId):
-        strategem = self.model.strategems[strategemId]
-        strategem.prepare_strategem(self.model, self.executer)
-        self.model.update_macro_binding(key, strategemId)
+    def update_macro_binding(self, key, stratagemId):
+        stratagem = self.model.stratagems[stratagemId]
+        stratagem.prepare_stratagem(self.model, self.executer)
+        self.model.update_macro_binding(key, stratagemId)
         self.view.update_macros()
     
     def add_loadout(self, loadoutName):
@@ -68,12 +68,12 @@ class Controller:
     
     def set_active_loadout(self, loadoutId):
         self.model.set_active_loadout(loadoutId)
-        for key, strategem in self.model.macros.items():
-            strategem.prepare_strategem(self.model, self.executer)
+        for key, stratagem in self.model.macros.items():
+            stratagem.prepare_stratagem(self.model, self.executer)
         self.view.update_current_loadout()
     
-    def trigger_macro(self, strategem):
-        self.executer.on_macro_triggered(strategem)
+    def trigger_macro(self, stratagem):
+        self.executer.on_macro_triggered(stratagem)
 
     def save_settings(self):
         Settings.getInstance().saveToFile()

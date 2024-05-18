@@ -111,10 +111,10 @@ class EditLoadoutDialog(QDialog):
         currentMacro = self.list_widget.currentItem()
         if currentMacro is not None:
             key = currentMacro.data(Qt.UserRole)
-            dialog = FilteredListDialog(self.controller, key, self.on_strategem_selected)
+            dialog = FilteredListDialog(self.controller, key, self.on_stratagem_selected)
             dialog.exec_()
     
-    def on_strategem_selected(self, key, id):
+    def on_stratagem_selected(self, key, id):
         self.editLoadout.macroKeys[key] = id
         self.update_macros()
 
@@ -134,8 +134,8 @@ class EditLoadoutDialog(QDialog):
             for i in range(self.list_widget.count()):
                 item = self.list_widget.item(i)
                 key = item.data(Qt.UserRole)
-                strategemId = before[key]
-                self.editLoadout.macroKeys.update({key:strategemId})
+                stratagemId = before[key]
+                self.editLoadout.macroKeys.update({key:stratagemId})
 
             self.controller.update_loadout(self.loadoutId, self.editLoadout)
             self.dropdown.setItemText(self.dropdown.currentIndex(), self.editLoadout.name)
@@ -179,13 +179,13 @@ class EditLoadoutDialog(QDialog):
         # Add all items to the QListWidget
         self.editMacros = {}
         if self.editLoadout is not None:
-            for key, strategemId in self.editLoadout.macroKeys.items():
-                self.editMacros.update({key:self.controller.model.strategems[strategemId]})
+            for key, stratagemId in self.editLoadout.macroKeys.items():
+                self.editMacros.update({key:self.controller.model.stratagems[stratagemId]})
 
         for index, (key, value) in enumerate(self.editMacros.items()):
             listAdapter = QEditLoadoutListAdapter()
             listAdapter.setStyleSheet("background-color: transparent")
-            listAdapter.setStrategem(value)
+            listAdapter.setStratagem(value)
             listAdapter.setKey(key)
 
             listAdapterItem = QListWidgetItem(self.list_widget)
@@ -207,7 +207,7 @@ class QEditLoadoutListAdapter(QWidget):
         self.icon = QLabel()
         self.icon.setFixedSize(25, 25)
         self.icon.setAlignment(Qt.AlignCenter)
-        self.icon.setStyleSheet("background-color: #ff1f2832")
+        self.icon.setStyleSheet("background-color: "+constants.COLOR_STRATAGEM_BACKGROUND)
         self.hBox.addWidget(self.icon)
         
         self.key = QLabel()
@@ -224,9 +224,9 @@ class QEditLoadoutListAdapter(QWidget):
            
         self.setLayout(self.hBox)
 
-    def setStrategem(self, strategem):
-        self.name.setText(strategem.name)
-        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
+    def setStratagem(self, stratgem):
+        self.name.setText(stratagem.name)
+        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  

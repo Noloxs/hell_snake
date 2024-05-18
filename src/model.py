@@ -1,4 +1,4 @@
-from src.strategem import Strategem
+from src.stratagem import Stratagem
 import json
 from src import utilities, constants
 from src.classes.settings import Settings,Loadout
@@ -7,22 +7,22 @@ class Model:
     def __init__(self):
         self.isArmed = False
 
-        with open(constants.RESOURCE_PATH+"strategems.json") as json_file:
+        with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
             tmp = json.load(json_file)
         
-        self.strategems = {}
+        self.stratagems = {}
         for index, item in tmp.items():
             name = item["name"]
-            strate = Strategem(**item)
-            self.strategems.update({index: strate})
+            stratagem = Stratagem(**item)
+            self.stratagems.update({index: stratagem})
         
         self.settings = Settings.getInstance()
         self.settings.loadFromFile()
 
-    def update_macro_binding(self, key, strategemId):
-        strategem = self.strategems[strategemId]
-        self.currentLoadout.macroKeys[key] = strategemId
-        self.macros.update({key:strategem})
+    def update_macro_binding(self, key, stratagemId):
+        stratagem = self.stratagems[stratagemId]
+        self.currentLoadout.macroKeys[key] = stratagemId
+        self.macros.update({key:stratagem})
     
     def add_loadout(self, loadoutName):
         self.settings.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
@@ -47,8 +47,8 @@ class Model:
         else:
             self.currentLoadout = self.settings.loadouts[id]
             self.macroKeys = self.currentLoadout.macroKeys
-            for key, strategemId in self.macroKeys.items():
-                self.macros.update({key:self.strategems[strategemId]})      
+            for key, stratagemId in self.macroKeys.items():
+                self.macros.update({key:self.stratagems[stratagemId]})      
 
     def set_armed(self, isArmed):
         self.isArmed = isArmed

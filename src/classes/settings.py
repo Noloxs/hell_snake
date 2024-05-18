@@ -28,9 +28,9 @@ class Settings:
         self.triggerKey = "ctrl"
         self.triggerDelay = 100
         self.triggerDelayJitter = 30
-        self.strategemKeys = ["w", "a", "s", "d"]
-        self.strategemKeyDelay = 30
-        self.strategemKeyDelayJitter = 20
+        self.stratagemKeys = ["w", "a", "s", "d"]
+        self.stratagemKeyDelay = 30
+        self.stratagemKeyDelayJitter = 20
         self.selectedExecutor = constants.EXECUTOR_PYNPUT
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE

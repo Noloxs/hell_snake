@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
-from src.view.view_utilities import filter_strategems, sort_strategems
+from src.view.view_utilities import filter_stratagems, sort_stratagems
 
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):
@@ -15,7 +15,7 @@ class FilteredListDialog(QDialog):
         self.setMinimumSize(300, 300)
         self.resize(300,800)
 
-        self.setWindowTitle("Select new strategem for: "+self.key)
+        self.setWindowTitle("Select new stratagem for: "+self.key)
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
 
         # Create a layout for the dialog
@@ -57,14 +57,14 @@ class FilteredListDialog(QDialog):
         self.list_widget.clear()
 
         # Filter and sort items
-        strategem_list = filter_strategems(self.controller.model.strategems, text)
-        strategem_list = sort_strategems(strategem_list)
+        stratagem_list = filter_stratagems(self.controller.model.stratagems, text)
+        stratagem_list = sort_stratagems(stratagem_list)
 
         # Add all items to the QListWidget
-        for id, strategem in strategem_list.items():
+        for id, stratagem in stratagem_list.items():
             listAdapter = QFilterListAdapter()
             listAdapter.setStyleSheet("background-color: transparent")
-            listAdapter.setStrategem(strategem)
+            listAdapter.setStratagem(stratagem)
 
             listAdapterItem = QListWidgetItem(self.list_widget)
             listAdapterItem.setData(Qt.UserRole, id)
@@ -82,7 +82,7 @@ class QFilterListAdapter(QWidget):
 
         self.icon = QLabel()
         self.icon.setFixedSize(25, 25)
-        self.icon.setStyleSheet("background-color: #ff1f2832")
+        self.icon.setStyleSheet("background-color: "+constants.COLOR_STRATAGEM_BACKGROUND)
         self.icon.setAlignment(Qt.AlignCenter)
         self.hBox.addWidget(self.icon)
         
@@ -92,9 +92,9 @@ class QFilterListAdapter(QWidget):
            
         self.setLayout(self.hBox)
 
-    def setStrategem(self, strategem):
-        self.name.setText(strategem.name)
-        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
+    def setStratagem(self, stratagem):
+        self.name.setText(stratagem.name)
+        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())

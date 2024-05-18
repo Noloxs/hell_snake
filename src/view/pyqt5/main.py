@@ -56,11 +56,11 @@ class MainWindow(QMainWindow):
         self.setup_toolbar_menu()
         self.update_armed()
     
-    def on_strategem_selected(self, key, id):
+    def on_stratagem_selected(self, key, id):
         self.controller.update_macro_binding(key, id)
 
     def on_macro_clicked(self, item):
-        dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole), self.on_strategem_selected)
+        dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole), self.on_stratagem_selected)
         dialog.exec_()
 
     def update_macros(self):
@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
             listAdapter = QLoadoutListAdapter()
             listAdapter.setKey(key)
             listAdapter.setStyleSheet("background-color: transparent")
-            listAdapter.setStrategem(value)
+            listAdapter.setStratagem(value)
 
             listAdapterItem = QListWidgetItem(self.listwidget)
             listAdapterItem.setData(Qt.UserRole,key)
@@ -172,7 +172,7 @@ class QLoadoutListAdapter(QWidget):
         self.icon = QLabel()
         self.icon.setFixedSize(50, 50)
         self.icon.setAlignment(Qt.AlignCenter)
-        self.icon.setStyleSheet("background-color: #ff1f2832")
+        self.icon.setStyleSheet("background-color: "+constants.COLOR_STRATAGEM_BACKGROUND)
         self.hBox.addWidget(self.icon)
         
         self.key = QLabel()
@@ -189,9 +189,9 @@ class QLoadoutListAdapter(QWidget):
            
         self.setLayout(self.hBox)
 
-    def setStrategem(self, strategem):
-        self.name.setText(strategem.name)
-        svg_widget = QSvgWidget(constants.STRATEGEM_ICON_PATH+strategem.icon_name)
+    def setStratagem(self, stratagem):
+        self.name.setText(stratagem.name)
+        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(40,40)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  

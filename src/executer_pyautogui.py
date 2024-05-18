@@ -16,9 +16,9 @@ class PyAutoGuiExecuter(BaseExecutor):
                 utilities.sleepTriggerKey(self.model)
                 for input in macro.commandArray:
                     pyautogui.keyDown(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                     pyautogui.keyUp(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                 pyautogui.keyUp(self.triggerKey)
 
         except AttributeError:
