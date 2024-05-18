@@ -213,7 +213,7 @@
     "35": {
       "name": "Super Earth Flag",
       "category": "Mission",
-      "command": [0,2,0,2],
+      "command": [2,0,2,0],
       "icon_name": "Super Earth Flag.svg"
     },
     "36": {
