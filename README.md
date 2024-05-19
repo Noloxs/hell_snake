@@ -47,6 +47,23 @@ To get started with Hell Snake, follow these steps:
     pip install -r requirements.txt
     ```
 
+## Makefile usage (replaces other installation)
+
+1. Initialize using
+    ```
+    make init
+    ```
+2. Run all QA using make
+    ```
+    make lint test
+    ```
+3. Run HellSnake
+    ```
+    make run
+    ```
+
+Look into the Makefile for the exact targets and what the do.
+
 ## Configuration
 
 To configure Hell Snake you need to create or modify a json file named: **settings.json** file located in the root of the project folder

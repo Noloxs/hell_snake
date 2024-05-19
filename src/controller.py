@@ -27,7 +27,6 @@ class Controller:
     
     def set_view(self, view):
         self.view = view
-        self.view.add_executor_settings()
         #TODO Replace with last used loadout
         self.set_active_loadout(self.model.get_next_loadout())
         self.view.show_interface()
