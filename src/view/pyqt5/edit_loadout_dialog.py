@@ -224,7 +224,7 @@ class QEditLoadoutListAdapter(QWidget):
            
         self.setLayout(self.hBox)
 
-    def setStratagem(self, stratgem):
+    def setStratagem(self, stratagem):
         self.name.setText(stratagem.name)
         svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(20,20)

@@ -5,6 +5,7 @@ from PyQt5.QtSvg import QSvgWidget
 from src import constants
 from src.executer_arduino import ArduinoPassthroughExecuter
 from src.view.pyqt5.filter_dialog import FilteredListDialog
+from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
 
 class MainWindow(QMainWindow):
@@ -85,9 +86,11 @@ class MainWindow(QMainWindow):
         if self.controller.model.isArmed:
             self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"armed.png"))
             self.armedBar.setStyleSheet("background-color: red")
+            self.arm_action.setText("Disarm")
         else: 
             self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"disarmed.png"))     
             self.armedBar.setStyleSheet("background-color: gray")
+            self.arm_action.setText("Arm")
     
     def update_current_loadout(self):
         currentLoadout = self.controller.model.currentLoadout
@@ -101,6 +104,10 @@ class MainWindow(QMainWindow):
         files_menu = self.menuBar().addMenu("Files")
 
         settingsOptions = files_menu.addMenu(QIcon(constants.ICON_BASE_PATH+"settings.svg"), "Settings")
+
+        edit_config_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_edit_config.svg"), "Edit settings", self)
+        edit_config_action.triggered.connect(self.open_edit_config_dialog)
+        settingsOptions.addAction(edit_config_action)
 
         print_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_print.svg"), "Print settings", self)
         print_action.triggered.connect(self.controller.print_settings)
@@ -116,9 +123,9 @@ class MainWindow(QMainWindow):
         exit_action.triggered.connect(self.controller.exit)
         files_menu.addAction(exit_action)
 
-        arm_action = QAction("Arm", self)
-        arm_action.triggered.connect(self.controller.toggle_armed)
-        self.menuBar().addAction(arm_action)
+        self.arm_action = QAction("Arm", self)
+        self.arm_action.triggered.connect(self.controller.toggle_armed)
+        self.menuBar().addAction(self.arm_action)
 
         self.loadout_menu = self.menuBar().addMenu("Loadouts")
         self.update_loadout_menu_items()
@@ -160,6 +167,10 @@ class MainWindow(QMainWindow):
 
     def open_edit_loadout_dialog(self):
         dialog = EditLoadoutDialog(self.controller)
+        dialog.exec_()
+    
+    def open_edit_config_dialog(self):
+        dialog = EditConfigDialog(self.controller)
         dialog.exec_()
 
 class QLoadoutListAdapter(QWidget):
