@@ -31,7 +31,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.send_bytes(bytes.fromhex(hexToSend))
 
     def send_bytes(self, bytes):
-        if self.arduino != None:
+        if self.arduino is not None:
             self.arduino.write(bytes)
 
     def parse_to_hex(self, key):
@@ -46,16 +46,23 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         return ports
     
     def get_current_connection(self):
-        if self.arduino == None:
+        if self.arduino is None:
             return None
         else:
             return self.arduino.port # TODO How to get port from serial
     
-    def parse_macro_key(self, key):
-        if(key == "shift"): return "81" # Left shift
-        elif(key == "ctrl"): return "80" # Left ctrl
-        elif(key == "up"): return "DA"
-        elif(key == "down"): return "D9"
-        elif(key == "left"): return "D8"
-        elif(key == "right"): return "D7"
-        else: return self.parse_to_hex(key)
+    def parse_macro_key(self, key):   
+        if key in self.key_map:
+            return self.key_map[key]
+        else:
+            return self.parse_to_hex(key)
+
+    key_map = {
+        "shift":"81",
+        "ctrl":"80",
+        "up":"DA",
+        "down":"D9",
+        "left":"D8",
+        "right":"D7",
+        "caps_lock":"C1"
+        } 

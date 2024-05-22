@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
+from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt
 from src import constants
 from src.classes.settings import Settings
 from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog

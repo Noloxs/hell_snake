@@ -1,11 +1,17 @@
 from pynput import keyboard
 
 def parse_key(key):
-    if(key == "shift"): return keyboard.Key.shift
-    elif(key == "ctrl"): return keyboard.Key.ctrl
-    elif(key == "up"): return keyboard.Key.up
-    elif(key == "down"): return keyboard.Key.down
-    elif(key == "left"): return keyboard.Key.left
-    elif(key == "right"): return keyboard.Key.right
-    elif(key == "caps_lock"): return keyboard.Key.caps_lock
-    else: return key
+    if key in key_map:
+        return key_map[key]
+    else:
+        return key
+
+key_map = {
+    "shift":keyboard.Key.shift,
+    "ctrl":keyboard.Key.ctrl,
+    "up":keyboard.Key.up,
+    "down":keyboard.Key.down,
+    "left":keyboard.Key.left,
+    "right":keyboard.Key.right,
+    "caps_lock":keyboard.Key.caps_lock
+    } 

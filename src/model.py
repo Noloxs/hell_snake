@@ -12,7 +12,6 @@ class Model:
         
         self.stratagems = {}
         for index, item in tmp.items():
-            name = item["name"]
             stratagem = Stratagem(**item)
             self.stratagems.update({index: stratagem})
         
@@ -40,7 +39,7 @@ class Model:
     def set_active_loadout(self, id):
         self.currentLoadoutId = id
         self.macros = {}
-        if id == None:
+        if id is None:
             self.currentLoadout = None
             self.macroKeys = None
         else:

@@ -11,7 +11,7 @@ class PyAutoGuiExecuter(BaseExecutor):
     
     def on_macro_triggered(self, macro):
         try:
-            if macro != None:
+            if macro is not None:
                 pyautogui.keyDown(self.triggerKey)
                 utilities.sleepTriggerKey(self.model)
                 for input in macro.commandArray:

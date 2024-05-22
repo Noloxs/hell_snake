@@ -13,7 +13,7 @@ class XdotoolExecuter(BaseExecutor):
         if self.isExecuting:
             print("Ignore, executing")
             return
-        if macro != None:
+        if macro is not None:
             self.isExecuting = True
             subprocess.call(["xdotool", "keydown", self.triggerKey])
         utilities.sleepTriggerKey(self.model)
@@ -26,11 +26,17 @@ class XdotoolExecuter(BaseExecutor):
         self.isExecuting = False
 
     def parse_macro_key(self, key):
-        if(key == "shift"): return "Shift"
-        elif(key == "ctrl"): return "Ctrl"
-        elif(key == "up"): return "Up"
-        elif(key == "down"): return "Down"
-        elif(key == "left"): return "Left"
-        elif(key == "right"): return "Right"
-        elif(key == "caps_lock"): return "Caps_Lock"
-        else: return key
+        if key in self.key_map:
+            return self.key_map[key]
+        else:
+            return key
+
+    key_map = {
+        "shift":"Shift",
+        "ctrl":"Ctrl",
+        "up":"Up",
+        "down":"Down",
+        "left":"Left",
+        "right":"Right",
+        "caps_lock":"Caps_Lock"
+        } 

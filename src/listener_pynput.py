@@ -1,7 +1,4 @@
 from pynput import keyboard
-from pynput.keyboard import Key
-import time
-import random
 from src import key_parser_pynput, constants
 
 class PynputKeyListener:
@@ -21,11 +18,11 @@ class PynputKeyListener:
                 callback(strKey)
             self.getNextCallbacks.clear()
         
-        if (key == None):
+        if (key is None):
             return
 
         entry = self.parse_key(key)
-        if(self.globalArmKey != None and self.globalArmKey == entry):
+        if(self.globalArmKey is not None and self.globalArmKey == entry):
             if (self.model.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
                 self.controller.toggle_armed()
             elif (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
@@ -34,16 +31,16 @@ class PynputKeyListener:
 
         if(self.model.isArmed):
             macro = self.model.macros.get(entry, None)
-            if macro != None:
+            if macro is not None:
                 self.controller.trigger_macro(macro)
     
     def on_release(self, key):
         if (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH):
-            if (key == None):
+            if (key is None):
                 return
 
             entry = self.parse_key(key)
-            if(self.globalArmKey != None and self.globalArmKey == entry):
+            if(self.globalArmKey is not None and self.globalArmKey == entry):
                 self.controller.set_armed(False)
                 return
 

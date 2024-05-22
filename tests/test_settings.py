@@ -1,5 +1,3 @@
-import pytest
-
 from src.classes.settings import Settings
 
 # Mocking and other utilities
@@ -15,7 +13,7 @@ class TestSettings:
 
     @patch("builtins.open", mock_open())
     def test_initial_configuration_should_have_default_values_when_created(self):
-        with patch("builtins.open", mock_open()) as mock_file:
+        with patch("builtins.open", mock_open()):
             mock_open.side_effect = OSError
 
             # obtain instance, which should resort to defaults despite the error

@@ -45,7 +45,6 @@ class EditLoadoutDialog(QDialog):
 
         # List widget
         self.list_widget = QListWidget()
-        self.list_widget.model().rowsMoved.connect(self.macro_rearranged)
         self.list_widget.setDragDropMode(QAbstractItemView.InternalMove)
         layout.addWidget(self.list_widget)
 
@@ -74,7 +73,7 @@ class EditLoadoutDialog(QDialog):
 
         # Create confirmation buttons
         confirm_buttons_layout = QHBoxLayout()
-        margin = confirm_buttons_layout.setContentsMargins(0,30,0,0)
+        confirm_buttons_layout.setContentsMargins(0,30,0,0)
         layout.addLayout(confirm_buttons_layout)
         
         self.btn_cancel = QPushButton("Cancel")
@@ -102,7 +101,7 @@ class EditLoadoutDialog(QDialog):
     
     def delete_current_macro(self):
         macro = self.list_widget.currentItem()
-        if macro != None:
+        if macro is not None:
             key = macro.data(Qt.UserRole)
             self.editLoadout.macroKeys.pop(key)
             self.update_macros()
@@ -122,10 +121,6 @@ class EditLoadoutDialog(QDialog):
         if key not in self.editLoadout.macroKeys:
             self.editLoadout.macroKeys.update({key:"0"})
             self.update_macros()
-
-    def macro_rearranged(self, parent, start, end, destination, row):
-        key = self.list_widget.currentItem().data(Qt.UserRole)
-        row = self.list_widget.currentRow()
 
     def update_loadout(self):
         if self.loadoutId is not None:
@@ -163,7 +158,7 @@ class EditLoadoutDialog(QDialog):
 
     def set_loadout(self):
         self.loadoutId = self.dropdown.currentData()
-        if self.loadoutId == None:
+        if self.loadoutId is None:
             self.edit_field.setText("")
             self.editLoadout = None
             self.update_macros()
