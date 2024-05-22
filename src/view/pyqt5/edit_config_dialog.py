@@ -3,7 +3,7 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QSize
 from src import constants
 from src.classes.settings import Settings
-from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog
+from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog
 
 class EditConfigDialog(QDialog):
     def __init__(self, controller):
@@ -20,8 +20,7 @@ class EditConfigDialog(QDialog):
         
         # Add tabs
         self.tabs.addTab(self.create_key_bindings_tab(), "Key Bindings")
-        self.tabs.addTab(self.createExecutorSettingsTab(), "Executor Settings")
-        self.tabs.addTab(self.createMiscTab(), "Misc")
+        self.tabs.addTab(self.create_executor_settings_tab(), "Executor Settings")
         
         # Create the layout and add the tab widget to it
         main_layout = QVBoxLayout()
@@ -31,17 +30,18 @@ class EditConfigDialog(QDialog):
         self.setLayout(main_layout)
     
     def create_key_bindings_tab(self):
-        widget = QWidget()
+        key_tab = QWidget()
         self.key_layout = QVBoxLayout()
+        self.key_layout.setAlignment(Qt.AlignTop)
         self.key_layout.setContentsMargins(5,5,5,5)
         
-        widget.setLayout(self.key_layout)
+        key_tab.setLayout(self.key_layout)
         
-        self.update_key_bindings()
+        self.update_key_settings()
 
-        return widget
+        return key_tab
     
-    def update_key_bindings(self):
+    def update_key_settings(self):
         if getattr(self, 'key_grid_layout', None) is not None:
             while self.key_grid_layout.count():
                 item = self.key_grid_layout.takeAt(0)
@@ -54,18 +54,15 @@ class EditConfigDialog(QDialog):
 
         self.add_settings_headline(self.key_grid_layout, "Statagem bindings")
         
-        self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(KeyBindingHandler(self, "triggerKey").on_next_key))
+        self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self, "triggerKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Up", self.settings.stratagemKeys[0], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 0).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Down", self.settings.stratagemKeys[2], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 2).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Left", self.settings.stratagemKeys[1], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 1).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Right", self.settings.stratagemKeys[3], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 3).on_next_key))
 
         self.add_settings_headline(self.key_grid_layout, "Global arm bindings")
-        self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(KeyBindingHandler(self, "globalArmKey").on_next_key))
+        self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self, "globalArmKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Toggle mode", self.settings.globalArmMode, True, self.open_global_arm_mode_dialog)
-    
-    def show_capture_dialog(self, on_key_captured):
-        show_capture_key_dialog(self, self.controller, on_key_captured, "Press key to bind")
     
     def open_global_arm_mode_dialog(self):
         items = {
@@ -75,10 +72,73 @@ class EditConfigDialog(QDialog):
 
         dialog = DropdownDialog(items, self.change_arm_mode)
         dialog.exec_()
-    
+
     def change_arm_mode(self, mode):
         self.settings.globalArmMode = mode
         self.update_key_bindings()
+
+    def create_executor_settings_tab(self):
+        executor_tab = QWidget()
+        self.executor_layout = QVBoxLayout()
+        self.executor_layout.setAlignment(Qt.AlignTop)
+        self.executor_layout.setContentsMargins(5,5,5,5)
+
+        executor_tab.setLayout(self.executor_layout)
+
+        self.update_executor_settings()
+
+        return executor_tab
+    
+    def update_executor_settings(self):
+        if getattr(self, 'executor_grid_layout', None) is not None:
+            while self.executor_grid_layout.count():
+                item = self.executor_grid_layout.takeAt(0)
+                widget = item.widget()
+                if widget is not None:
+                    widget.deleteLater()
+
+        self.executor_grid_layout = QGridLayout()
+        self.executor_layout.addLayout(self.executor_grid_layout)
+
+        self.add_settings_headline(self.executor_grid_layout, "Executor settings")
+        
+        self.add_key_binding(self.executor_grid_layout, "Selected executor", self.settings.selectedExecutor, False, self.open_executor_selector_dialog)
+
+        if self.settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
+            self.add_settings_headline(self.executor_grid_layout, "pynput settings")
+        elif self.settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
+            self.add_settings_headline(self.executor_grid_layout, "Arduino passthrough settings")
+        elif self.settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
+            self.add_settings_headline(self.executor_grid_layout, "pyautogui settings")
+        elif self.settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
+            self.add_settings_headline(self.executor_grid_layout, "XDPTool settings")
+        
+        self.add_key_binding(self.executor_grid_layout, "Trigger delay", str(self.settings.triggerDelay), False, lambda: self.show_number_input_dialog(self.settings.triggerDelay, SettingsBindingHandler(self, "triggerDelay", self.update_executor_settings).on_next_value))
+        self.add_key_binding(self.executor_grid_layout, "Trigger delay jitter", str(self.settings.triggerDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.triggerDelayJitter, SettingsBindingHandler(self, "triggerDelayJitter", self.update_executor_settings).on_next_value))
+        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay", str(self.settings.stratagemKeyDelay), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelay, SettingsBindingHandler(self, "stratagemKeyDelay", self.update_executor_settings).on_next_value))
+        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay jitter", str(self.settings.stratagemKeyDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelayJitter, SettingsBindingHandler(self, "stratagemKeyDelayJitter", self.update_executor_settings).on_next_value))
+
+    def open_executor_selector_dialog(self):
+        items = {
+            constants.EXECUTOR_PYNPUT: 'pynput',
+            constants.EXECUTOR_PYAUTOGUI: 'pyautogui',
+            constants.EXECUTOR_ARDUINO: 'Arduino passthrough',
+            constants.EXECUTOR_XDOTOOL: 'XDOTool'
+        }
+
+        dialog = DropdownDialog(items, self.change_selected_executor)
+        dialog.exec_()
+
+    def change_selected_executor(self, executor):
+        self.settings.selectedExecutor = executor
+        self.update_executor_settings()
+
+    def show_number_input_dialog(self, current_value, on_number_entered):
+        dialog = NumberInputDialog(current_value, on_number_entered)
+        dialog.exec_()
+
+    def show_capture_dialog(self, on_key_captured):
+        show_capture_key_dialog(self, self.controller, on_key_captured, "Press key to bind")
 
     def add_key_binding(self, grid_layout, desc, key, add_separator, callback):
         if grid_layout.count() == 0:
@@ -119,20 +179,6 @@ class EditConfigDialog(QDialog):
         line.setFrameShadow(QFrame.Sunken)
         layout.addWidget(line, row, 0, 1, 3)
 
-    def createExecutorSettingsTab(self):
-        tab = QWidget()
-        layout = QVBoxLayout()
-        # Add widgets for the Executor Settings tab here
-        tab.setLayout(layout)
-        return tab
-    
-    def createMiscTab(self):
-        tab = QWidget()
-        layout = QVBoxLayout()
-        # Add widgets for the Misc tab here
-        tab.setLayout(layout)
-        return tab
-
     def create_button(self, callback):
         button = QPushButton("")
         button.setFixedWidth(30)
@@ -140,14 +186,15 @@ class EditConfigDialog(QDialog):
         button.clicked.connect(callback)
         return button
 
-class KeyBindingHandler:
-    def __init__ (self, edit_config_dialog, settings_key):
+class SettingsBindingHandler:
+    def __init__ (self, edit_config_dialog, settings_key, callback):
         self.settings_key = settings_key
         self.edit_config_dialog = edit_config_dialog
+        self.callback = callback
 
-    def on_next_key(self, key):
-        setattr(self.edit_config_dialog.settings, self.settings_key, key)
-        self.edit_config_dialog.update_key_bindings()
+    def on_next_value(self, value):
+        setattr(self.edit_config_dialog.settings, self.settings_key, value)
+        self.callback()
 
 class StratagemKeyBindingHandler:
     def __init__ (self, edit_config_dialog, index):

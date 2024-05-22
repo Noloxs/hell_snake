@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QLineEdit
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
 
 def show_capture_key_dialog(obj, controller, callback, msg):
@@ -86,4 +87,48 @@ class DropdownDialog(QDialog):
         if selected_key is not None:
             self.callback(selected_key)
         
+        self.accept()
+
+class NumberInputDialog(QDialog):
+    def __init__(self, default_value, callback):
+        super().__init__()
+
+        self.default_value = default_value
+        self.callback = callback
+        self.setWindowTitle("Input a Number")
+        self.resize(300, 100)
+
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout()
+
+        # Add a label
+        label = QLabel("Please enter a number:")
+        layout.addWidget(label)
+
+        # Create the edit field
+        self.line_edit = QLineEdit()
+        self.line_edit.setValidator(QIntValidator())  # Only allow integers
+        self.line_edit.setText(str(self.default_value))
+        layout.addWidget(self.line_edit)
+
+        # Create the OK button
+        button_layout = QHBoxLayout()
+        ok_button = QPushButton("OK")
+        ok_button.clicked.connect(self.on_ok_clicked)
+        button_layout.addWidget(ok_button)
+        
+        # Optionally add a Cancel button
+        cancel_button = QPushButton("Cancel")
+        cancel_button.clicked.connect(self.reject)
+        button_layout.addWidget(cancel_button)
+        
+        layout.addLayout(button_layout)
+
+        self.setLayout(layout)
+
+    def on_ok_clicked(self):
+        new_value = int(self.line_edit.text())
+        self.callback(new_value)
         self.accept()
