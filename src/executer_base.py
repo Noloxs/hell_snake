@@ -11,3 +11,6 @@ class BaseExecutor(ABC):
   @abstractmethod
   def parse_macro_key(self, key):
     raise NotImplementedError
+  
+  def attempt_auto_connect(self):
+    pass
