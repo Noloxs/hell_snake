@@ -5,7 +5,7 @@ class BaseView(ABC):
     pass
 
 @abstractmethod
-def add_executor_settings(self, executor):
+def update_executor_settings(self, executor):
     raise NotImplementedError
 
 @abstractmethod
@@ -14,6 +14,10 @@ def update_macros(self):
 
 @abstractmethod
 def update_armed(self):
+    raise NotImplementedError
+
+@abstractmethod
+def update_title_description(self, description):
     raise NotImplementedError
 
 @abstractmethod

@@ -11,7 +11,6 @@ class XdotoolExecuter(BaseExecutor):
     
     def on_macro_triggered(self, macro):
         if self.isExecuting:
-            print("Ignore, executing")
             return
         if macro is not None:
             self.isExecuting = True

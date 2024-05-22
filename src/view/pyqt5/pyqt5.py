@@ -9,8 +9,8 @@ class PyQT5View(BaseView):
         self.gui = QApplication([])
         self.window = MainWindow(controller)
     
-    def add_executor_settings(self):
-        self.window.add_executor_settings()
+    def update_executor_settings(self):
+        self.window.update_executor_settings()
 
     def show_interface(self):
         self.window.show()
@@ -25,6 +25,9 @@ class PyQT5View(BaseView):
 
     def update_armed(self):
         self.window.update_armed()
+    
+    def update_title_description(self, description):
+        self.window.update_title_description(description)
     
     def on_loadout_changed(self):
         self.window.update_loadout_menu_items()

@@ -1,6 +1,8 @@
 from src.executer_base import BaseExecutor
 import serial.tools.list_ports
+from src.classes.settings import Settings
 from src import utilities
+from src import constants
 
 START_HEX = "fb"
 TERMINATION_HEX = "f7"
@@ -8,16 +10,32 @@ SEPERATOR_HEX = "fa"
 HOLD_KEY_HEX = "f8"
 RELEASE_KEY_HEX = "f9"
 
+LATEST_CONNECTED_DEVICE = "lastConnectedDevice"
+
 class ArduinoPassthroughExecuter(BaseExecutor):
-    def __init__(self, model):
+    def __init__(self, controller):
         super().__init__()
-        self.model = model
+        self.controller = controller
+        self.model = controller.model
         self.arduino = None
-        self.triggerKey = self.parse_macro_key(self.model.settings.triggerKey)
+        self.settings = Settings.getInstance()
+        self.triggerKey = self.parse_macro_key(self.settings.triggerKey)
+
+    def attempt_auto_connect(self):
+        if self.settings.arduino_lastConnectedDevice is not None:
+            ports = self.get_physical_addresses()
+            for port in ports:
+                id = str(port.vid)+"-"+str(port.pid)
+                if id == self.settings.arduino_lastConnectedDevice:
+                    self.connect_to_arduino(port)
+                    return
 
     def connect_to_arduino(self, port):
-        self.arduino = serial.Serial(port, baudrate=115200, timeout=.1)
+        self.arduino = serial.Serial(port.device, baudrate=115200, timeout=.1)
         # TODO Send connection test message
+        setattr(self.settings, constants.EXECUTOR_ARDUINO+"_lastConnectedDevice", str(port.vid)+"-"+str(port.pid))
+        self.controller.update_title_description("Connected to: "+port.name)
+        self.controller.update_executor_settings()
     
     def on_macro_triggered(self, macro):
         hexToSend = START_HEX

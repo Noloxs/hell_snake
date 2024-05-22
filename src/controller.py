@@ -12,7 +12,7 @@ class Controller:
             self.executer = PynputExecuter(self.model)
         elif settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
-            self.executer = ArduinoPassthroughExecuter(self.model)
+            self.executer = ArduinoPassthroughExecuter(self)
         elif settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
@@ -28,7 +28,14 @@ class Controller:
         self.view = view
         #TODO Replace with last used loadout
         self.set_active_loadout(self.model.get_next_loadout())
+        self.initialize()
         self.view.show_interface()
+    
+    def initialize(self):
+        self.executer.attempt_auto_connect()
+
+    def update_executor_settings(self):
+        self.view.update_executor_settings()
 
     def toggle_armed(self):
         self.set_armed(not self.model.isArmed)
@@ -36,6 +43,9 @@ class Controller:
     def set_armed(self, isArmed):
         self.model.set_armed(isArmed)
         self.view.update_armed()
+    
+    def update_title_description(self, description):
+        self.view.update_title_description(description)
     
     def show_change_macro_dialog(self, key):
         self.view.show_change_macro_dialog(key)

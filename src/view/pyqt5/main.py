@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame
 from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -35,13 +35,31 @@ class MainWindow(QMainWindow):
         self.armedIcon.setScaledContents(True)
         self.hBox.addWidget(self.armedIcon)
 
+        self.title_box = QVBoxLayout()
+        self.title_box.setSpacing(4)
+        self.title_box.setContentsMargins(0,0,0,0)
+
         self.loadout = QLabel()
-        self.loadout.setFixedHeight(70)
         self.loadout.setAlignment(Qt.AlignVCenter|Qt.AlignLeft)
         font = QFont("Arial", 24)
         font.setBold(True)
         self.loadout.setFont(font)
-        self.hBox.addWidget(self.loadout)
+        self.title_box.addWidget(self.loadout)
+
+        self.title_line = QFrame()
+        self.title_line.setFrameShape(QFrame.HLine)
+        self.title_line.setFrameShadow(QFrame.Sunken)
+        self.title_line.setVisible(False)
+        self.title_box.addWidget(self.title_line)
+
+        self.loadout_desc = QLabel()
+        self.loadout_desc.setAlignment(Qt.AlignTop|Qt.AlignLeft)
+        font = QFont("Arial", 12)
+        self.loadout_desc.setFont(font)
+        self.loadout_desc.setVisible(False)
+        self.title_box.addWidget(self.loadout_desc)
+
+        self.hBox.addLayout(self.title_box)
         self.vBox.addLayout(self.hBox)
 
         self.armedBar = QLabel()
@@ -92,6 +110,15 @@ class MainWindow(QMainWindow):
             self.armedBar.setStyleSheet("background-color: gray")
             self.arm_action.setText("Arm")
     
+    def update_title_description(self, description):
+        if description is None:
+            self.title_line.setVisible(False)
+            self.loadout_desc.setVisible(False)
+        else:
+            self.title_line.setVisible(True)
+            self.loadout_desc.setText(description)
+            self.loadout_desc.setVisible(True)
+
     def update_current_loadout(self):
         currentLoadout = self.controller.model.currentLoadout
         if currentLoadout is not None:
@@ -143,10 +170,11 @@ class MainWindow(QMainWindow):
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
         self.loadout_menu.addAction(loadout_edit_action)
 
-    def add_executor_settings(self):
+    def update_executor_settings(self):
         executor = self.controller.executer
         if isinstance(executor,ArduinoPassthroughExecuter):
-            self.select_serial = self.menuBar().addMenu("Select serial")
+            if getattr(self, "select_serial", None) is None:
+                self.select_serial = self.menuBar().addMenu("Select serial")
             self.update_serial_menu()
     
     def update_serial_menu(self):
@@ -154,11 +182,11 @@ class MainWindow(QMainWindow):
         self.select_serial.clear()
         connection = executor.get_current_connection()
         physical_addresses = executor.get_physical_addresses()
-        for port, desc, hwid in sorted(physical_addresses):
-            serial = QAction(desc, self)
+        for port in physical_addresses:
+            serial = QAction(port.description, self)
             serial.triggered.connect(lambda checked, port=port: self.connect_to_serial(port))
-            if port == connection:
-                serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected")) # TODO Change icon to a selected icon
+            if port.device == connection:
+                serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected"))
             self.select_serial.addAction(serial)
     
     def connect_to_serial(self, port):
