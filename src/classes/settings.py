@@ -37,16 +37,12 @@ class Settings:
         self.view_framework = constants.VIEW_PYQT5
         self.loadFromFile()
         ## Consider no version to be version 1
-        if self.version=="unknown" or self.version < 2:
+        if not hasattr(self, "version") or self.version < 2:
             self.migrate_1_to_2()
         ## For future use:
         # if self.version == 2:
         #     self.migrate_2_to_3()
         print("Settings initialized")
-
-    def __getattr__(self, name):
-        print("Requested unknown value for for %s"%(name))
-        return "unknown"
 
     def loadFromFile(self):
         try:
@@ -70,12 +66,15 @@ class Settings:
 
     def migrate_1_to_2(self):
         self.version = 2
-        self.stratagemKeys = self.strategemKeys
-        del self.strategemKeys
-        self.stratagemKeyDelay = self.strategemKeyDelay
-        del self.strategemKeyDelay
-        self.stratagemKeyDelayJitter = self.strategemKeyDelayJitter
-        del self.strategemKeyDelayJitter
+        if hasattr(self, "strategemKeys"):
+            self.stratagemKeys = self.strategemKeys
+            del self.strategemKeys
+        if hasattr(self, "strategemKeyDelay"):
+            self.stratagemKeyDelay = self.strategemKeyDelay
+            del self.strategemKeyDelay
+        if hasattr(self, "strategemKeyDelayJitter"):
+            self.stratagemKeyDelayJitter = self.strategemKeyDelayJitter
+            del self.strategemKeyDelayJitter
         print("Settings migrated to version 2. Remember to save.")
 
 class Loadout:

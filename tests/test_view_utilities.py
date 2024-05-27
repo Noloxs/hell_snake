@@ -2,23 +2,23 @@ import pytest
 from src.view.view_utilities import filter_stratagems, sort_stratagems
 from src.stratagem import Stratagem
 
+@pytest.fixture
+def stratagems():
+    stratagems = {}
+    strata = Stratagem("AC-8 Autocannon", "Weapon", "command", "icon_name")
+    stratagems.update({1: strata})
+    strata = Stratagem("Resupply", "Mission", "command", "icon_name")
+    stratagems.update({2: strata})
+    strata = Stratagem("Eagle Cluster Bomb", "Eagle", "command", "icon_name")
+    stratagems.update({3: strata})
+    strata = Stratagem("Reinforce", "Mission", "command", "icon_name")
+    stratagems.update({4: strata})
+
+    return stratagems
+
 class TestViewUtilities:
-    @pytest.fixture
-    def stratagems():
-        stratagems = {}
-        strata = Stratagem("AC-8 Autocannon", "Weapon", "command", "icon_name")
-        stratagems.update({1: strata})
-        strata = Stratagem("Resupply", "Mission", "command", "icon_name")
-        stratagems.update({2: strata})
-        strata = Stratagem("Eagle Cluster Bomb", "Eagle", "command", "icon_name")
-        stratagems.update({3: strata})
-        strata = Stratagem("Reinforce", "Mission", "command", "icon_name")
-        stratagems.update({4: strata})
-
-        return stratagems
-
     # Define the tests
-    def test_filter_stratagems(stratagems):
+    def test_filter_stratagems(self, stratagems):
         filtered = filter_stratagems(stratagems, "re")
         assert len(filtered) == 2
         assert 2 in filtered
@@ -31,7 +31,7 @@ class TestViewUtilities:
         filtered = filter_stratagems(stratagems, "")
         assert len(filtered) == len(stratagems)
 
-    def test_sort_stratagems(stratagems):
+    def test_sort_stratagems(self, stratagems):
         sorted_stratagems = sort_stratagems(stratagems)
         sorted_ids = list(sorted_stratagems.keys())
 

@@ -32,7 +32,7 @@ class TestSettings:
     @patch("builtins.open", new_callable=mock_open, read_data='{"stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
     @patch("src.classes.settings.Settings.migrate_1_to_2", new_callable=MagicMock)
     def test_configuration_should_be_migrated_when_version_is_old(self, mock_migrate_method, mock_file):
-        settings = Settings.getInstance()
+        Settings.getInstance()
         # Confirm that migrate_1_to_2 was called once.
         mock_migrate_method.assert_called_once()
 
@@ -47,11 +47,11 @@ class TestSettings:
 
         # Assert that a misspelled version of stratagemKey* has been updated does not exist
         assert hasattr(settings, 'stratagemKeys')
-        assert settings.strategemKeys  == "unknown"
+        assert not hasattr(settings, 'strategemKeys')
         assert hasattr(settings, 'stratagemKeyDelay')
-        assert settings.strategemKeyDelay == "unknown"
+        assert not hasattr(settings, 'strategemKeyDelay')
         assert hasattr(settings, 'stratagemKeyDelayJitter')
-        assert settings.strategemKeyDelayJitter == "unknown"
+        assert not hasattr(settings, 'strategemKeyDelayJitter')
 
     @patch("builtins.open", mock_open())
     def test_should_save_correct_version(self):
