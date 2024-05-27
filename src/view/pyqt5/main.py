@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
+from src.classes.settings import Settings
 from src.executer_arduino import ArduinoPassthroughExecuter
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
@@ -132,7 +133,8 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        for loadoutId, loadout in self.controller.model.settings.loadouts.items():
+        settings = Settings.getInstance()
+        for loadoutId, loadout in settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)
