@@ -1,7 +1,7 @@
 from src.classes.settings import Settings
 
 # Mocking and other utilities
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 import json
 from src import constants
 
@@ -28,6 +28,52 @@ class TestSettings:
         settings = Settings.getInstance()
         assert settings.triggerKey == "shift"
         assert settings.triggerDelay == 50
+
+    @patch("builtins.open", new_callable=mock_open, read_data='{"stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
+    @patch("src.classes.settings.Settings.migrate_1_to_2", new_callable=MagicMock)
+    def test_configuration_should_be_migrated_when_version_is_old(self, mock_migrate_method, mock_file):
+        settings = Settings.getInstance()
+        # Confirm that migrate_1_to_2 was called once.
+        mock_migrate_method.assert_called_once()
+
+
+    @patch("builtins.open", new_callable=mock_open, read_data='{"stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
+    def test_configuration_should_have_certain_updates_if_migrated_to_version_2(self, mock_file):
+        settings = Settings.getInstance()
+
+        # Assert that the settings has been upgraded to version 2
+        assert hasattr(settings, 'version')
+        assert settings.version == 2
+
+        # Assert that a misspelled version of stratagemKey* has been updated does not exist
+        assert hasattr(settings, 'stratagemKeys')
+        assert settings.strategemKeys  == "unknown"
+        assert hasattr(settings, 'stratagemKeyDelay')
+        assert settings.strategemKeyDelay == "unknown"
+        assert hasattr(settings, 'stratagemKeyDelayJitter')
+        assert settings.strategemKeyDelayJitter == "unknown"
+
+    @patch("builtins.open", mock_open())
+    def test_should_save_correct_version(self):
+        """
+        This test verifies that the 'version' key is correctly saved to the
+        settings file with the value of 2. This is crucial for ensuring that
+        the settings are being saved with the requisite version information,
+        which might be used for future migrations or compatibility checks.
+        """
+
+        # Get a singleton instance of Settings
+        settings = Settings.getInstance()
+        
+        # Trigger the save to file operation
+        settings.saveToFile()
+
+        # Simulate the file opening in write mode as per the settings path
+        mock_file = open(constants.SETTINGS_PATH, "w")
+        # Parse the JSON data written to the simulated file
+        written_data = json.loads(mock_file.write.call_args[0][0])
+
+        assert written_data["version"] == 2
 
     @patch("builtins.open", new_callable=mock_open, read_data='{"triggerKey": "shift", "triggerDelay": 50}')
     def test_unknown_property_should_be_stored_when_created(self, mock_file):
