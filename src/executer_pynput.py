@@ -11,14 +11,14 @@ class PynputExecuter(BaseExecutor):
     
     def on_macro_triggered(self, macro):
         try:
-            if macro != None:
+            if macro is not None:
                 self.keyboard_controller.press(self.triggerKey)
                 utilities.sleepTriggerKey(self.model)
                 for input in macro.commandArray:
                     self.keyboard_controller.press(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                     self.keyboard_controller.release(input)
-                    utilities.sleepStrategemKey(self.model)
+                    utilities.sleepStratagemKey(self.model)
                 self.keyboard_controller.release(self.triggerKey)
 
         except AttributeError:

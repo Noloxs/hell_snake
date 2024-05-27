@@ -4,7 +4,7 @@ Welcome to Hell Snake, a Python program designed for managing and running macros
 
 ## Overview
 
-Hell Snake simplifies the process of executing macros in the game Hell Divers 2, allowing players to automate calling strategems within the game.
+Hell Snake simplifies the process of executing macros in the game Hell Divers 2, allowing players to automate calling stratagems within the game.
 
 ## Features
 ### Current
@@ -77,16 +77,16 @@ Change the value of __selectedExecutor__ to one of the supported emulators e.g. 
 "selectedExecutor": "pynput"
 ```
 
-### Change strategem control keys
+### Change stratagem control keys
 
 #### Trigger key
-To change which keys are used to call in stratgems first start by setting the trigger key, this is the key that you hold down while activating your strategems
+To change which keys are used to call in stratgems first start by setting the trigger key, this is the key that you hold down while activating your stratagems
 
 ```
 "triggerKey": "ctrl"
 ```
 
-You can also change the delay that is used between holding the triggerKey and starting to activate the strategems in milliseconds using:
+You can also change the delay that is used between holding the triggerKey and starting to activate the stratagems in milliseconds using:
 
 __E.g.: 100ms delay with 30ms of jitter, meaning a delay between 100ms and 130ms__
 
@@ -96,26 +96,26 @@ __E.g.: 100ms delay with 30ms of jitter, meaning a delay between 100ms and 130ms
 ```
 
 #### Command keys
-The strategem keys are defined as an array in the order: UP, LEFT, DOWN, RIGHT
+The stratagem keys are defined as an array in the order: UP, LEFT, DOWN, RIGHT
 
 ```
-strategemKeys": [
+stratagemKeys": [
     "w",
     "a",
     "s",
     "d"
   ]
 ```
-You can also change the delay that is used between each strategems key press in milliseconds using:
+You can also change the delay that is used between each stratagems key press in milliseconds using:
 
 __E.g.: 30ms delay with 20ms of jitter, meaning a delay between 30ms and 50ms__
 
 ```
-"strategemKeyDelay": 30,
-"strategemKeyDelayJitter": 20
+"stratagemKeyDelay": 30,
+"stratagemKeyDelayJitter": 20
 ```
 
-### Strategem loadouts
+### Stratagem loadouts
 
 Your loadouts can all be managed through the GUI going to **Loadouts** -> **Edit loadouts**
 
@@ -129,7 +129,7 @@ __The blue options are applied immediately, where as green are only applied afte
 5) Drag and drop to rearrange the macros
 6) Click on a macro to select one for editing
 7) Press to delete the selected macro from the loadout
-8) Press to change strategem assigned to the selected macro
+8) Press to change stratagem assigned to the selected macro
 9) Press to add a new macro key
 10) Press to apply changes to current loadout
 
@@ -166,7 +166,7 @@ Hell Snake is licensed under the [GNU General Public License v3.0](LICENSE.md).
 ## Acknowledgements
 
 - Special thanks to the developers of Hell Divers 2 for creating such an exciting game.
-- Thank you to @nvigneux for creating and sharing the awesome strategem icons. See his repository here: [Helldivers-2-Stratagems-icons-svg](https://github.com/nvigneux/Helldivers-2-Stratagems-icons-svg)
+- Thank you to @nvigneux for creating and sharing the awesome stratagem icons. See his repository here: [Helldivers-2-Stratagems-icons-svg](https://github.com/nvigneux/Helldivers-2-Stratagems-icons-svg)
 - Thanks to all contributors who have helped improve Hell Snake.
 
 ## Support

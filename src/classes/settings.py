@@ -28,19 +28,21 @@ class Settings:
         self.triggerKey = "ctrl"
         self.triggerDelay = 100
         self.triggerDelayJitter = 30
-        self.strategemKeys = ["w", "a", "s", "d"]
-        self.strategemKeyDelay = 30
-        self.strategemKeyDelayJitter = 20
+        self.stratagemKeys = ["w", "a", "s", "d"]
+        self.stratagemKeyDelay = 30
+        self.stratagemKeyDelayJitter = 20
         self.selectedExecutor = constants.EXECUTOR_PYNPUT
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
         self.view_framework = constants.VIEW_PYQT5
         self.loadFromFile()
+        ## Consider no version to be version 1
+        if not hasattr(self, "version") or self.version < 2:
+            self.migrate_1_to_2()
+        ## For future use:
+        # if self.version == 2:
+        #     self.migrate_2_to_3()
         print("Settings initialized")
-
-    def __getattr__(self, name):
-        print("Requested unknown value for for %s"%(name))
-        return "unknown"
 
     def loadFromFile(self):
         try:
@@ -57,11 +59,23 @@ class Settings:
         except (OSError, json.JSONDecodeError):
             pass  # we use defaults if there's an error reading or decoding the file
 
-
     def saveToFile(self):
         with open(constants.SETTINGS_PATH, "w") as file:
             settings_as_json = json.dumps(self, default=vars, indent=2)
             file.write(settings_as_json)
+
+    def migrate_1_to_2(self):
+        self.version = 2
+        if hasattr(self, "strategemKeys"):
+            self.stratagemKeys = self.strategemKeys
+            del self.strategemKeys
+        if hasattr(self, "strategemKeyDelay"):
+            self.stratagemKeyDelay = self.strategemKeyDelay
+            del self.strategemKeyDelay
+        if hasattr(self, "strategemKeyDelayJitter"):
+            self.stratagemKeyDelayJitter = self.strategemKeyDelayJitter
+            del self.strategemKeyDelayJitter
+        print("Settings migrated to version 2. Remember to save.")
 
 
 class Loadout:
