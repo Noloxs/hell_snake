@@ -70,13 +70,17 @@ class Settings:
 
     def migrate_1_to_2(self):
         self.version = 2
-        self.stratagemKeys = self.strategemKeys
-        del self.strategemKeys
-        self.stratagemKeyDelay = self.strategemKeyDelay
-        del self.strategemKeyDelay
-        self.stratagemKeyDelayJitter = self.strategemKeyDelayJitter
-        del self.strategemKeyDelayJitter
+        if self.strategemKeys!='unknown':
+            self.stratagemKeys = self.strategemKeys
+            del self.strategemKeys
+        if self.strategemKeyDelay!='unknown':
+            self.stratagemKeyDelay = self.strategemKeyDelay
+            del self.strategemKeyDelay
+        if self.strategemKeyDelayJitter!='unknown':
+            self.stratagemKeyDelayJitter = self.strategemKeyDelayJitter
+            del self.strategemKeyDelayJitter
         print("Settings migrated to version 2. Remember to save.")
+
 
 class Loadout:
     """
