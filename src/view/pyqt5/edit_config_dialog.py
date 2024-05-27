@@ -113,10 +113,13 @@ class EditConfigDialog(QDialog):
         elif self.settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
             self.add_settings_headline(self.executor_grid_layout, "XDPTool settings")
         
-        self.add_key_binding(self.executor_grid_layout, "Trigger delay", str(self.settings.triggerDelay), False, lambda: self.show_number_input_dialog(self.settings.triggerDelay, SettingsBindingHandler(self, "triggerDelay", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Trigger delay jitter", str(self.settings.triggerDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.triggerDelayJitter, SettingsBindingHandler(self, "triggerDelayJitter", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay", str(self.settings.stratagemKeyDelay), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelay, SettingsBindingHandler(self, "stratagemKeyDelay", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay jitter", str(self.settings.stratagemKeyDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelayJitter, SettingsBindingHandler(self, "stratagemKeyDelayJitter", self.update_executor_settings).on_next_value))
+        settings_items = self.controller.executer.get_settings_items()
+        for i, item in enumerate(settings_items):
+            if item.value_type == constants.SETTINGS_VALUE_TYPE_INT:
+                value = getattr(self.settings, item.key, 0)
+                self.add_key_binding(self.executor_grid_layout, item.title, str(value), i > 0, lambda: self.show_number_input_dialog(value, SettingsBindingHandler(self, item.key, self.update_executor_settings).on_next_value))
+            elif item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER:
+                self.add_settings_headline(self.executor_grid_layout, item.title)
 
     def open_executor_selector_dialog(self):
         items = {
@@ -131,6 +134,7 @@ class EditConfigDialog(QDialog):
 
     def change_selected_executor(self, executor):
         self.settings.selectedExecutor = executor
+        self.controller.set_executor()
         self.update_executor_settings()
 
     def show_number_input_dialog(self, current_value, on_number_entered):

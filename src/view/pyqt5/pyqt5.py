@@ -8,9 +8,6 @@ class PyQT5View(BaseView):
         self.controller = controller
         self.gui = QApplication([])
         self.window = MainWindow(controller)
-    
-    def add_executor_settings(self):
-        self.window.add_executor_settings()
 
     def show_interface(self):
         self.window.show()

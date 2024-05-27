@@ -1,6 +1,7 @@
 from pynput.keyboard import Controller
 from src.executer_base import BaseExecutor
-from src import utilities, key_parser_pynput
+from src import utilities, key_parser_pynput, constants
+from src.executer_base import SettingsItem
 
 class PynputExecuter(BaseExecutor):
     def __init__(self, model):
@@ -26,3 +27,13 @@ class PynputExecuter(BaseExecutor):
     
     def parse_macro_key(self, key):
         return key_parser_pynput.parse_key(key)
+    
+    def get_settings_items(self):
+        settings = []
+        # TODO Update settings keys to be executor exclusive
+        settings.append(SettingsItem("Trigger delay", "triggerDelay", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay jitter", "triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay", "stratagemKeyDelay", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay jitter", "stratagemKeyDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
+
+        return settings

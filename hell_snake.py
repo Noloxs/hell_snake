@@ -23,7 +23,6 @@ def main():
         print("Please configure a supported view framework in the settings.", file=sys.stderr)
         sys.exit(1)
 
-    view.add_executor_settings()
     controller.set_view(view)
 
 if __name__ == "__main__":

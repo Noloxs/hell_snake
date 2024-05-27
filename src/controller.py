@@ -6,23 +6,27 @@ from src import constants
 class Controller:
     def __init__(self, model):
         self.model = model
-        settings = Settings.getInstance()
-        if settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
+        self.settings = Settings.getInstance()
+
+        self.set_executor()
+        self.keyListener = PynputKeyListener(self.model, self)
+    
+    def set_executor(self):
+        selectedExecutor = self.settings.selectedExecutor
+        if selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
+        elif selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
             self.executer = ArduinoPassthroughExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
+        elif selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
+        elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
             from src.executer_xdotool import XdotoolExecuter
             self.executer = XdotoolExecuter(self.model)
         else:
             raise ModuleNotFoundError
-
-        self.keyListener = PynputKeyListener(self.model, self)
     
     def set_view(self, view):
         self.view = view

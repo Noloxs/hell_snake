@@ -1,6 +1,7 @@
 from src.executer_base import BaseExecutor
 import serial.tools.list_ports
-from src import utilities
+from src import utilities, constants
+from src.executer_base import SettingsItem
 
 START_HEX = "fb"
 TERMINATION_HEX = "f7"
@@ -29,6 +30,20 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         hexToSend += TERMINATION_HEX
 
         self.send_bytes(bytes.fromhex(hexToSend))
+    
+    def get_menu_items(self):
+        pass
+
+    def get_settings_items(self):
+        settings = []
+        # TODO Update settings keys to be executor exclusive
+        settings.append(SettingsItem("Trigger delay", "triggerDelay", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay jitter", "triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay", "stratagemKeyDelay", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay jitter", "stratagemKeyDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Header", None, constants.SETTINGS_VALUE_TYPE_HEADER))
+
+        return settings
 
     def send_bytes(self, bytes):
         if self.arduino is not None:
