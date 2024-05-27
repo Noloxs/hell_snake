@@ -15,16 +15,16 @@ class Controller:
         selectedExecutor = self.settings.selectedExecutor
         if selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executer_pynput import PynputExecuter
-            self.executer = PynputExecuter(self.model)
+            self.executer = PynputExecuter()
         elif selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
-            self.executer = ArduinoPassthroughExecuter(self.model)
+            self.executer = ArduinoPassthroughExecuter()
         elif selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
-            self.executer = PyAutoGuiExecuter(self.model)
+            self.executer = PyAutoGuiExecuter()
         elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
             from src.executer_xdotool import XdotoolExecuter
-            self.executer = XdotoolExecuter(self.model)
+            self.executer = XdotoolExecuter()
         else:
             raise ModuleNotFoundError
     
@@ -39,6 +39,8 @@ class Controller:
     
     def set_armed(self, isArmed):
         self.model.set_armed(isArmed)
+        if isArmed:
+            self.executer.prepare()
         self.view.update_armed()
     
     def show_change_macro_dialog(self, key):

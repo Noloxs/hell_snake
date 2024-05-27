@@ -17,6 +17,9 @@ class BaseExecutor(ABC):
   
   def get_settings_items(self):
     return []
+  
+  def prepare(self):
+    raise NotImplementedError
 
 class MenuItem():
   def __init__(self, title, icon, callback):
