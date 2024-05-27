@@ -77,6 +77,7 @@ class Settings:
             del self.strategemKeyDelayJitter
         print("Settings migrated to version 2. Remember to save.")
 
+
 class Loadout:
     """
     Simple data class designed to handle the storage and management of different 

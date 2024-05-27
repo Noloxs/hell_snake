@@ -16,26 +16,25 @@ def stratagems():
 
     return stratagems
 
-class TestViewUtilities:
-    # Define the tests
-    def test_filter_stratagems(self, stratagems):
-        filtered = filter_stratagems(stratagems, "re")
-        assert len(filtered) == 2
-        assert 2 in filtered
-        assert 4 in filtered
+# Define the tests
+def test_filter_stratagems(stratagems):
+    filtered = filter_stratagems(stratagems, "re")
+    assert len(filtered) == 2
+    assert 2 in filtered
+    assert 4 in filtered
 
-        filtered = filter_stratagems(stratagems, "can")
-        assert len(filtered) == 1
-        assert 1 in filtered
-        
-        filtered = filter_stratagems(stratagems, "")
-        assert len(filtered) == len(stratagems)
+    filtered = filter_stratagems(stratagems, "can")
+    assert len(filtered) == 1
+    assert 1 in filtered
+    
+    filtered = filter_stratagems(stratagems, "")
+    assert len(filtered) == len(stratagems)
 
-    def test_sort_stratagems(self, stratagems):
-        sorted_stratagems = sort_stratagems(stratagems)
-        sorted_ids = list(sorted_stratagems.keys())
+def test_sort_stratagems(stratagems):
+    sorted_stratagems = sort_stratagems(stratagems)
+    sorted_ids = list(sorted_stratagems.keys())
 
-        # Expected order by category and then name
-        expected_order = [3, 4, 2, 1]  # Defensive -> Offensive -> Offensive and Attack -> Counter Attack
+    # Expected order by category and then name
+    expected_order = [3, 4, 2, 1]  # Defensive -> Offensive -> Offensive and Attack -> Counter Attack
 
-        assert sorted_ids == expected_order
+    assert sorted_ids == expected_order
