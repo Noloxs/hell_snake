@@ -24,9 +24,10 @@ class Settings:
         return cls._instance
 
     def __init__(self):
-        # Load settings from file, use defaults if there is no file
-        if not self.loadFromFile():
-            self.loadDefaults()
+        # Load defaults, protecting against missing values
+        self.loadDefaults()
+        # Load settings from file, overriding defaults as needed
+        self.loadFromFile()
         ## Consider no version to be version 1
         if not hasattr(self, "version") or self.version < 2:
             self.migrate_1_to_2()
@@ -39,7 +40,6 @@ class Settings:
         """
         We load a base set of settings, in case the user has no settings file.
         """
-        self.version = 2
         self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
         self.triggerKey = "ctrl"
         self.triggerDelay = 100
