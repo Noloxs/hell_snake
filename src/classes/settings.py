@@ -24,6 +24,22 @@ class Settings:
         return cls._instance
 
     def __init__(self):
+        # Load defaults, protecting against missing values
+        self.loadDefaults()
+        # Load settings from file, overriding defaults as needed
+        self.loadFromFile()
+        ## Consider no version to be version 1
+        if not hasattr(self, "version") or self.version < 2:
+            self.migrate_1_to_2()
+        ## For future use:
+        # if self.version == 2:
+        #     self.migrate_2_to_3()
+        print("Settings initialized")
+
+    def loadDefaults(self):
+        """
+        We load a base set of settings, in case the user has no settings file.
+        """
         self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
         self.triggerKey = "ctrl"
         self.triggerDelay = 100
@@ -35,29 +51,32 @@ class Settings:
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
         self.view_framework = constants.VIEW_PYQT5
-        self.loadFromFile()
-        ## Consider no version to be version 1
-        if not hasattr(self, "version") or self.version < 2:
-            self.migrate_1_to_2()
-        ## For future use:
-        # if self.version == 2:
-        #     self.migrate_2_to_3()
-        print("Settings initialized")
 
     def loadFromFile(self):
         try:
             with open(constants.SETTINGS_PATH) as json_file:
                 data = json.load(json_file)
-                for attribute, value in data.items():
-                    setattr(self, attribute, value)
-                    if attribute == "loadouts":
-                        loadouts = {}
-                        for id, item in value.items():
-                            loadout = Loadout(**item)
-                            loadouts[id] = loadout
-                        self.loadouts = loadouts
+                if 'loadouts' in data:
+                    self.parseLoadouts(data['loadouts'])
+                self.parseSettings(data)
+            return True
         except (OSError, json.JSONDecodeError):
-            pass  # we use defaults if there's an error reading or decoding the file
+            return False
+
+    def parseLoadouts(self, loadout_data):
+        # We expect the root loadouts element
+        loadouts = {}
+        for id, item in loadout_data.items():
+            loadout = Loadout(item['name'], item['macroKeys'])
+            loadouts[id] = loadout
+        self.loadouts = loadouts
+
+    def parseSettings(self, settings_data):
+        for attribute, value in settings_data.items():
+            # Exclude 'loadouts' from this general assignment because it's already processed
+            if attribute != 'loadouts':
+                setattr(self, attribute, value)
+
 
     def saveToFile(self):
         with open(constants.SETTINGS_PATH, "w") as file:
