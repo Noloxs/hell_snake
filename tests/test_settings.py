@@ -35,16 +35,16 @@ def test_configuration_should_change_when_loaded_from_file(mock_file):
     assert settings.triggerKey == "shift"
     assert settings.globalArmKey == "n"
 
-@patch("builtins.open", new_callable=mock_open, read_data='{"stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
+@patch("builtins.open", new_callable=mock_open, read_data='{"version":1, "stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
 @patch("src.classes.settings.Settings.migrate_1_to_2", new_callable=MagicMock)
-def test_configuration_should_be_migrated_when_version_is_old(mock_migrate_method, mock_file):
+def test_configuration_should_be_migrated_when_version_is_1(mock_migrate_method, mock_file):
     Settings.getInstance()
     # Confirm that migrate_1_to_2 was called once.
     mock_migrate_method.assert_called_once()
 
 @patch("builtins.open", new_callable=mock_open, read_data='{"stratagemKeys": ["w", "a", "s", "d"], "strategemKeyDelay": 50, "strategemKeyDelayJitter": 20}')
 @patch("src.classes.settings.Settings.migrate_2_to_3", new_callable=MagicMock)
-def test_configuration_should_be_migrated_when_version_is_old(mock_migrate_method, mock_file):
+def test_configuration_should_be_migrated_when_version_is_2(mock_migrate_method, mock_file):
     Settings.getInstance()
     # Confirm that migrate_2_to_3 was called once.
     mock_migrate_method.assert_called_once()

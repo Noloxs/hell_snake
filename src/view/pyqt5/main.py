@@ -4,7 +4,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
 from src.classes.settings import Settings
-from src.executer_arduino import ArduinoPassthroughExecuter
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
@@ -174,8 +173,6 @@ class MainWindow(QMainWindow):
         self.loadout_menu.addAction(loadout_edit_action)
 
     def update_executor_menu(self):
-        executor = self.controller.executer
-
         if hasattr(self, "menu_items"):
             for item in self.menu_items:
                 for action in self.toolbar.actions():
