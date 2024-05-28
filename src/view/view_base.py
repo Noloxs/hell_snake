@@ -13,6 +13,10 @@ def update_armed(self):
     raise NotImplementedError
 
 @abstractmethod
+def update_title_description(self, description):
+    raise NotImplementedError
+
+@abstractmethod
 def show_change_macro_dialog(self, key):
     raise NotImplementedError
 

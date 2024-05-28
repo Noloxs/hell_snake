@@ -27,6 +27,7 @@ class Controller:
         else:
             raise ModuleNotFoundError
         self.view.update_executor_menu()
+        self.executer.initialize()
 
     def update_executor_menu(self):
         self.view.update_executor_menu()
@@ -47,6 +48,9 @@ class Controller:
             self.executer.prepare()
         self.view.update_armed()
     
+    def update_title_description(self, description):
+        self.view.update_title_description(description)
+
     def show_change_macro_dialog(self, key):
         self.view.show_change_macro_dialog(key)
 

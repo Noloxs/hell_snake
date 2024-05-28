@@ -4,6 +4,9 @@ class BaseExecutor(ABC):
   def __init__(self):
     pass
 
+  def initialize(self):
+    pass
+
   @abstractmethod
   def on_macro_triggered(self):
     raise NotImplementedError

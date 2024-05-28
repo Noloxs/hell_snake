@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame
 from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -36,13 +36,31 @@ class MainWindow(QMainWindow):
         self.armedIcon.setScaledContents(True)
         self.hBox.addWidget(self.armedIcon)
 
+        self.title_box = QVBoxLayout()
+        self.title_box.setSpacing(4)
+        self.title_box.setContentsMargins(0,0,0,0)
+
         self.loadout = QLabel()
-        self.loadout.setFixedHeight(70)
         self.loadout.setAlignment(Qt.AlignVCenter|Qt.AlignLeft)
         font = QFont("Arial", 24)
         font.setBold(True)
         self.loadout.setFont(font)
-        self.hBox.addWidget(self.loadout)
+        self.title_box.addWidget(self.loadout)
+
+        self.title_line = QFrame()
+        self.title_line.setFrameShape(QFrame.HLine)
+        self.title_line.setFrameShadow(QFrame.Sunken)
+        self.title_line.setVisible(False)
+        self.title_box.addWidget(self.title_line)
+
+        self.loadout_desc = QLabel()
+        self.loadout_desc.setAlignment(Qt.AlignTop|Qt.AlignLeft)
+        font = QFont("Arial", 12)
+        self.loadout_desc.setFont(font)
+        self.loadout_desc.setVisible(False)
+        self.title_box.addWidget(self.loadout_desc)
+
+        self.hBox.addLayout(self.title_box)
         self.vBox.addLayout(self.hBox)
 
         self.armedBar = QLabel()
@@ -93,6 +111,15 @@ class MainWindow(QMainWindow):
             self.armedBar.setStyleSheet("background-color: gray")
             self.arm_action.setText("Arm")
     
+    def update_title_description(self, description):
+        if description is None:
+            self.title_line.setVisible(False)
+            self.loadout_desc.setVisible(False)
+        else:
+            self.title_line.setVisible(True)
+            self.loadout_desc.setText(description)
+            self.loadout_desc.setVisible(True)
+
     def update_current_loadout(self):
         currentLoadout = self.controller.model.currentLoadout
         if currentLoadout is not None:

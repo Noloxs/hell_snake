@@ -23,6 +23,9 @@ class PyQT5View(BaseView):
     def update_armed(self):
         self.window.update_armed()
     
+    def update_title_description(self, description):
+        self.window.update_title_description(description)
+
     def on_loadout_changed(self):
         self.window.update_loadout_menu_items()
     
