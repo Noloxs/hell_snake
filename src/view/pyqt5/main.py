@@ -101,7 +101,8 @@ class MainWindow(QMainWindow):
 
     def setup_toolbar_menu(self):
         # Create a Files menu
-        files_menu = self.menuBar().addMenu("Files")
+        self.toolbar = self.menuBar()
+        files_menu = self.toolbar.addMenu("Files")
 
         settingsOptions = files_menu.addMenu(QIcon(constants.ICON_BASE_PATH+"settings.svg"), "Settings")
 
@@ -125,9 +126,9 @@ class MainWindow(QMainWindow):
 
         self.arm_action = QAction("Arm", self)
         self.arm_action.triggered.connect(self.controller.toggle_armed)
-        self.menuBar().addAction(self.arm_action)
+        self.toolbar.addAction(self.arm_action)
 
-        self.loadout_menu = self.menuBar().addMenu("Loadouts")
+        self.loadout_menu = self.toolbar.addMenu("Loadouts")
         self.update_loadout_menu_items()
     
     def update_loadout_menu_items(self):
@@ -143,27 +144,37 @@ class MainWindow(QMainWindow):
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
         self.loadout_menu.addAction(loadout_edit_action)
 
-    def add_executor_settings(self):
+    def update_executor_menu(self):
         executor = self.controller.executer
-        if isinstance(executor,ArduinoPassthroughExecuter):
-            self.select_serial = self.menuBar().addMenu("Select serial")
-            self.update_serial_menu()
+
+        if hasattr(self, "menu_items"):
+            for item in self.menu_items:
+                for action in self.toolbar.actions():
+                    if action.text() == item.title:
+                        self.toolbar.removeAction(action)
+                        break
+
+        self.menu_items = self.controller.executer.get_menu_items()
+        for item in self.menu_items:
+            self.add_executor_menu_item(self.toolbar, item)
     
-    def update_serial_menu(self):
-        executor = self.controller.executer
-        self.select_serial.clear()
-        connection = executor.get_current_connection()
-        physical_addresses = executor.get_physical_addresses()
-        for port, desc, hwid in sorted(physical_addresses):
-            serial = QAction(desc, self)
-            serial.triggered.connect(lambda checked, port=port: self.connect_to_serial(port))
-            if port == connection:
-                serial.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected")) # TODO Change icon to a selected icon
-            self.select_serial.addAction(serial)
-    
-    def connect_to_serial(self, port):
-        self.controller.executer.connect_to_arduino(port)
-        self.update_serial_menu()
+    def add_executor_menu_item(self, parent, menu_item):
+        if menu_item.menu_type == constants.MENU_TYPE_MENU:
+            if menu_item.icon is None:
+                menu = parent.addMenu(menu_item.title)
+            else:
+                menu = parent.addMenu(QIcon(menu_item.icon), menu_item.title)
+            
+            for item in menu_item.children:
+                self.add_executor_menu_item(menu, item)
+
+        elif menu_item.menu_type == constants.MENU_TYPE_ACTION:
+            action = QAction(menu_item.title, self)
+            if menu_item.callback is not None:
+                action.triggered.connect(menu_item.callback)
+            if menu_item.icon is not None:
+                action.setIcon(QIcon(menu_item.icon))
+            parent.addAction(action)
 
     def open_edit_loadout_dialog(self):
         dialog = EditLoadoutDialog(self.controller)

@@ -8,7 +8,6 @@ class Controller:
         self.model = model
         self.settings = Settings.getInstance()
 
-        self.set_executor()
         self.keyListener = PynputKeyListener(self.model, self)
     
     def set_executor(self):
@@ -18,7 +17,7 @@ class Controller:
             self.executer = PynputExecuter()
         elif selectedExecutor == constants.EXECUTOR_ARDUINO:
             from src.executer_arduino import ArduinoPassthroughExecuter
-            self.executer = ArduinoPassthroughExecuter()
+            self.executer = ArduinoPassthroughExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
             from src.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter()
@@ -27,9 +26,14 @@ class Controller:
             self.executer = XdotoolExecuter()
         else:
             raise ModuleNotFoundError
-    
+        self.view.update_executor_menu()
+
+    def update_executor_menu(self):
+        self.view.update_executor_menu()
+
     def set_view(self, view):
         self.view = view
+        self.set_executor()
         #TODO Replace with last used loadout
         self.set_active_loadout(self.model.get_next_loadout())
         self.view.show_interface()

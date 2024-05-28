@@ -116,7 +116,7 @@ class EditConfigDialog(QDialog):
         settings_items = self.controller.executer.get_settings_items()
         for i, item in enumerate(settings_items):
             if item.value_type == constants.SETTINGS_VALUE_TYPE_INT:
-                value = getattr(self.settings, item.key, 0)
+                value = getattr(self.settings, item.key, item.default_value)
                 self.add_key_binding(self.executor_grid_layout, item.title, str(value), i > 0, lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(self, key, self.update_executor_settings).on_next_value))
             elif item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER:
                 self.add_settings_headline(self.executor_grid_layout, item.title)

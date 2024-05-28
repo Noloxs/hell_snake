@@ -1,11 +1,13 @@
 from src.executer_base import BaseExecutor
 import serial.tools.list_ports
 from src import utilities, constants
-from src.executer_base import SettingsItem
+from src.executer_base import SettingsItem, MenuItem
 from src.classes.settings import Settings
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
+KEY_DELAY_DEFAULT = 30
 KEY_DELAY_JITTER = "arduino_stratagemKeyDelayJitter"
+KEY_DELAY_JITTER_DEFAULT = 20
 
 START_HEX = "fb"
 TERMINATION_HEX = "f7"
@@ -14,14 +16,16 @@ HOLD_KEY_HEX = "f8"
 RELEASE_KEY_HEX = "f9"
 
 class ArduinoPassthroughExecuter(BaseExecutor):
-    def __init__(self):
+    def __init__(self, controller):
         super().__init__()
         self.arduino = None
         self.settings = Settings.getInstance()
+        self.controller = controller
         self.triggerKey = self.parse_macro_key(self.settings.triggerKey)
 
     def connect_to_arduino(self, port):
         self.arduino = serial.Serial(port, baudrate=115200, timeout=.1)
+        self.controller.update_executor_menu()
         # TODO Send connection test message
     
     def on_macro_triggered(self, macro):
@@ -36,22 +40,36 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.send_bytes(bytes.fromhex(hexToSend))
 
     def get_menu_items(self):
-        pass
+        menu_items = []
+
+        select_serial = MenuItem("Select serial", None, None, constants.MENU_TYPE_MENU)
+        connection = self.get_current_connection()
+        physical_addresses = self.get_physical_addresses()
+        for port, desc, hwid in sorted(physical_addresses):
+            if port == connection:
+                icon = constants.ICON_BASE_PATH+"serial_connected"
+            else:
+                icon = None
+            select_serial.children.append(MenuItem(desc, icon, lambda checked, port=port: self.connect_to_arduino(port), constants.MENU_TYPE_ACTION))
+
+        menu_items.append(select_serial)
+
+        return menu_items
 
     def get_settings_items(self):
         settings = []
         # TODO Update Arduino code to support trigger delay ms
         #settings.append(SettingsItem("Trigger delay", "arduino_triggerDelay", constants.SETTINGS_VALUE_TYPE_INT))
         #settings.append(SettingsItem("Trigger delay jitter", "arduino_triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Stratagem key delay", KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Header", None, constants.SETTINGS_VALUE_TYPE_HEADER))
+        settings.append(SettingsItem("Stratagem key delay", KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER_DEFAULT, KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Header", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
 
         return settings
 
     def prepare(self):
-        self.keyDelay = getattr(self.settings, KEY_DELAY, 30)
-        self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, 20)
+        self.keyDelay = getattr(self.settings, KEY_DELAY, KEY_DELAY_DEFAULT)
+        self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, KEY_DELAY_JITTER_DEFAULT)
 
     def send_bytes(self, bytes):
         if self.arduino is not None:

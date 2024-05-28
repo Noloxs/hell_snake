@@ -5,9 +5,13 @@ from src.executer_base import SettingsItem
 from src.classes.settings import Settings
 
 TRIGGER_DELAY = "pynput_triggerDelay"
+TRIGGER_DELAY_DEFAULT = 100
 TRIGGER_DELAY_JITTER = "pynput_triggerDelayJitter"
+TRIGGER_DELAY_JITTER_DEFAULT = 30
 KEY_DELAY = "pynput_stratagemKeyDelay"
+KEY_DELAY_DEFAULT = 30
 KEY_DELAY_JITTER = "pynput_stratagemKeyDelayJitter"
+KEY_DELAY_JITTER_DEFAULT = 20
 
 class PynputExecuter(BaseExecutor):
     def __init__(self):
@@ -36,15 +40,15 @@ class PynputExecuter(BaseExecutor):
     
     def get_settings_items(self):
         settings = []
-        settings.append(SettingsItem("Trigger delay", TRIGGER_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Trigger delay jitter", TRIGGER_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Stratagem key delay", KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay", TRIGGER_DELAY_DEFAULT, TRIGGER_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay jitter", TRIGGER_DELAY_JITTER_DEFAULT, TRIGGER_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay",KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER_DEFAULT, KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
 
         return settings
     
     def prepare(self):
-        self.triggerDelay = getattr(self.settings, TRIGGER_DELAY, 100)
-        self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, 30)
-        self.keyDelay = getattr(self.settings, KEY_DELAY, 30)
-        self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, 20)
+        self.triggerDelay = getattr(self.settings, TRIGGER_DELAY, TRIGGER_DELAY_DEFAULT)
+        self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, TRIGGER_DELAY_JITTER_DEFAULT)
+        self.keyDelay = getattr(self.settings, KEY_DELAY, KEY_DELAY_DEFAULT)
+        self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, KEY_DELAY_JITTER_DEFAULT)

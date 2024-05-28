@@ -23,3 +23,7 @@ def update_current_loadout(self):
 @abstractmethod
 def on_loadout_changed(self):
     raise NotImplementedError
+
+@abstractmethod
+def update_executor_menu(self):
+    raise NotImplementedError
