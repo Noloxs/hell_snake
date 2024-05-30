@@ -42,10 +42,15 @@ class ArduinoPassthroughExecuter(BaseExecutor):
                     return
 
     def connect_to_arduino(self, port):
+        # Ensure any existing serial connection is properly closed before establishing a new one
+        if self.arduino is not None:
+            self.arduino.close()
+            self.arduino = None
+
         self.arduino = serial.Serial(port.device, baudrate=115200, timeout=.1)
         self.controller.update_executor_menu()
-        setattr(self.settings, KEY_LAST_CONNECTED, str(port.vid)+"-"+str(port.pid))
-        self.controller.update_title_description("Connected to: "+port.name)
+        setattr(self.settings, KEY_LAST_CONNECTED, str(port.vid) + "-" + str(port.pid))
+        self.controller.update_title_description("Connected to: " + port.name)
 
         # TODO Send connection test message
     
