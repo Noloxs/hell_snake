@@ -10,6 +10,9 @@ KEY_DELAY_JITTER = "arduino_stratagemKeyDelayJitter"
 KEY_DELAY_JITTER_DEFAULT = 20
 KEY_LAST_CONNECTED = "arduino_lastConnectedDevice"
 KEY_LAST_CONNECTED_DEFAULT = None
+KEY_AUTO_RECONNECT = "arduino_autoReconnect"
+KEY_AUTO_RECONNECT_DEFAULT = True
+
 
 START_HEX = "fb"
 TERMINATION_HEX = "f7"
@@ -25,7 +28,8 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.controller = controller
 
     def initialize(self):
-        self.attempt_auto_connect()
+        if getattr(self.settings, KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
+            self.attempt_auto_connect()
         self.prepare()
 
     def attempt_auto_connect(self):
@@ -80,7 +84,8 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         #settings.append(SettingsItem("Trigger delay jitter", "arduino_triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay", KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER_DEFAULT, KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
-        settings.append(SettingsItem("Header", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
+        settings.append(SettingsItem("Hardware Connection", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
+        settings.append(SettingsItem("Auto re-connect to latest device", KEY_AUTO_RECONNECT_DEFAULT, KEY_AUTO_RECONNECT, constants.SETTINGS_VALUE_TYPE_BOOL))
 
         return settings
 
