@@ -1,6 +1,6 @@
 # Hell Snake
 
-Welcome to Hell Snake, a Python program designed for managing and running macros for the game Hell Divers 2.
+Welcome to Hell Snake, a Python program designed for managing and running stratagem macros for the game Hell Divers 2.
 
 ## Overview
 
@@ -9,9 +9,9 @@ Hell Snake simplifies the process of executing macros in the game Hell Divers 2,
 ## Features
 ### Current
 
-- **Macro Management**: Easily create, edit, and execute macros tailored to your gameplay needs.
-- **Customization**: Customize macros to suit your playstyle and preferences.
-- **Efficiency**: Enhance your gameplay efficiency by reducing manual input tasks.
+- **Macro Management**: Easily create and edit loadouts of your favorite stratagems tailored to your gameplay needs.
+- **Customization**: Customize executors, delays macro triggers etc. to suit your playstyle and preferences.
+- **Increased democracy**: Enhances your gameplay with at least 17% more democracy.
 
 ## Installation
 
@@ -66,60 +66,58 @@ Look into the Makefile for the exact targets and what the do.
 
 ## Configuration
 
-To configure Hell Snake you need to create or modify a json file named: **settings.json** file located in the root of the project folder
+All the configuration options in hell snake is accessible through the interface it self.
 
-__The easiest way to get started is using the: Dump settings option found in the menu under files. This will print out all the default options in the terminal__
+__NB: Currently settings changes are not saved automatically. To save changes to key bindings, loadouts etc. Go to Files -> Settings -> Save settings__
 
-### Change keyboard emulator
-Change the value of __selectedExecutor__ to one of the supported emulators e.g. __pyautogui__, __pynput__ or __arduino__
+### System settings
+To configure hell snake to your needs go to **Files** -> **Settings** -> **Edit settings**
 
-```
-"selectedExecutor": "pynput"
-```
+#### Key Bindings - Stratagem Bindings
+Here you can change the keys used in hell divers to call down stratagems
 
-### Change stratagem control keys
+__These should match your in game settings exactly__
 
-#### Trigger key
-To change which keys are used to call in stratgems first start by setting the trigger key, this is the key that you hold down while activating your stratagems
+#### Key Bindings - Global arm bindings
+You can define a key which allows you to arm and disarm the macro execution. __This is default off__.
 
-```
-"triggerKey": "ctrl"
-```
+You can us any of the valid input keys and switch between the two supported modes:
 
-You can also change the delay that is used between holding the triggerKey and starting to activate the stratagems in milliseconds using:
+- "**toggle**" Which toggles between armed and disarmed with each press
+- "**push**" Which arms the macros while the key is pressed down and disarmed when released
+
+#### Executor Settings
+Change the selected executor to one of the supported emulators:
+
+| Executor            | Windows | Linux | Mac OS | Notes                        |
+|---------------------|---------|-------|--------|------------------------------|
+| Pynput              | ?       | 🮱    | ?      |                              |
+| pyautogui           | ?       | 🮱    | ?      |                              |
+| Xdotool             | X       | 🮱    | X      |                              |
+| Arduino passthrough | 🮱      | 🮱    | ?      | Requires additional hardware |
+|
+
+- 🮱 Confirmed to work
+- X Not supported
+- ? Unconfirmed
+
+
+Each executor has their own settings to further customize them.
+Common among most executors are the trigger delays and stratagem delays
+
+**Trigger delay** Is the delay between holding the 'Open stratagem list' key and starting to activate the stratagems in milliseconds using:
 
 __E.g.: 100ms delay with 30ms of jitter, meaning a delay between 100ms and 130ms__
 
-```
-"triggerDelay": 100,
-"triggerDelayJitter": 30
-```
-
-#### Command keys
-The stratagem keys are defined as an array in the order: UP, LEFT, DOWN, RIGHT
-
-```
-stratagemKeys": [
-    "w",
-    "a",
-    "s",
-    "d"
-  ]
-```
 You can also change the delay that is used between each stratagems key press in milliseconds using:
 
 __E.g.: 30ms delay with 20ms of jitter, meaning a delay between 30ms and 50ms__
-
-```
-"stratagemKeyDelay": 30,
-"stratagemKeyDelayJitter": 20
-```
 
 ### Stratagem loadouts
 
 Your loadouts can all be managed through the GUI going to **Loadouts** -> **Edit loadouts**
 
-__The blue options are applied immediately, where as green are only applied after pressing the save button__
+__The blue options are applied immediately, where as green are only applied after pressing the apply button (10)__
 
 #### Loadout options
 1) Add a new loadout to your configuration
@@ -134,18 +132,6 @@ __The blue options are applied immediately, where as green are only applied afte
 10) Press to apply changes to current loadout
 
 ![Image of the edit loadouts menu](https://raw.githubusercontent.com/Noloxs/hell_snake/main/docs/edit_loadouts.png)
-
-### Global arming key
-You can define a key which allows you to arm and disarm the macro execution. __This is default off__.
-You can us any of the valid input keys and switch between the two supported modes:
-
-- "**toggle**" Which toggles between armed and disarmed with each press
-- "**push**" Which arms the macros while the key is pressed down and disarmed when released
-
-```
-"globalArmKey": "n",
-"globalArmMode": "toggle"
-```
 
 ## Usage
 

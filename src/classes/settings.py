@@ -31,9 +31,8 @@ class Settings:
         ## Consider no version to be version 1
         if not hasattr(self, "version") or self.version < 2:
             self.migrate_1_to_2()
-        ## For future use:
-        # if self.version == 2:
-        #     self.migrate_2_to_3()
+        if self.version == 2:
+            self.migrate_2_to_3()
         print("Settings initialized")
 
     def loadDefaults(self):
@@ -42,11 +41,7 @@ class Settings:
         """
         self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
         self.triggerKey = "ctrl"
-        self.triggerDelay = 100
-        self.triggerDelayJitter = 30
         self.stratagemKeys = ["w", "a", "s", "d"]
-        self.stratagemKeyDelay = 30
-        self.stratagemKeyDelayJitter = 20
         self.selectedExecutor = constants.EXECUTOR_PYNPUT
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
@@ -96,6 +91,20 @@ class Settings:
             del self.strategemKeyDelayJitter
         print("Settings migrated to version 2. Remember to save.")
 
+    def migrate_2_to_3(self):
+        self.version = 3
+
+        #TODO Migrate values to executor?
+
+        if hasattr(self, "triggerDelay"):
+            del self.triggerDelay
+        if hasattr(self, "triggerDelayJitter"):
+            del self.triggerDelayJitter
+        if hasattr(self, "stratagemKeyDelay"):
+            del self.stratagemKeyDelay
+        if hasattr(self, "stratagemKeyDelayJitter"):
+            del self.stratagemKeyDelayJitter
+        print("Settings migrated to version 3. Remember to save.")
 
 class Loadout:
     """

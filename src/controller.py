@@ -6,26 +6,35 @@ from src import constants
 class Controller:
     def __init__(self, model):
         self.model = model
-        settings = Settings.getInstance()
-        if settings.selectedExecutor == constants.EXECUTOR_PYNPUT:
-            from src.executer_pynput import PynputExecuter
-            self.executer = PynputExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_ARDUINO:
-            from src.executer_arduino import ArduinoPassthroughExecuter
-            self.executer = ArduinoPassthroughExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
-            from src.executer_pyautogui import PyAutoGuiExecuter
-            self.executer = PyAutoGuiExecuter(self.model)
-        elif settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
-            from src.executer_xdotool import XdotoolExecuter
-            self.executer = XdotoolExecuter(self.model)
-        else:
-            raise ModuleNotFoundError
+        self.settings = Settings.getInstance()
 
         self.keyListener = PynputKeyListener(self.model, self)
     
+    def set_executor(self):
+        selectedExecutor = self.settings.selectedExecutor
+        if selectedExecutor == constants.EXECUTOR_PYNPUT:
+            from src.executer_pynput import PynputExecuter
+            self.executer = PynputExecuter()
+        elif selectedExecutor == constants.EXECUTOR_ARDUINO:
+            from src.executer_arduino import ArduinoPassthroughExecuter
+            self.executer = ArduinoPassthroughExecuter(self)
+        elif selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
+            from src.executer_pyautogui import PyAutoGuiExecuter
+            self.executer = PyAutoGuiExecuter()
+        elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
+            from src.executer_xdotool import XdotoolExecuter
+            self.executer = XdotoolExecuter()
+        else:
+            raise ModuleNotFoundError
+        self.view.update_executor_menu()
+        self.executer.initialize()
+
+    def update_executor_menu(self):
+        self.view.update_executor_menu()
+
     def set_view(self, view):
         self.view = view
+        self.set_executor()
         #TODO Replace with last used loadout
         self.set_active_loadout(self.model.get_next_loadout())
         self.view.show_interface()
@@ -35,8 +44,13 @@ class Controller:
     
     def set_armed(self, isArmed):
         self.model.set_armed(isArmed)
+        if isArmed:
+            self.executer.prepare()
         self.view.update_armed()
     
+    def update_title_description(self, description):
+        self.view.update_title_description(description)
+
     def show_change_macro_dialog(self, key):
         self.view.show_change_macro_dialog(key)
 

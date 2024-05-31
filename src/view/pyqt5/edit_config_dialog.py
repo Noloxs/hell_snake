@@ -52,7 +52,7 @@ class EditConfigDialog(QDialog):
         self.key_grid_layout = QGridLayout()
         self.key_layout.addLayout(self.key_grid_layout)
 
-        self.add_settings_headline(self.key_grid_layout, "Statagem bindings")
+        self.add_settings_headline(self.key_grid_layout, "Stratagem bindings")
         
         self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self, "triggerKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Up", self.settings.stratagemKeys[0], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 0).on_next_key))
@@ -113,10 +113,31 @@ class EditConfigDialog(QDialog):
         elif self.settings.selectedExecutor == constants.EXECUTOR_XDOTOOL:
             self.add_settings_headline(self.executor_grid_layout, "XDPTool settings")
         
-        self.add_key_binding(self.executor_grid_layout, "Trigger delay", str(self.settings.triggerDelay), False, lambda: self.show_number_input_dialog(self.settings.triggerDelay, SettingsBindingHandler(self, "triggerDelay", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Trigger delay jitter", str(self.settings.triggerDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.triggerDelayJitter, SettingsBindingHandler(self, "triggerDelayJitter", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay", str(self.settings.stratagemKeyDelay), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelay, SettingsBindingHandler(self, "stratagemKeyDelay", self.update_executor_settings).on_next_value))
-        self.add_key_binding(self.executor_grid_layout, "Stratagem key delay jitter", str(self.settings.stratagemKeyDelayJitter), True, lambda: self.show_number_input_dialog(self.settings.stratagemKeyDelayJitter, SettingsBindingHandler(self, "stratagemKeyDelayJitter", self.update_executor_settings).on_next_value))
+        settings_items = self.controller.executer.get_settings_items()
+        previous_item = None
+ 
+        for i, item in enumerate(settings_items):
+            if item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER:
+                self.add_settings_headline(self.executor_grid_layout, item.title)
+            else:
+                value = getattr(self.settings, item.key, item.default_value)
+                if i == 0 or previous_item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER:
+                    show_separator = False
+                else:
+                    show_separator = True
+
+                if item.value_type == constants.SETTINGS_VALUE_TYPE_INT:
+                    value_desc = str(value)
+                    callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(key, self.update_executor_settings).on_next_value)
+                elif item.value_type == constants.SETTINGS_VALUE_TYPE_BOOL:
+                    if value:
+                        value_desc = "Yes"
+                    else:
+                        value_desc = "No"
+                    callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(key, self.update_executor_settings).on_next_value(not current_value)
+                
+                self.add_key_binding(self.executor_grid_layout, item.title, value_desc, show_separator, callback)
+            previous_item = item
 
     def open_executor_selector_dialog(self):
         items = {
@@ -131,6 +152,7 @@ class EditConfigDialog(QDialog):
 
     def change_selected_executor(self, executor):
         self.settings.selectedExecutor = executor
+        self.controller.set_executor()
         self.update_executor_settings()
 
     def show_number_input_dialog(self, current_value, on_number_entered):
@@ -187,13 +209,13 @@ class EditConfigDialog(QDialog):
         return button
 
 class SettingsBindingHandler:
-    def __init__ (self, edit_config_dialog, settings_key, callback):
+    def __init__ (self, settings_key, callback):
         self.settings_key = settings_key
-        self.edit_config_dialog = edit_config_dialog
         self.callback = callback
 
     def on_next_value(self, value):
-        setattr(self.edit_config_dialog.settings, self.settings_key, value)
+        settings = Settings.getInstance()
+        setattr(settings, self.settings_key, value)
         self.callback()
 
 class StratagemKeyBindingHandler:
