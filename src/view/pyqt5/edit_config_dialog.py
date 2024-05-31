@@ -52,7 +52,7 @@ class EditConfigDialog(QDialog):
         self.key_grid_layout = QGridLayout()
         self.key_layout.addLayout(self.key_grid_layout)
 
-        self.add_settings_headline(self.key_grid_layout, "Statagem bindings")
+        self.add_settings_headline(self.key_grid_layout, "Stratagem bindings")
         
         self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self, "triggerKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Up", self.settings.stratagemKeys[0], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 0).on_next_key))
