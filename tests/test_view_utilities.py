@@ -5,7 +5,7 @@ from src.stratagem import Stratagem
 @pytest.fixture
 def stratagems():
     stratagems = {}
-    strata = Stratagem("AC-8 Autocannon", "Weapon", "command", "icon_name")
+    strata = Stratagem("AC-8 Autocannon", "Weapon", "command", "")
     stratagems.update({1: strata})
     strata = Stratagem("Resupply", "Mission", "command", "icon_name")
     stratagems.update({2: strata})
@@ -38,3 +38,7 @@ def test_sort_stratagems(stratagems):
     expected_order = [3, 4, 2, 1]  # Defensive -> Offensive -> Offensive and Attack -> Counter Attack
 
     assert sorted_ids == expected_order
+
+def test_stratagem_placeholder_icon(stratagems):
+    assert stratagems.get(1).icon_name == "Placeholder.svg"
+    assert stratagems.get(2).icon_name == "icon_name"

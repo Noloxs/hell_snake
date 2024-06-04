@@ -3,7 +3,10 @@ class Stratagem:
     self.name = name
     self.category = category
     self.command = command
-    self.icon_name = icon_name
+    if icon_name == "":
+      self.icon_name = "Placeholder.svg"
+    else:
+      self.icon_name = icon_name
   
   def prepare_stratagem(self, model, executer):
     self.commandArray=[]

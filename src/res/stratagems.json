@@ -352,7 +352,7 @@
       "name": "Eagle Smoke Strike",
       "category": "Eagle",
       "command": [0,3,0,2],
-      "icon_name": "Orbital Smoke Strike.svg"
+      "icon_name": "Eagle Smoke Strike.svg"
     },
     "59": {
       "name": "Eagle 110MM Rocket Pods",
