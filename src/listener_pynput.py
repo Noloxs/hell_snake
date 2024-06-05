@@ -10,7 +10,38 @@ class PynputKeyListener:
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
         self.listener.start()
         self.getNextCallbacks = []
+        self.key_press_handlers = {
+            self.globalArmKey: self.handle_global_arm_press,
+            # TODO: Put these keys in settings
+            "+": self.handle_next_loadout,
+            "-": self.handle_prev_loadout,
+        }
+        self.key_release_handlers = {
+            self.globalArmKey: self.handle_global_arm_release
+        }
     
+
+    ### Handlers ###
+
+    # Global arm handler
+    def handle_global_arm_press(self, key):
+        if (self.model.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
+            self.controller.toggle_armed()
+        elif (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
+            self.controller.set_armed(True)
+    def handle_global_arm_release(self, key):
+        if (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH):
+            self.controller.set_armed(False)
+
+    # Loadout browser
+    def handle_next_loadout(self, key):
+        # TODO: Actually load next loutout
+        print('Next loadout')
+    def handle_prev_loadout(self, key):
+        # TODO: Actually load previous loutout
+        print('Previous loadout')
+
+    ### Helpers ###
     def on_press(self, key):
         if len(self.getNextCallbacks) > 0:
             strKey = self.parse_key_to_string(key)
@@ -22,12 +53,10 @@ class PynputKeyListener:
             return
 
         entry = self.parse_key(key)
-        if(self.globalArmKey is not None and self.globalArmKey == entry):
-            if (self.model.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
-                self.controller.toggle_armed()
-            elif (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
-                self.controller.set_armed(True)
-            return
+
+        # Call key handler
+        if entry in self.key_press_handlers:
+            self.key_press_handlers[entry](key)
 
         if(self.model.isArmed):
             macro = self.model.macros.get(entry, None)
@@ -35,14 +64,13 @@ class PynputKeyListener:
                 self.controller.trigger_macro(macro)
     
     def on_release(self, key):
-        if (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH):
-            if (key is None):
-                return
+        if (key is None):
+            return
+        entry = self.parse_key(key)
 
-            entry = self.parse_key(key)
-            if(self.globalArmKey is not None and self.globalArmKey == entry):
-                self.controller.set_armed(False)
-                return
+        # Call key handler
+        if entry in self.key_release_handlers:
+            self.key_release_handlers[entry](key)
 
     def parse_key(self, key):
         if isinstance(key, keyboard.Key):
