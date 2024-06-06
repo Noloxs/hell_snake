@@ -1,7 +1,7 @@
 from src.executer_base import BaseExecutor
 import subprocess
 from src import utilities, constants
-from src.executer_base import SettingsItem
+from src.view.view_base import SettingsItem
 from src.classes.settings import Settings
 
 TRIGGER_DELAY = "xdotool_triggerDelay"
@@ -53,6 +53,7 @@ class XdotoolExecuter(BaseExecutor):
     
     def get_settings_items(self):
         settings = []
+        settings.append(SettingsItem("xdotool settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
         settings.append(SettingsItem("Trigger delay",TRIGGER_DELAY_DEFAULT, TRIGGER_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Trigger delay jitter", TRIGGER_DELAY_JITTER_DEFAULT, TRIGGER_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay", KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))

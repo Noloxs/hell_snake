@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
 from src.classes.settings import Settings
+from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
@@ -12,11 +13,12 @@ class MainWindow(QMainWindow):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
+        self.settings = Settings.getInstance()
         self.setWindowTitle("Hell snake")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(350, 225)
         self.resize(350,225)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.update_view_settings()
 
         central_widget = QWidget()
         central_widget.setStyleSheet("background-color: white")
@@ -81,6 +83,12 @@ class MainWindow(QMainWindow):
     def on_macro_clicked(self, item):
         dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole), self.on_stratagem_selected)
         dialog.exec_()
+    
+    def update_view_settings(self):
+        if PyQT5Settings.isAlwaysOnTop():
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
     def update_macros(self):
         self.listwidget.clear()
@@ -160,8 +168,7 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        settings = Settings.getInstance()
-        for loadoutId, loadout in settings.loadouts.items():
+        for loadoutId, loadout in self.settings.loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)

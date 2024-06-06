@@ -31,3 +31,25 @@ def on_loadout_changed(self):
 @abstractmethod
 def update_executor_menu(self):
     raise NotImplementedError
+
+@abstractmethod
+def on_settings_changed(self):
+    raise NotImplementedError
+
+def get_settings_items(self):
+    return []
+
+class MenuItem():
+  def __init__(self, title, icon, callback, menu_type):
+    self.title = title
+    self.icon = icon
+    self.callback = callback
+    self.menu_type = menu_type
+    self.children = []
+
+class SettingsItem():
+  def __init__(self, title, default_value, key, value_type):
+    self.title = title
+    self.default_value = default_value
+    self.key = key
+    self.value_type = value_type
