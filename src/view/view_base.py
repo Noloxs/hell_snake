@@ -31,3 +31,7 @@ def on_loadout_changed(self):
 @abstractmethod
 def update_executor_menu(self):
     raise NotImplementedError
+
+@abstractmethod
+def on_settings_changed(self):
+    raise NotImplementedError

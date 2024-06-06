@@ -4,6 +4,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtSvg import QSvgWidget
 from copy import deepcopy
 from src import constants
+from src.classes.settings import Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.util import show_capture_key_dialog
 
@@ -17,6 +18,12 @@ class EditLoadoutDialog(QDialog):
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(300, 300)
         self.resize(300,600)
+
+        settings = Settings.getInstance()
+        if settings.alwaysOnTop:
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
         iconSize = QSize(30, 30)
         # Layout

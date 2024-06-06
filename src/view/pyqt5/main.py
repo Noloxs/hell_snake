@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(350, 225)
         self.resize(350,225)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.update_view_settings()
 
         central_widget = QWidget()
         central_widget.setStyleSheet("background-color: white")
@@ -81,6 +81,13 @@ class MainWindow(QMainWindow):
     def on_macro_clicked(self, item):
         dialog = FilteredListDialog(self.controller, item.data(Qt.UserRole), self.on_stratagem_selected)
         dialog.exec_()
+    
+    def update_view_settings(self):
+        settings = Settings.getInstance()
+        if settings.alwaysOnTop:
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
     def update_macros(self):
         self.listwidget.clear()

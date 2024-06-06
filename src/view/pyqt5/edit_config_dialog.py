@@ -14,6 +14,10 @@ class EditConfigDialog(QDialog):
         # Set up the dialog
         self.setWindowTitle("Edit settings")
         self.setGeometry(100, 100, 400, 300)
+        if self.settings.alwaysOnTop:
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
         
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -63,6 +67,14 @@ class EditConfigDialog(QDialog):
         self.add_settings_headline(self.key_grid_layout, "Global arm bindings")
         self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self, "globalArmKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Toggle mode", self.settings.globalArmMode, True, self.open_global_arm_mode_dialog)
+
+        self.add_settings_headline(self.key_grid_layout, "View options")
+        if self.settings.alwaysOnTop:
+            value_desc = "Yes"
+        else:
+            value_desc = "No"
+        callback = lambda checked, current_value=self.settings.alwaysOnTop, key="alwaysOnTop": SettingsBindingHandler(key, self.update_key_settings).on_next_value(not current_value)
+        self.add_key_binding(self.key_grid_layout, "Always on top", value_desc, False, callback)
     
     def open_global_arm_mode_dialog(self):
         items = {

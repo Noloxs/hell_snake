@@ -31,3 +31,6 @@ class PyQT5View(BaseView):
     
     def update_executor_menu(self):
         self.window.update_executor_menu()
+
+    def on_settings_changed(self):
+        self.window.update_view_settings()

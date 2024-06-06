@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
 from src import constants
+from src.classes.settings import Settings
 from src.view.view_utilities import filter_stratagems, sort_stratagems
 
 class FilteredListDialog(QDialog):
@@ -14,6 +15,12 @@ class FilteredListDialog(QDialog):
         self.key = key
         self.setMinimumSize(300, 300)
         self.resize(300,800)
+
+        settings = Settings.getInstance()
+        if settings.alwaysOnTop:
+            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
         self.setWindowTitle("Select new stratagem for: "+self.key)
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
