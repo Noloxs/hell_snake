@@ -31,6 +31,9 @@ class Controller:
 
     def update_executor_menu(self):
         self.view.update_executor_menu()
+    
+    def on_settings_changed(self):
+        self.view.on_settings_changed()
 
     def set_view(self, view):
         self.view = view

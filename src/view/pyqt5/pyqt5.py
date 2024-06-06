@@ -2,6 +2,9 @@ from src.view.view_base import BaseView
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, pyqtSignal, QObject
 from src.view.pyqt5.main import MainWindow
+from src import constants
+from src.view.view_base import SettingsItem
+from src.view.pyqt5.util import KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT
 
 class PyQT5View(BaseView):
     def __init__(self, controller):
@@ -32,6 +35,8 @@ class PyQT5View(BaseView):
             self.window.update_executor_menu()
         elif method_name == self.update_title_description.__name__:
             self.window.update_title_description(arguments[0])
+        elif method_name == self.on_settings_changed.__name__:
+            self.window.update_view_settings()
 
     def show_interface(self):
         self.ui_listener.update(self.show_interface.__name__, [])
@@ -53,6 +58,16 @@ class PyQT5View(BaseView):
 
     def update_executor_menu(self):
         self.ui_listener.update(self.update_executor_menu.__name__, [])
+    
+    def on_settings_changed(self):
+        self.ui_listener.update(self.on_settings_changed.__name__, [])
+    
+    def get_settings_items(self):
+        settings = []
+        settings.append(SettingsItem("PYQT5 Settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
+        settings.append(SettingsItem("Always on top", KEY_ALWAYS_ON_TOP_DEFAULT, KEY_ALWAYS_ON_TOP, constants.SETTINGS_VALUE_TYPE_BOOL))
+        
+        return settings
 
 class UiUpdateListener(QObject):
     ui = pyqtSignal(str, list)
