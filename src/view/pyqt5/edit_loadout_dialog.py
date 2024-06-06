@@ -6,7 +6,7 @@ from copy import deepcopy
 from src import constants
 from src.classes.settings import Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
-from src.view.pyqt5.util import show_capture_key_dialog
+from src.view.pyqt5.util import show_capture_key_dialog, PyQT5Settings
 
 class EditLoadoutDialog(QDialog):
     def __init__(self, controller):
@@ -19,8 +19,7 @@ class EditLoadoutDialog(QDialog):
         self.setMinimumSize(300, 300)
         self.resize(300,600)
 
-        settings = Settings.getInstance()
-        if settings.alwaysOnTop:
+        if PyQT5Settings.isAlwaysOnTop():
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)

@@ -1,7 +1,7 @@
 from src.executer_base import BaseExecutor
 import serial.tools.list_ports
 from src import utilities, constants
-from src.executer_base import SettingsItem, MenuItem
+from src.view.view_base import SettingsItem, MenuItem
 from src.classes.settings import Settings
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
@@ -84,6 +84,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
 
     def get_settings_items(self):
         settings = []
+        settings.append(SettingsItem("Arduino passthrough settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
         # TODO Update Arduino code to support trigger delay ms
         #settings.append(SettingsItem("Trigger delay", "arduino_triggerDelay", constants.SETTINGS_VALUE_TYPE_INT))
         #settings.append(SettingsItem("Trigger delay jitter", "arduino_triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))

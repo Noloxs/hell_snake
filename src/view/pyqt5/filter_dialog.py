@@ -5,6 +5,7 @@ from PyQt5.QtSvg import QSvgWidget
 from src import constants
 from src.classes.settings import Settings
 from src.view.view_utilities import filter_stratagems, sort_stratagems
+from src.view.pyqt5.util import PyQT5Settings
 
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):
@@ -16,8 +17,7 @@ class FilteredListDialog(QDialog):
         self.setMinimumSize(300, 300)
         self.resize(300,800)
 
-        settings = Settings.getInstance()
-        if settings.alwaysOnTop:
+        if PyQT5Settings.isAlwaysOnTop():
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)

@@ -46,7 +46,6 @@ class Settings:
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
         self.view_framework = constants.VIEW_PYQT5
-        self.alwaysOnTop = False
 
     def loadFromFile(self):
         try:

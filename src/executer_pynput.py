@@ -1,7 +1,7 @@
 from pynput.keyboard import Controller
 from src.executer_base import BaseExecutor
 from src import utilities, key_parser_pynput, constants
-from src.executer_base import SettingsItem
+from src.view.view_base import SettingsItem
 from src.classes.settings import Settings
 
 TRIGGER_DELAY = "pynput_triggerDelay"
@@ -40,6 +40,7 @@ class PynputExecuter(BaseExecutor):
     
     def get_settings_items(self):
         settings = []
+        settings.append(SettingsItem("pynput settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
         settings.append(SettingsItem("Trigger delay", TRIGGER_DELAY_DEFAULT, TRIGGER_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Trigger delay jitter", TRIGGER_DELAY_JITTER_DEFAULT, TRIGGER_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay",KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
