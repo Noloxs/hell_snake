@@ -35,11 +35,9 @@ class PynputKeyListener:
 
     # Loadout browser
     def handle_next_loadout(self, key):
-        # TODO: Actually load next loutout
-        print('Next loadout')
+        self.controller.cycle_next_loadout()
     def handle_prev_loadout(self, key):
-        # TODO: Actually load previous loutout
-        print('Previous loadout')
+        self.controller.cycle_prev_loadout()
 
     ### Helpers ###
     def on_press(self, key):
