@@ -58,13 +58,10 @@ class Controller:
         next_index = (current_index + 1) % len(loadout_ids)
         
         # Set the next loadout as active
-        self.model.set_active_loadout(loadout_ids[next_index])
+        self.set_active_loadout(loadout_ids[next_index])
         
         # Debug information
         print(f"DEBUG: New loadout selected: {self.model.currentLoadout.name}")
-        
-        # FIXME: Issue with updating the view due to threading
-        # self.view.update_current_loadout()
 
     def cycle_prev_loadout(self):
         # Get current active loadout ID and available loadout IDs
@@ -76,13 +73,10 @@ class Controller:
         prev_index = (current_index - 1 + len(loadout_ids)) % len(loadout_ids)
         
         # Set the next loadout as active
-        self.model.set_active_loadout(loadout_ids[prev_index])
+        self.set_active_loadout(loadout_ids[prev_index])
         
         # Debug information
         print(f"DEBUG: New loadout selected: {self.model.currentLoadout.name}")
-        
-        # FIXME: Issue with updating the view due to threading
-        # self.view.update_current_loadout()
 
     def update_title_description(self, description):
         self.view.update_title_description(description)
