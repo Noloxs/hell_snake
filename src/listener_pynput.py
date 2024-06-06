@@ -37,10 +37,10 @@ class PynputKeyListener:
     # Loadout browser
     def handle_next_loadout(self, key):
         if(not self.model.isArmed):
-            self.controller.cycle_next_loadout()
+            self.controller.cycle_loadout(+1)
     def handle_prev_loadout(self, key):
         if(not self.model.isArmed):
-            self.controller.cycle_prev_loadout()
+            self.controller.cycle_loadout(-1)
 
     ### Helpers ###
     def on_press(self, key):
