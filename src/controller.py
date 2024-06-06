@@ -59,9 +59,6 @@ class Controller:
         
         # Set the next loadout as active
         self.set_active_loadout(loadout_ids[next_index])
-        
-        # Debug information
-        print(f"DEBUG: New loadout selected: {self.model.currentLoadout.name}")
 
     def cycle_prev_loadout(self):
         # Get current active loadout ID and available loadout IDs
@@ -74,9 +71,6 @@ class Controller:
         
         # Set the next loadout as active
         self.set_active_loadout(loadout_ids[prev_index])
-        
-        # Debug information
-        print(f"DEBUG: New loadout selected: {self.model.currentLoadout.name}")
 
     def update_title_description(self, description):
         self.view.update_title_description(description)

@@ -5,6 +5,8 @@ class PynputKeyListener:
     def __init__(self, model, controller):
         self.model = model
         self.globalArmKey = key_parser_pynput.parse_key(self.model.settings.globalArmKey)
+        self.nextLoadoutKey = key_parser_pynput.parse_key(self.model.settings.nextLoadoutKey)
+        self.prevLoadoutKey = key_parser_pynput.parse_key(self.model.settings.prevLoadoutKey)
         self.listener = None
         self.controller = controller
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
@@ -12,9 +14,8 @@ class PynputKeyListener:
         self.getNextCallbacks = []
         self.key_press_handlers = {
             self.globalArmKey: self.handle_global_arm_press,
-            # TODO: Put these keys in settings
-            "+": self.handle_next_loadout,
-            "-": self.handle_prev_loadout,
+            self.nextLoadoutKey: self.handle_next_loadout,
+            self.prevLoadoutKey: self.handle_prev_loadout,
         }
         self.key_release_handlers = {
             self.globalArmKey: self.handle_global_arm_release
