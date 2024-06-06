@@ -195,7 +195,7 @@
     "32": {
       "name": "Eagle Rearm",
       "category": "Mission",
-      "command": [0,0,1,2,3],
+      "command": [0,0,1,2,0,3],
       "icon_name": "Eagle Rearm.svg"
     },
     "33": {
@@ -389,5 +389,17 @@
       "category": "Mission",
       "command": [0,2,0,2,0,2],
       "icon_name": "Tectonic Drill.svg"
+    },
+    "65": {
+      "name": "Prospecting Drill",
+      "category": "Mission",
+      "command": [2,2,1,3,2,2],
+      "icon_name": "Prospecting Drill.svg"
+    },
+    "66": {
+      "name": "Orbital illumination flare",
+      "category": "Mission",
+      "command": [3,3,1,1],
+      "icon_name": "Orbital Illumination Flare.svg"
     }
   }
