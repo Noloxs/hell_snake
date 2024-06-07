@@ -24,6 +24,7 @@ class Settings:
         return cls._instance
 
     def __init__(self):
+        self._observers = []
         # Load defaults, protecting against missing values
         self.loadDefaults()
         # Load settings from file, overriding defaults as needed
@@ -34,6 +35,45 @@ class Settings:
         if self.version == 2:
             self.migrate_2_to_3()
         print("Settings initialized")
+
+    # Settings notifications
+    def attach_change_listener(self, callback):
+        """
+        Adds a callback to the list of observers if it's not already present.
+        """
+        if callback not in self._observers:
+            self._observers.append(callback)
+
+    def detach_change_listener(self, callback):
+        """
+        Removes a callback from the list of observers if present.
+        """
+        try:
+            self._observers.remove(callback)
+        except ValueError:
+            pass
+
+    def notify_change(self):
+        """
+        Calls each callback in the list of observers.
+        """
+        for callback in self._observers:
+            callback()
+
+    def __setattr__(self, name, value):
+        """
+        Sets an attribute and notifies observers if the setting is not initially being populated.
+        """
+        self.__dict__[name] = value
+        if not self.__dict__.get("_is_initializing", False):
+            self.notify_change()  # Notify on any attribute change
+
+    def __delattr__(self, name):
+        """
+        Deletes an attribute and notifies observers of the change. Probably not really used a lot.
+        """
+        del self.__dict__[name]
+        self.notify_change()
 
     def loadDefaults(self):
         """

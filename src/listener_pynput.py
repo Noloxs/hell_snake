@@ -4,24 +4,18 @@ from src import key_parser_pynput, constants
 class PynputKeyListener:
     def __init__(self, model, controller):
         self.model = model
-        self.globalArmKey = key_parser_pynput.parse_key(self.model.settings.globalArmKey)
-        self.nextLoadoutKey = key_parser_pynput.parse_key(self.model.settings.nextLoadoutKey)
-        self.prevLoadoutKey = key_parser_pynput.parse_key(self.model.settings.prevLoadoutKey)
-        self.listener = None
         self.controller = controller
+        self.getNextCallbacks = []
+
+        # Initialize the actual keyboard event listener
+        self.listener = None
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release, suppress=False)
         self.listener.start()
-        self.getNextCallbacks = []
-        self.key_press_handlers = {
-            self.globalArmKey: self.handle_global_arm_press,
-            self.nextLoadoutKey: self.handle_next_loadout,
-            self.prevLoadoutKey: self.handle_prev_loadout,
-        }
-        self.key_release_handlers = {
-            self.globalArmKey: self.handle_global_arm_release
-        }
-    
 
+        # Attach a listener to notify us of changes to settings
+        self.model.settings.attach_change_listener(self._on_settings_changed)
+        self._on_settings_changed()
+        
     ### Handlers ###
 
     # Global arm handler
@@ -43,6 +37,21 @@ class PynputKeyListener:
             self.controller.cycle_loadout(-1)
 
     ### Helpers ###
+    def _on_settings_changed(self):
+        ''' This function is called when settings are updated, since we attach it as a listener in __init__ '''
+        self.globalArmKey = key_parser_pynput.parse_key(self.model.settings.globalArmKey)
+        self.nextLoadoutKey = key_parser_pynput.parse_key(self.model.settings.nextLoadoutKey)
+        self.prevLoadoutKey = key_parser_pynput.parse_key(self.model.settings.prevLoadoutKey)
+        self.key_press_handlers = {
+            self.globalArmKey: self.handle_global_arm_press,
+            self.nextLoadoutKey: self.handle_next_loadout,
+            self.prevLoadoutKey: self.handle_prev_loadout,
+        }
+        self.key_release_handlers = {
+            self.globalArmKey: self.handle_global_arm_release
+        }
+
+
     def on_press(self, key):
         if len(self.getNextCallbacks) > 0:
             strKey = self.parse_key_to_string(key)
