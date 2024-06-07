@@ -117,9 +117,15 @@ class Settings:
 
     def saveToFile(self):
         with open(constants.SETTINGS_PATH, "w") as file:
-            settings_as_json = json.dumps(self, default=vars, indent=2)
+            # Custom function for filtering attributes
+            def filter_attributes(obj):
+                return {
+                    key: value for key, value in vars(obj).items() 
+                    if not key.startswith('_')  # Exclude private attributes
+                }
+            settings_as_json = json.dumps(self, default=filter_attributes, indent=2)
             file.write(settings_as_json)
-
+            
     def migrate_1_to_2(self):
         self.version = 2
         if hasattr(self, "strategemKeys"):
