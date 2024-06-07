@@ -9,7 +9,7 @@ class Controller:
         self.settings = Settings.getInstance()
 
         self.keyListener = PynputKeyListener(self.model, self)
-    
+
     def set_executor(self):
         selectedExecutor = self.settings.selectedExecutor
         if selectedExecutor == constants.EXECUTOR_PYNPUT:
@@ -50,7 +50,19 @@ class Controller:
         if isArmed:
             self.executer.prepare()
         self.view.update_armed()
-    
+
+    def cycle_loadout(self, offset):
+        # Get current active loadout ID and available loadout IDs
+        current_loadout_id = self.model.currentLoadoutId
+        loadout_ids = list(self.model.settings.loadouts.keys())
+        
+        # Calculate the index of the next loadout
+        current_index = loadout_ids.index(current_loadout_id)
+        new_index = (current_index + offset + len(loadout_ids)) % len(loadout_ids)
+        
+        # Set the next loadout as active
+        self.set_active_loadout(loadout_ids[new_index])
+
     def update_title_description(self, description):
         self.view.update_title_description(description)
 

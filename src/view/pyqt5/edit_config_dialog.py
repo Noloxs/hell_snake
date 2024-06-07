@@ -69,7 +69,11 @@ class EditConfigDialog(QDialog):
         self.add_settings_headline(self.key_grid_layout, "Global arm bindings")
         self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler("globalArmKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Toggle mode", self.settings.globalArmMode, True, self.open_global_arm_mode_dialog)
-    
+
+        self.add_settings_headline(self.key_grid_layout, "Loadout browsing")
+        self.add_key_binding(self.key_grid_layout, "Next loadout", self.settings.nextLoadoutKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler("nextLoadoutKey", self.update_key_settings).on_next_value))
+        self.add_key_binding(self.key_grid_layout, "Previous loadout", self.settings.prevLoadoutKey, True, lambda: self.show_capture_dialog(SettingsBindingHandler("prevLoadoutKey", self.update_key_settings).on_next_value))
+
     def open_global_arm_mode_dialog(self):
         items = {
             constants.ARM_MODE_PUSH: 'Push',

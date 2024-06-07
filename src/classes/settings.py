@@ -24,6 +24,7 @@ class Settings:
         return cls._instance
 
     def __init__(self):
+        self._observers = []
         # Load defaults, protecting against missing values
         self.loadDefaults()
         # Load settings from file, overriding defaults as needed
@@ -34,6 +35,45 @@ class Settings:
         if self.version == 2:
             self.migrate_2_to_3()
         print("Settings initialized")
+
+    # Settings notifications
+    def attach_change_listener(self, callback):
+        """
+        Adds a callback to the list of observers if it's not already present.
+        """
+        if callback not in self._observers:
+            self._observers.append(callback)
+
+    def detach_change_listener(self, callback):
+        """
+        Removes a callback from the list of observers if present.
+        """
+        try:
+            self._observers.remove(callback)
+        except ValueError:
+            pass
+
+    def notify_change(self):
+        """
+        Calls each callback in the list of observers.
+        """
+        for callback in self._observers:
+            callback()
+
+    def __setattr__(self, name, value):
+        """
+        Sets an attribute and notifies observers if the setting is not initially being populated.
+        """
+        self.__dict__[name] = value
+        if not self.__dict__.get("_is_initializing", False):
+            self.notify_change()  # Notify on any attribute change
+
+    def __delattr__(self, name):
+        """
+        Deletes an attribute and notifies observers of the change. Probably not really used a lot.
+        """
+        del self.__dict__[name]
+        self.notify_change()
 
     def loadDefaults(self):
         """
@@ -46,6 +86,8 @@ class Settings:
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
         self.view_framework = constants.VIEW_PYQT5
+        self.nextLoadoutKey = "+"
+        self.prevLoadoutKey = "-"
 
     def loadFromFile(self):
         try:
@@ -75,9 +117,15 @@ class Settings:
 
     def saveToFile(self):
         with open(constants.SETTINGS_PATH, "w") as file:
-            settings_as_json = json.dumps(self, default=vars, indent=2)
+            # Custom function for filtering attributes
+            def filter_attributes(obj):
+                return {
+                    key: value for key, value in vars(obj).items() 
+                    if not key.startswith('_')  # Exclude private attributes
+                }
+            settings_as_json = json.dumps(self, default=filter_attributes, indent=2)
             file.write(settings_as_json)
-
+            
     def migrate_1_to_2(self):
         self.version = 2
         if hasattr(self, "strategemKeys"):
