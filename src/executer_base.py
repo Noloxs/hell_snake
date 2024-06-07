@@ -4,7 +4,10 @@ class BaseExecutor(ABC):
   def __init__(self):
     pass
 
-  def initialize(self):
+  def start(self):
+    pass
+
+  def stop(self):
     pass
 
   @abstractmethod
