@@ -11,6 +11,9 @@ class Controller:
         self.keyListener = PynputKeyListener(self.model, self)
 
     def set_executor(self):
+        if hasattr(self, "executer"):
+            self.executer.stop()
+
         selectedExecutor = self.settings.selectedExecutor
         if selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executer_pynput import PynputExecuter
@@ -27,7 +30,7 @@ class Controller:
         else:
             raise ModuleNotFoundError
         self.view.update_executor_menu()
-        self.executer.initialize()
+        self.executer.start()
 
     def update_executor_menu(self):
         self.view.update_executor_menu()

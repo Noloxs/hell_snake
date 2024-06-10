@@ -25,10 +25,15 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.settings = Settings.getInstance()
         self.controller = controller
 
-    def initialize(self):
+    def start(self):
         if getattr(self.settings, KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
             self.attempt_auto_connect()
         self.prepare()
+
+    def stop(self):
+        if self.arduino is not None:
+            self.arduino.close()
+            self.arduino = None
 
     def attempt_auto_connect(self):
         if getattr(self.settings, KEY_LAST_CONNECTED, KEY_LAST_CONNECTED_DEFAULT) is not None:
