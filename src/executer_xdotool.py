@@ -1,8 +1,9 @@
-from src.executer_base import BaseExecutor
+import constants
+import utilities
 import subprocess
-from src import utilities, constants
+from src.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem
-from src.classes.settings import Settings
+from src.settings import Settings
 
 TRIGGER_DELAY = "xdotool_triggerDelay"
 TRIGGER_DELAY_DEFAULT = 100

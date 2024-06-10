@@ -2,8 +2,9 @@
 # allowing settings to be loaded from a file, updated dynamically, and used across the application.
 # The Settings class follows a singleton pattern.
 
+import constants
 import json
-from src import utilities, constants
+import utilities
 
 class Settings:
     _instance = None  # Class variable to hold the singleton instance

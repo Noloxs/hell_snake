@@ -1,10 +1,9 @@
+import constants
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QComboBox, QHBoxLayout, QLineEdit, QPushButton, QListWidget, QAbstractItemView, QMenuBar, QAction, QWidget, QLabel, QListWidgetItem, QInputDialog
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtSvg import QSvgWidget
 from copy import deepcopy
-from src import constants
-from src.classes.settings import Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.util import show_capture_key_dialog, PyQT5Settings
 

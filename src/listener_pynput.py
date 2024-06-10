@@ -1,5 +1,6 @@
 from pynput import keyboard
-from src import key_parser_pynput, constants
+import constants
+from src.key_parser_pynput import PynputKeyparser
 
 class PynputKeyListener:
     def __init__(self, model, controller):
@@ -39,9 +40,9 @@ class PynputKeyListener:
     ### Helpers ###
     def _on_settings_changed(self):
         ''' This function is called when settings are updated, since we attach it as a listener in __init__ '''
-        self.globalArmKey = key_parser_pynput.parse_key(self.model.settings.globalArmKey)
-        self.nextLoadoutKey = key_parser_pynput.parse_key(self.model.settings.nextLoadoutKey)
-        self.prevLoadoutKey = key_parser_pynput.parse_key(self.model.settings.prevLoadoutKey)
+        self.globalArmKey = PynputKeyparser.parse_key(self.model.settings.globalArmKey)
+        self.nextLoadoutKey = PynputKeyparser.parse_key(self.model.settings.nextLoadoutKey)
+        self.prevLoadoutKey = PynputKeyparser.parse_key(self.model.settings.prevLoadoutKey)
         self.key_press_handlers = {
             self.globalArmKey: self.handle_global_arm_press,
             self.nextLoadoutKey: self.handle_next_loadout,

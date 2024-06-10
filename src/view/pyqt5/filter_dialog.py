@@ -1,9 +1,8 @@
+import constants
 from PyQt5.QtWidgets import QDialog, QWidget, QVBoxLayout, QLineEdit, QListWidget, QAbstractItemView, QHBoxLayout, QLabel, QListWidgetItem
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
-from src import constants
-from src.classes.settings import Settings
 from src.view.view_utilities import filter_stratagems, sort_stratagems
 from src.view.pyqt5.util import PyQT5Settings
 
