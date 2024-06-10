@@ -3,22 +3,20 @@ import serial.tools.list_ports
 from src import utilities, constants
 from src.view.view_base import SettingsItem, MenuItem
 from src.classes.settings import Settings
+import struct
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
 KEY_DELAY_JITTER = "arduino_stratagemKeyDelayJitter"
 KEY_DELAY_JITTER_DEFAULT = 20
+TRIGGER_DELAY = "arduino_triggerKeyDelay"
+TRIGGER_DELAY_DEFAULT = 100
+TRIGGER_DELAY_JITTER = "arduino_triggerKeyDelayJitter"
+TRIGGER_DELAY_JITTER_DEFAULT = 30
 KEY_LAST_CONNECTED = "arduino_lastConnectedDevice"
 KEY_LAST_CONNECTED_DEFAULT = None
 KEY_AUTO_RECONNECT = "arduino_autoReconnect"
 KEY_AUTO_RECONNECT_DEFAULT = True
-
-
-START_HEX = "fb"
-TERMINATION_HEX = "f7"
-SEPERATOR_HEX = "fa"
-HOLD_KEY_HEX = "f8"
-RELEASE_KEY_HEX = "f9"
 
 class ArduinoPassthroughExecuter(BaseExecutor):
     def __init__(self, controller):
@@ -55,13 +53,12 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         # TODO Send connection test message
     
     def on_macro_triggered(self, macro):
-        hexToSend = START_HEX
-        hexToSend += self.triggerKey + SEPERATOR_HEX + HOLD_KEY_HEX + SEPERATOR_HEX # Trigger strat
+        #Sending a negative number indicates that the key should be pressed but not released
+        hexToSend = self.triggerKey + self.delay_to_hex(int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter))*-1) # Trigger stratagem
         for key in macro.commandArray:
-            hexToSend += str(key) + SEPERATOR_HEX # Key press
-            hexToSend += self.delay_to_hex(int(utilities.getDelayWithJitterMs(self.keyDelay, self.keyDelayJitter))) + SEPERATOR_HEX  # Key press delay
-        hexToSend += self.triggerKey + SEPERATOR_HEX + RELEASE_KEY_HEX + SEPERATOR_HEX
-        hexToSend += TERMINATION_HEX
+            hexToSend += str(key) # Key press
+            hexToSend += self.delay_to_hex(int(utilities.getDelayWithJitterMs(self.keyDelay, self.keyDelayJitter))) # Key press delay
+        hexToSend += self.triggerKey + self.delay_to_hex(int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter))) # Release trigger
 
         self.send_bytes(bytes.fromhex(hexToSend))
 
@@ -85,9 +82,8 @@ class ArduinoPassthroughExecuter(BaseExecutor):
     def get_settings_items(self):
         settings = []
         settings.append(SettingsItem("Arduino passthrough settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
-        # TODO Update Arduino code to support trigger delay ms
-        #settings.append(SettingsItem("Trigger delay", "arduino_triggerDelay", constants.SETTINGS_VALUE_TYPE_INT))
-        #settings.append(SettingsItem("Trigger delay jitter", "arduino_triggerDelayJitter", constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay", TRIGGER_DELAY_DEFAULT, TRIGGER_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
+        settings.append(SettingsItem("Trigger delay jitter", TRIGGER_DELAY_JITTER_DEFAULT, TRIGGER_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay", KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER_DEFAULT, KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Hardware Connection", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
@@ -99,6 +95,8 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.triggerKey = self.parse_macro_key(self.settings.triggerKey)
         self.keyDelay = getattr(self.settings, KEY_DELAY, KEY_DELAY_DEFAULT)
         self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, KEY_DELAY_JITTER_DEFAULT)
+        self.triggerDelay = getattr(self.settings, TRIGGER_DELAY, TRIGGER_DELAY_DEFAULT)
+        self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, TRIGGER_DELAY_JITTER_DEFAULT)
 
     def send_bytes(self, bytes):
         if self.arduino is not None:
@@ -108,8 +106,16 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         return hex(ord(key))[2:]
 
     def delay_to_hex(self, delay):
-        # Handle delays outside of range
-        return hex(delay)[2:]
+        # Ensure the delay fits into a 2-byte (16-bit) signed integer
+        if not -32768 <= delay <= 32767:
+            raise ValueError("Number out of range for 2-byte signed integer")
+
+        # Pack the delay as a 2-byte signed integer
+        packed_delay = struct.pack('>h', delay)  # '>h' means big-endian 2-byte signed integer
+
+        # Convert the packed bytes to hexadecimal representation for display (optional)
+        hex_representation = packed_delay.hex()
+        return hex_representation
     
     def get_physical_addresses(self):
         ports = serial.tools.list_ports.comports()
