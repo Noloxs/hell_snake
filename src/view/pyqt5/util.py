@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QLineEdit
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
-from src.classes.settings import Settings
+from src.settings import Settings
 
 KEY_ALWAYS_ON_TOP = "pyqt5_alwaysOnTop"
 KEY_ALWAYS_ON_TOP_DEFAULT = False

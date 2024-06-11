@@ -1,7 +1,8 @@
-from src.stratagem import Stratagem
+import constants
+import utilities
 import json
-from src import utilities, constants
-from src.classes.settings import Settings,Loadout
+from src.stratagem import Stratagem
+from src.settings import Settings,Loadout
 
 class Model:
     def __init__(self):
