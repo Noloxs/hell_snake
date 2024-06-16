@@ -1,9 +1,9 @@
 #!.venv/bin/python3
+import constants
 import sys
-from src.classes.settings import Settings
+from src.settings import Settings
 from src.controller import Controller
 from src.model import Model
-from src import constants
 
 def main():
     # Initialize settings

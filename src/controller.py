@@ -1,7 +1,7 @@
+import constants
 import sys
-from src.classes.settings import Settings
+from src.settings import Settings
 from src.listener_pynput import PynputKeyListener
-from src import constants
     
 class Controller:
     def __init__(self, model):
