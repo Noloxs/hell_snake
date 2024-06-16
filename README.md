@@ -34,7 +34,7 @@ For more information an alternative installation methods see: [Installation](htt
 
 ## Usage
 
-1. Start by acknowledging that this might not work for you and/or trigger anti cheat, which will be your on responsibility!
+1. Start by acknowledging that this might not work for you and/or trigger anti cheat, which will be your own responsibility!
 2. Ensure that you have Hell Snake installed. See: [Installation](https://github.com/Noloxs/hell_snake/wiki/Installation)
 3. Launch the Hell Snake program by running `make run` or `./hell_snake.py` if using venv.
 4. Configure Hell Snake to your preferences. See: [Configuration](https://github.com/Noloxs/hell_snake/wiki/Configuration)
