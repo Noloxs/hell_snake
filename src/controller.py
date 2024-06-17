@@ -27,6 +27,9 @@ class Controller:
         elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
             from src.executer_xdotool import XdotoolExecuter
             self.executer = XdotoolExecuter()
+        elif selectedExecutor == constants.EXECUTOR_PICO:
+            from src.executer_pico import PicoPassthroughExecuter
+            self.executer = PicoPassthroughExecuter(self)
         else:
             raise ModuleNotFoundError
         self.view.update_executor_menu()

@@ -164,7 +164,8 @@ class EditConfigDialog(QDialog):
             constants.EXECUTOR_PYNPUT: 'pynput',
             constants.EXECUTOR_PYAUTOGUI: 'pyautogui',
             constants.EXECUTOR_ARDUINO: 'Arduino passthrough',
-            constants.EXECUTOR_XDOTOOL: 'xdotool'
+            constants.EXECUTOR_XDOTOOL: 'xdotool',
+            constants.EXECUTOR_PICO: 'Pico passthrough'
         }
 
         dialog = DropdownDialog(items, self.change_selected_executor)
