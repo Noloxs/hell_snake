@@ -82,16 +82,13 @@ class LoadoutManager:
 
 
     def saveToFile(self):
+        loadouts_as_json = {}
+        for id, loadout in self.loadouts.items():
+            item = {"name": loadout.name,'macroKeys': loadout.macroKeys}
+            loadouts_as_json[id] = item
         with open(constants.LOADOUTS_PATH, "w") as file:
-            # Custom function for filtering attributes
-            def filter_attributes(obj):
-                return {
-                    key: value for key, value in vars(obj).items() 
-                    if not key.startswith('_')  # Exclude private attributes
-                }
-            settings_as_json = json.dumps(self, default=filter_attributes, indent=2)
+            settings_as_json = json.dumps(loadouts_as_json, indent=2)
             file.write(settings_as_json)
-
 class Loadout:
     """
     Simple data class designed to handle the storage and management of different 
@@ -101,3 +98,6 @@ class Loadout:
     def __init__(self, name, macroKeys):
         self.name = name
         self.macroKeys = macroKeys
+
+    def to_json(self):
+        return {'name': self.name, 'macroKeys': self.macroKeys}

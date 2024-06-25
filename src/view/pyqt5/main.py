@@ -139,19 +139,19 @@ class MainWindow(QMainWindow):
         self.toolbar = self.menuBar()
         files_menu = self.toolbar.addMenu("Files")
 
-        settingsOptions = files_menu.addMenu(QIcon(constants.ICON_BASE_PATH+"settings.svg"), "Settings")
-
         edit_config_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_edit_config.svg"), "Edit settings", self)
         edit_config_action.triggered.connect(self.open_edit_config_dialog)
-        settingsOptions.addAction(edit_config_action)
-
-        print_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_print.svg"), "Print settings", self)
-        print_action.triggered.connect(self.controller.print_settings)
-        settingsOptions.addAction(print_action)
+        files_menu.addAction(edit_config_action)
 
         save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save settings", self)
         save_action.triggered.connect(self.controller.save_settings)
-        settingsOptions.addAction(save_action)
+        files_menu.addAction(save_action)
+
+        files_menu.addSeparator()
+
+        save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save loadouts", self)
+        save_action.triggered.connect(self.controller.save_loadouts)
+        files_menu.addAction(save_action)
 
         files_menu.addSeparator()
 

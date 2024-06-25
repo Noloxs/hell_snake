@@ -1,10 +1,11 @@
 import constants
 import sys
+from src.model import Model
 from src.settings import Settings
 from src.listener_pynput import PynputKeyListener
     
 class Controller:
-    def __init__(self, model):
+    def __init__(self, model: Model):
         self.model = model
         self.settings = Settings.getInstance()
 
@@ -105,13 +106,11 @@ class Controller:
     def trigger_macro(self, stratagem):
         self.executer.on_macro_triggered(stratagem)
 
+    def save_loadouts(self):
+        self.model.loadoutManager.saveToFile()
+
     def save_settings(self):
         Settings.getInstance().saveToFile()
-    
-    def print_settings(self):
-        import json
-        settings = json.dumps(self.model.settings, default=vars, indent=2)
-        print(settings)
     
     def exit(self):
         sys.exit(0)
