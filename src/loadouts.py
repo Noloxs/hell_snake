@@ -5,28 +5,43 @@
 import constants
 import json
 import utilities
+from typing import Dict, Optional, Callable
+
+class Loadout:
+    """
+    Simple data class designed to handle the storage and management of different 
+    configurations of macro keys for a particular setup.
+    This class is used primarily in the settings.
+    """
+    def __init__(self, name, macroKeys):
+        self.name = name
+        self.macroKeys = macroKeys
+
+    def to_json(self):
+        return {'name': self.name, 'macroKeys': self.macroKeys}
 
 class LoadoutManager:
     def __init__(self):
         self._observers = []
-        self._currentLoadout = None
         self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
         # Load settings from file, overriding defaults as needed
         self.loadFromFile()
         print("Loadouts initialized")
 
-    # Loadout manipulation functions
-    def getCurrentLoadout(self):
-        if self._currentLoadout is None:
-            self._currentLoadout = next(iter(self.loadouts.keys()))
-        return self._currentLoadout
-
-    def setCurrentLoadout(self, loadoutId):
-        if loadoutId not in self.loadouts:
-            self._currentLoadout = None
-            print("ERR: Attempt to set invalid loadout.")
-        else:
-            self._currentLoadout = loadoutId
+    # Loadout list functions
+    def addLoadout(self, loadoutName) -> str:
+        loadoutId = utilities.generateUuid()
+        newLoadout = Loadout(loadoutName, {})
+        self.loadouts[loadoutId] = newLoadout
+        return loadoutId
+    
+    def deleteLoadout(self, loadoutId: str):
+        if loadoutId in self.loadouts:
+            del self.loadouts[loadoutId]
+    
+    def updateLoadout(self, loadoutId: str, loadout: Loadout):
+        if loadoutId in self.loadouts:
+            self.loadouts[loadoutId] = loadout
 
     # Observer pattern functions
     def attach_change_listener(self, callback):
@@ -76,10 +91,10 @@ class LoadoutManager:
                 for id, item in data.items():
                     loadout = Loadout(item['name'], item['macroKeys'])
                     self.loadouts[id] = loadout
+            print("INFO: Loadouts loaded.")
             return True
         except (OSError, json.JSONDecodeError):
             return False
-
 
     def saveToFile(self):
         loadouts_as_json = {}
@@ -89,15 +104,5 @@ class LoadoutManager:
         with open(constants.LOADOUTS_PATH, "w") as file:
             settings_as_json = json.dumps(loadouts_as_json, indent=2)
             file.write(settings_as_json)
-class Loadout:
-    """
-    Simple data class designed to handle the storage and management of different 
-    configurations of macro keys for a particular setup.
-    This class is used primarily in the settings.
-    """
-    def __init__(self, name, macroKeys):
-        self.name = name
-        self.macroKeys = macroKeys
+            print("INFO: Loadouts saved.")
 
-    def to_json(self):
-        return {'name': self.name, 'macroKeys': self.macroKeys}

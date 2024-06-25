@@ -3,18 +3,18 @@ from src.loadouts import LoadoutManager,Loadout
 import utilities
 import json
 from src.stratagem import Stratagem
-from src.settings import Settings
 
 class Model:
     def __init__(self):
         self.isArmed = False
 
+        # List of stratagems, and the respective macro definition
         self.stratagems = self.loadStratagemsFromFile()
 
+        # Loadout manager handles persistance of loadouts.
         self.loadoutManager = LoadoutManager()
-        self.set_active_loadout(self.loadoutManager.getCurrentLoadout())
-        
-        self.settings = Settings.getInstance()
+        # a Loadout is a list of keys, and the respective stratagem to be activated
+        # self.set_active_loadout(self.loadoutManager.getCurrentLoadout())
 
     def loadStratagemsFromFile(self):
         with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
@@ -31,18 +31,12 @@ class Model:
         stratagem = self.stratagems[stratagemId]
         self.currentLoadout.macroKeys[key] = stratagemId
         self.macros.update({key:stratagem})
-    
-    def add_loadout(self, loadoutName):
-        self.loadoutManager.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
 
-    def delete_loadout(self, loadoutId):
-        self.loadoutManager.loadouts.pop(loadoutId)
-    
-    def update_loadout(self, id, loadout):
-        self.loadoutManager.loadouts[id] = loadout
+    def getMacroForKey(self, key):
+        return self.macros[key]
 
-    def get_next_loadout(self):
-        return self.loadoutManager.getCurrentLoadout()
+    # def get_next_loadout(self):
+    #     return self.loadoutManager.getCurrentLoadout()
 
     def set_active_loadout(self, id):
         self.currentLoadoutId = id

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame, QApplication
 from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         files_menu.addSeparator()
 
         exit_action = QAction(QIcon(constants.ICON_BASE_PATH+"exit.svg"),"Exit", self)
-        exit_action.triggered.connect(self.controller.exit)
+        exit_action.triggered.connect(QApplication.instance().quit)
         files_menu.addAction(exit_action)
 
         self.arm_action = QAction("Arm", self)

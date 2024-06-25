@@ -1,3 +1,6 @@
+from src.settings import Settings
+
+
 class Stratagem:
   def __init__(self, name, category, command, icon_name):
     self.name = name
@@ -8,8 +11,8 @@ class Stratagem:
     else:
       self.icon_name = icon_name
   
-  def prepare_stratagem(self, model, executer):
+  def prepare_stratagem(self, executer):
     self.commandArray=[]
     for input in self.command:
-      key = model.settings.stratagemKeys[input]
+      key = Settings.getInstance().stratagemKeys[input]
       self.commandArray.append(executer.parse_macro_key(key))

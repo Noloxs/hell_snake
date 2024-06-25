@@ -9,6 +9,8 @@ class Controller:
         self.model = model
         self.settings = Settings.getInstance()
 
+        self.loadouts_updated = False
+
         self.keyListener = PynputKeyListener(self.model, self)
 
     def set_executor(self):
@@ -42,8 +44,8 @@ class Controller:
     def set_view(self, view):
         self.view = view
         self.set_executor()
-        #TODO Replace with last used loadout
-        self.set_active_loadout(self.model.get_next_loadout())
+        if hasattr(self.settings, "currentLoadoutId"):
+            self.set_active_loadout(self.settings.currentLoadoutId)
         self.view.show_interface()
 
     def toggle_armed(self):
@@ -75,42 +77,42 @@ class Controller:
 
     def update_macro_binding(self, key, stratagemId):
         stratagem = self.model.stratagems[stratagemId]
-        stratagem.prepare_stratagem(self.model, self.executer)
+        stratagem.prepare_stratagem(self.executer)
         self.model.update_macro_binding(key, stratagemId)
+        self.loadouts_updated = True
         self.view.update_macros()
-    
+
     def add_loadout(self, loadoutName):
-        self.model.add_loadout(loadoutName)
-        if self.model.currentLoadoutId is None:
-            self.set_active_loadout(self.model.get_next_loadout())
-        self.view.on_loadout_changed()
+        self.model.loadoutManager.addLoadout(loadoutName)
+        self.set_active_loadout(self.model.loadoutManager.getCurrentLoadout())
+        self.loadouts_updated = True
+        self.view.update_loadout_menu_items()
     
     def delete_loadout(self, loadoutId):
-        self.model.delete_loadout(loadoutId)
-        self.view.on_loadout_changed()
-        if self.model.currentLoadoutId == loadoutId:
-            self.set_active_loadout(self.model.get_next_loadout())
+        self.model.loadoutManager.deleteLoadout(loadoutId)
+        self.set_active_loadout(self.model.loadoutManager.getCurrentLoadout())
+        self.loadouts_updated = True
+        self.view.update_loadout_menu_items()
 
     def update_loadout(self, id, loadout):
-        self.model.update_loadout(id,loadout)
-        if self.model.currentLoadoutId == id:
-            self.set_active_loadout(id)
-        self.view.on_loadout_changed()
+        self.model.loadoutManager.updateLoadout(id, loadout)
+        self.set_active_loadout(id)
+        self.loadouts_updated = True
+        self.view.update_loadout_menu_items()
     
     def set_active_loadout(self, loadoutId):
         self.model.set_active_loadout(loadoutId)
         for key, stratagem in self.model.macros.items():
-            stratagem.prepare_stratagem(self.model, self.executer)
+            stratagem.prepare_stratagem(self.executer)
+        self.settings.currentLoadoutId = loadoutId
         self.view.update_current_loadout()
     
     def trigger_macro(self, stratagem):
         self.executer.on_macro_triggered(stratagem)
-
-    def save_loadouts(self):
-        self.model.loadoutManager.saveToFile()
-
-    def save_settings(self):
-        Settings.getInstance().saveToFile()
     
-    def exit(self):
+    def on_exit(self):
+        if self.loadouts_updated:
+            if self.view.confirm_save_loadouts():
+                self.model.loadoutManager.saveToFile()
+        self.settings.saveToFile()
         sys.exit(0)
