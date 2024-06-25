@@ -168,7 +168,7 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        for loadoutId, loadout in self.settings.loadouts.items():
+        for loadoutId, loadout in self.controller.model.loadoutManager.loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)

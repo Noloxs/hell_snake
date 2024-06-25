@@ -3,6 +3,7 @@ RESOURCE_PATH = "src/res/"
 ICON_BASE_PATH = RESOURCE_PATH+"icons/"
 STRATAGEM_ICON_PATH = ICON_BASE_PATH+"stratagems/"
 SETTINGS_PATH = "settings.json"
+LOADOUTS_PATH = "loadouts.json"
 
 # FACTORY CONSTANTS
 ## VIEWS

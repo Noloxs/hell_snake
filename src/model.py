@@ -1,22 +1,31 @@
 import constants
+from src.loadouts import LoadoutManager,Loadout
 import utilities
 import json
 from src.stratagem import Stratagem
-from src.settings import Settings,Loadout
+from src.settings import Settings
 
 class Model:
     def __init__(self):
         self.isArmed = False
 
+        self.stratagems = self.loadStratagemsFromFile()
+
+        self.loadoutManager = LoadoutManager()
+        self.set_active_loadout(self.loadoutManager.getCurrentLoadout())
+        
+        self.settings = Settings.getInstance()
+
+    def loadStratagemsFromFile(self):
         with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
             tmp = json.load(json_file)
         
-        self.stratagems = {}
+        stratagems = {}
         for index, item in tmp.items():
             stratagem = Stratagem(**item)
-            self.stratagems.update({index: stratagem})
-        
-        self.settings = Settings.getInstance()
+            stratagems.update({index: stratagem})
+
+        return stratagems
 
     def update_macro_binding(self, key, stratagemId):
         stratagem = self.stratagems[stratagemId]
@@ -24,18 +33,16 @@ class Model:
         self.macros.update({key:stratagem})
     
     def add_loadout(self, loadoutName):
-        self.settings.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
+        self.loadoutManager.loadouts.update({utilities.generateUuid(): Loadout(loadoutName, {"1":"1"})})
 
     def delete_loadout(self, loadoutId):
-        self.settings.loadouts.pop(loadoutId)
+        self.loadoutManager.loadouts.pop(loadoutId)
     
-    def get_next_loadout(self):
-        if len(self.settings.loadouts) > 0:
-            return next(iter(self.settings.loadouts.keys()))
-        return None
-
     def update_loadout(self, id, loadout):
-        self.settings.loadouts[id] = loadout
+        self.loadoutManager.loadouts[id] = loadout
+
+    def get_next_loadout(self):
+        return self.loadoutManager.getCurrentLoadout()
 
     def set_active_loadout(self, id):
         self.currentLoadoutId = id
@@ -44,7 +51,7 @@ class Model:
             self.currentLoadout = None
             self.macroKeys = None
         else:
-            self.currentLoadout = self.settings.loadouts[id]
+            self.currentLoadout = self.loadoutManager.loadouts[id]
             self.macroKeys = self.currentLoadout.macroKeys
             for key, stratagemId in self.macroKeys.items():
                 self.macros.update({key:self.stratagems[stratagemId]})      

@@ -1,5 +1,7 @@
 #Hell snake specific ignores
 /settings.json
+/loadouts.json
+/*.json.bak
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python

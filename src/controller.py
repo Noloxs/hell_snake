@@ -57,7 +57,7 @@ class Controller:
     def cycle_loadout(self, offset):
         # Get current active loadout ID and available loadout IDs
         current_loadout_id = self.model.currentLoadoutId
-        loadout_ids = list(self.model.settings.loadouts.keys())
+        loadout_ids = list(self.model.loadoutManager.loadouts.keys())
         
         # Calculate the index of the next loadout
         current_index = loadout_ids.index(current_loadout_id)
