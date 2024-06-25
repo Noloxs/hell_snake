@@ -55,7 +55,7 @@ def test_configuration_should_have_certain_updates_if_migrated_to_version_2(mock
 
     # Assert that the settings has been upgraded to version 2
     assert hasattr(settings, 'version')
-    assert settings.version == 3
+    assert settings.version == 4
 
     # Assert that a misspelled version of stratagemKey* has been updated does not exist
     assert hasattr(settings, 'stratagemKeys')
@@ -83,7 +83,7 @@ def test_should_save_correct_version():
     # Parse the JSON data written to the simulated file
     written_data = json.loads(mock_file.write.call_args[0][0])
 
-    assert written_data["version"] == 3
+    assert written_data["version"] == 4
 
 @patch("builtins.open", new_callable=mock_open, read_data='{"triggerKey": "shift", "triggerDelay": 50}')
 def test_unknown_property_should_be_stored_when_created(mock_file):
