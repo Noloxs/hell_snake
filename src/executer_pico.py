@@ -60,13 +60,11 @@ class PicoPassthroughExecuter(BaseExecutor):
     
     def on_macro_triggered(self, macro):
         #Sending a negative number indicates that the key should be pressed but not released
-        bytesToSend = self.triggerKey.encode('utf-8') + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)*-1).to_bytes(2, 'big', signed = True) # Trigger stratagem
+        bytesToSend = bytes.fromhex(self.triggerKey) + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)*-1).to_bytes(2, 'big', signed = True) # Trigger stratagem
         for key in macro.commandArray:
-            bytesToSend += key.encode('utf-8') # Key press
+            bytesToSend += bytes.fromhex(self.parse_macro_key(key)) # Key press
             bytesToSend += int(utilities.getDelayWithJitterMs(self.keyDelay, self.keyDelayJitter)).to_bytes(2,'big', signed = True) # Key press delay
-        bytesToSend += self.triggerKey.encode('utf-8') + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)).to_bytes(2, 'big', signed = True) # Release trigger
-
-        bytesToSend = bytes.fromhex("04")
+        bytesToSend += bytes.fromhex(self.triggerKey) + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)).to_bytes(2, 'big', signed = True) # Release trigger
 
         self.send_bytes(bytesToSend)
 
@@ -107,9 +105,11 @@ class PicoPassthroughExecuter(BaseExecutor):
         self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, TRIGGER_DELAY_JITTER_DEFAULT)
 
     def send_bytes(self, bytes):
-        print(bytes)
         if self.pico is not None:
             self.pico.write(bytes)
+    
+    def parse_to_hex(self, key):
+        return hex(ord(key))[2:]
 
     def get_physical_addresses(self):
         ports = serial.tools.list_ports.comports()
@@ -125,14 +125,50 @@ class PicoPassthroughExecuter(BaseExecutor):
         if key in self.key_map:
             return self.key_map[key]
         else:
-            return key
+            return self.parse_to_hex(key)
 
     key_map = {
-        "shift":"a",
-        "ctrl":"b",
-        "up":"c",
-        "down":"d",
-        "left":"e",
-        "right":"f",
-        "caps_lock":"g"
+        "a":"04",
+        "b":"05",
+        "c":"06",
+        "d":"07",
+        "e":"08",
+        "f":"09",
+        "g":"0A",
+        "h":"0B",
+        "i":"0C",
+        "j":"0D",
+        "k":"0E",
+        "l":"0F",
+        "m":"10",
+        "n":"11",
+        "o":"12",
+        "p":"13",
+        "q":"14",
+        "r":"15",
+        "s":"16",
+        "t":"17",
+        "u":"18",
+        "v":"19",
+        "w":"1A",
+        "x":"1B",
+        "y":"1C",
+        "z":"1D",
+        "1":"1E",
+        "2":"1F",
+        "3":"20",
+        "4":"21",
+        "5":"22",
+        "6":"23",
+        "7":"24",
+        "8":"25",
+        "9":"26",
+        "0":"27",
+        "shift":"E1",
+        "ctrl":"E0",
+        "up":"52",
+        "down":"51",
+        "left":"50",
+        "right":"4F",
+        "caps_lock":"39"
         } 
