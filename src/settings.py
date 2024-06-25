@@ -6,23 +6,7 @@ import constants
 import json
 import utilities
 
-class Settings:
-    _instance = None  # Class variable to hold the singleton instance
-
-    @classmethod
-    def getInstance(cls):
-        """
-        Method to retrieve or create a singleton instance of the Settings class.
-
-        This method checks if an instance of the class has already been created (stored in `_instance`).
-        If not, it creates a new instance and stores it in `_instance`. It then returns this singleton instance.
-
-        Returns:
-            Settings: a singleton instance of the Settings class.
-        """
-        if cls._instance is None:
-            cls._instance = cls()  # Create a new instance if one doesn't exist
-        return cls._instance
+class SettingsManager:
 
     def __init__(self):
         self._observers = []

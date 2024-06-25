@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMessageBox, QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout, QLineEdit
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import QObject, pyqtSignal, QThread
-from src.settings import Settings
+from src.settings import SettingsManager
 
 KEY_ALWAYS_ON_TOP = "pyqt5_alwaysOnTop"
 KEY_ALWAYS_ON_TOP_DEFAULT = False
@@ -138,6 +138,5 @@ class NumberInputDialog(QDialog):
         self.accept()
 
 class PyQT5Settings():
-    def isAlwaysOnTop():
-        settings = Settings.getInstance()
+    def isAlwaysOnTop(settings):
         return getattr(settings, KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT)

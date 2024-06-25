@@ -3,7 +3,7 @@ import constants
 import utilities
 from src.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem
-from src.settings import Settings
+from src.settings import SettingsManager
 
 TRIGGER_DELAY = "pyautogui_triggerDelay"
 TRIGGER_DELAY_DEFAULT = 100
@@ -15,9 +15,9 @@ KEY_DELAY_JITTER = "pyautogui_stratagemKeyDelayJitter"
 KEY_DELAY_JITTER_DEFAULT = 20
 
 class PyAutoGuiExecuter(BaseExecutor):
-    def __init__(self):
-        super().__init__()
-        self.settings = Settings.getInstance()
+    def __init__(self, controller):
+        super().__init__(controller)
+        self.settings = self.controller.get_settings_manager()
         pyautogui.FAILSAFE = True
         self.triggerKey = self.parse_macro_key(self.settings.triggerKey)
     

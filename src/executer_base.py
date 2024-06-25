@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 class BaseExecutor(ABC):
-  def __init__(self):
-    pass
+  def __init__(self, controller):
+    self.controller = controller
 
   def start(self):
     pass

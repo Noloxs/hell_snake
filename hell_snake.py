@@ -1,20 +1,17 @@
 #!.venv/bin/python3
 import constants
 import sys
-from src.settings import Settings
+from src.settings import SettingsManager
 from src.controller import Controller
 from src.model import Model
 
 def main():
-    # Initialize settings
-    settings = Settings.getInstance()
-
     # Initialize and run the app
     model = Model()
     controller = Controller(model)
 
     # Initialize our presentation
-    if settings.view_framework == constants.VIEW_PYQT5:
+    if model.settingsManager.view_framework == constants.VIEW_PYQT5:
         from src.view.pyqt5.pyqt5 import PyQT5View
         view = PyQT5View(controller)
     else:

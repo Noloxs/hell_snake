@@ -18,11 +18,6 @@ class EditLoadoutDialog(QDialog):
         self.setMinimumSize(300, 300)
         self.resize(300,600)
 
-        if PyQT5Settings.isAlwaysOnTop():
-            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        else:
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
-
         iconSize = QSize(30, 30)
         # Layout
         layout = QVBoxLayout(self)

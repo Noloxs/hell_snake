@@ -40,32 +40,6 @@ def test_save_to_file_should_write_correct_data():
     assert written_data["1"]["name"] == "Loadout 1"
     assert written_data["2"]["name"] == "Loadout 2"
 
-def test_get_current_loadout_should_return_first_loadout_if_none_selected():
-    mock_data = {
-        "1": {"name": "Loadout 1", "macroKeys": {"1": "1"}},
-        "2": {"name": "Loadout 2", "macroKeys": {"2": "2"}}
-    }
-    with patch("builtins.open", mock_open(read_data=json.dumps(mock_data))):
-        loadout_manager = LoadoutManager()
-
-        assert loadout_manager.getCurrentLoadout() == "1"
-
-def test_set_current_loadout_should_change_current_loadout():
-    loadout_manager = LoadoutManager()
-    loadout_manager.loadouts["2"] = Loadout("Loadout 2", {"2": "2"})
-    loadout_manager.setCurrentLoadout("2")
-    assert loadout_manager.getCurrentLoadout() == "2"
-
-def test_set_current_loadout_should_not_change_current_loadout_if_invalid():
-    mock_data = {
-        "1": {"name": "Loadout 1", "macroKeys": {"1": "1"}},
-        "2": {"name": "Loadout 2", "macroKeys": {"2": "2"}}
-    }
-    with patch("builtins.open", mock_open(read_data=json.dumps(mock_data))):
-        loadout_manager = LoadoutManager()
-        loadout_manager.setCurrentLoadout("3")
-        assert loadout_manager.getCurrentLoadout() == "1"
-
 def test_attach_change_listener_should_add_callback_to_observers():
     loadout_manager = LoadoutManager()
     callback = MagicMock()

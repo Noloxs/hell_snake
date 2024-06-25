@@ -4,7 +4,7 @@ from pynput.keyboard import Controller
 from src.executer_base import BaseExecutor
 from src.key_parser_pynput import PynputKeyparser
 from src.view.view_base import SettingsItem
-from src.settings import Settings
+from src.settings import SettingsManager
 
 TRIGGER_DELAY = "pynput_triggerDelay"
 TRIGGER_DELAY_DEFAULT = 100
@@ -16,9 +16,9 @@ KEY_DELAY_JITTER = "pynput_stratagemKeyDelayJitter"
 KEY_DELAY_JITTER_DEFAULT = 20
 
 class PynputExecuter(BaseExecutor):
-    def __init__(self):
-        super().__init__()
-        self.settings = Settings.getInstance()
+    def __init__(self, controller):
+        super().__init__(controller)
+        self.settings = self.controller.get_settings_manager()
         self.keyboard_controller = Controller()
         self.triggerKey = self.parse_macro_key(self.settings.triggerKey)
     

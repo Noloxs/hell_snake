@@ -1,4 +1,4 @@
-from src.settings import Settings
+from src.settings import SettingsManager
 
 
 class Stratagem:
@@ -11,8 +11,8 @@ class Stratagem:
     else:
       self.icon_name = icon_name
   
-  def prepare_stratagem(self, executer):
+  def prepare_stratagem(self, controller):
     self.commandArray=[]
     for input in self.command:
-      key = Settings.getInstance().stratagemKeys[input]
-      self.commandArray.append(executer.parse_macro_key(key))
+      key = controller.get_settings_manager().stratagemKeys[input]
+      self.commandArray.append(controller.get_executor().parse_macro_key(key))

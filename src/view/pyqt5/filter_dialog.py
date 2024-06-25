@@ -16,11 +16,6 @@ class FilteredListDialog(QDialog):
         self.setMinimumSize(300, 300)
         self.resize(300,800)
 
-        if PyQT5Settings.isAlwaysOnTop():
-            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        else:
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
-
         self.setWindowTitle("Select new stratagem for: "+self.key)
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
 

@@ -2,23 +2,18 @@ import constants
 from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
-from src.settings import Settings
+from src.settings import SettingsManager
 from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog, PyQT5Settings
 
 class EditConfigDialog(QDialog):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
-        self.settings = Settings.getInstance()
+        self.settings = controller.get_settings_manager()
 
         # Set up the dialog
         self.setWindowTitle("Edit settings")
         self.setGeometry(100, 100, 400, 300)
-        
-        if PyQT5Settings.isAlwaysOnTop():
-            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        else:
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
         
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -60,19 +55,19 @@ class EditConfigDialog(QDialog):
 
         self.add_settings_headline(self.key_grid_layout, "Stratagem bindings")
         
-        self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler("triggerKey", self.update_key_settings).on_next_value))
+        self.add_key_binding(self.key_grid_layout, "Open stratagem list", self.settings.triggerKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self.settings, "triggerKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Up", self.settings.stratagemKeys[0], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 0).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Down", self.settings.stratagemKeys[2], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 2).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Left", self.settings.stratagemKeys[1], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 1).on_next_key))
         self.add_key_binding(self.key_grid_layout, "Right", self.settings.stratagemKeys[3], True, lambda: self.show_capture_dialog(StratagemKeyBindingHandler(self, 3).on_next_key))
 
         self.add_settings_headline(self.key_grid_layout, "Global arm bindings")
-        self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler("globalArmKey", self.update_key_settings).on_next_value))
+        self.add_key_binding(self.key_grid_layout, "Global arm", self.settings.globalArmKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self.settings, "globalArmKey", self.update_key_settings).on_next_value))
         self.add_key_binding(self.key_grid_layout, "Toggle mode", self.settings.globalArmMode, True, self.open_global_arm_mode_dialog)
 
         self.add_settings_headline(self.key_grid_layout, "Loadout browsing")
-        self.add_key_binding(self.key_grid_layout, "Next loadout", self.settings.nextLoadoutKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler("nextLoadoutKey", self.update_key_settings).on_next_value))
-        self.add_key_binding(self.key_grid_layout, "Previous loadout", self.settings.prevLoadoutKey, True, lambda: self.show_capture_dialog(SettingsBindingHandler("prevLoadoutKey", self.update_key_settings).on_next_value))
+        self.add_key_binding(self.key_grid_layout, "Next loadout", self.settings.nextLoadoutKey, False, lambda: self.show_capture_dialog(SettingsBindingHandler(self.settings, "nextLoadoutKey", self.update_key_settings).on_next_value))
+        self.add_key_binding(self.key_grid_layout, "Previous loadout", self.settings.prevLoadoutKey, True, lambda: self.show_capture_dialog(SettingsBindingHandler(self.settings, "prevLoadoutKey", self.update_key_settings).on_next_value))
 
     def open_global_arm_mode_dialog(self):
         items = {
@@ -190,7 +185,7 @@ class EditConfigDialog(QDialog):
                     callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(key, update_callback).on_next_value) # noqa: E731
                 elif item.value_type == constants.SETTINGS_VALUE_TYPE_BOOL:
                     value_desc = "Yes" if value else "No"
-                    callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(key, update_callback).on_next_value(not current_value) # noqa: E731
+                    callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(self.settings, self.settings, key, update_callback).on_next_value(not current_value) # noqa: E731
                 
                 self.add_key_binding(grid_layout, item.title, value_desc, show_separator, callback)
             previous_item = item
@@ -249,13 +244,13 @@ class EditConfigDialog(QDialog):
         return button
 
 class SettingsBindingHandler:
-    def __init__ (self, settings_key, callback):
+    def __init__ (self, settings_manager, settings_key, callback):
+        self.settings_manager = settings_manager
         self.settings_key = settings_key
         self.callback = callback
 
     def on_next_value(self, value):
-        settings = Settings.getInstance()
-        setattr(settings, self.settings_key, value)
+        setattr(self.settings_manager, self.settings_key, value)
         self.callback()
 
 class StratagemKeyBindingHandler:

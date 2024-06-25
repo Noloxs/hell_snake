@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
-from src.settings import Settings
+from src.settings import SettingsManager
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
@@ -13,7 +13,6 @@ class MainWindow(QMainWindow):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
-        self.settings = Settings.getInstance()
         self.setWindowTitle("Hell snake")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(350, 225)
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow):
         dialog.exec_()
     
     def update_view_settings(self):
-        if PyQT5Settings.isAlwaysOnTop():
+        if PyQT5Settings.isAlwaysOnTop(self.controller.get_settings_manager()):
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
@@ -144,13 +143,13 @@ class MainWindow(QMainWindow):
         files_menu.addAction(edit_config_action)
 
         save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save settings", self)
-        save_action.triggered.connect(self.controller.save_settings)
+        save_action.triggered.connect(self.controller.get_settings_manager().saveToFile)
         files_menu.addAction(save_action)
 
         files_menu.addSeparator()
 
         save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save loadouts", self)
-        save_action.triggered.connect(self.controller.save_loadouts)
+        save_action.triggered.connect(self.controller.get_loadouts_manager().saveToFile)
         files_menu.addAction(save_action)
 
         files_menu.addSeparator()
@@ -168,7 +167,7 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        for loadoutId, loadout in self.controller.model.loadoutManager.loadouts.items():
+        for loadoutId, loadout in self.controller.model.loadoutsManager.loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)

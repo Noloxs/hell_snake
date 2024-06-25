@@ -17,9 +17,6 @@ class Loadout:
         self.name = name
         self.macroKeys = macroKeys
 
-    def to_json(self):
-        return {'name': self.name, 'macroKeys': self.macroKeys}
-
 class LoadoutManager:
     def __init__(self):
         self._observers = []

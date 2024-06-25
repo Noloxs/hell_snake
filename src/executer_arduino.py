@@ -4,7 +4,7 @@ import constants
 import utilities
 from src.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem, MenuItem
-from src.settings import Settings
+from src.settings import SettingsManager
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
@@ -21,10 +21,9 @@ KEY_AUTO_RECONNECT_DEFAULT = True
 
 class ArduinoPassthroughExecuter(BaseExecutor):
     def __init__(self, controller):
-        super().__init__()
+        super().__init__(controller)
         self.arduino = None
-        self.settings = Settings.getInstance()
-        self.controller = controller
+        self.settings = self.controller.get_settings_manager()
 
     def start(self):
         if getattr(self.settings, KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
