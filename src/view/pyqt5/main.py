@@ -3,7 +3,6 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
-from src.settings import SettingsManager
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog

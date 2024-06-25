@@ -4,7 +4,6 @@ import constants
 import utilities
 from src.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem, MenuItem
-from src.settings import SettingsManager
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30

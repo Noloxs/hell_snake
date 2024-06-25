@@ -14,7 +14,8 @@ all: requirements lint test
 
 # Lint using ruff. Will not break build
 lint:
-	-${VENV}/ruff check -- --format=github --target-version=py310 .
+	-${VENV}/ruff check --target-version py310 .
+	
 
 # Run pytests with proper output
 test:

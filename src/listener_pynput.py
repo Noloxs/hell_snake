@@ -2,7 +2,6 @@ from pynput import keyboard
 import constants
 from src.key_parser_pynput import PynputKeyparser
 from src.model import Model
-from src.settings import SettingsManager
 
 class PynputKeyListener:
     def __init__(self, model : Model, controller):

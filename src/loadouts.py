@@ -5,7 +5,6 @@
 import constants
 import json
 import utilities
-from typing import Dict, Optional, Callable
 
 class Loadout:
     """

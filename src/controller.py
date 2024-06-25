@@ -1,7 +1,6 @@
 import constants
 import sys
 from src.model import Model
-from src.settings import SettingsManager
 from src.listener_pynput import PynputKeyListener
     
 class Controller:
@@ -28,16 +27,16 @@ class Controller:
 
         selectedExecutor = self.model.settingsManager.selectedExecutor
         if selectedExecutor == constants.EXECUTOR_PYNPUT:
-            from src.executer_pynput import PynputExecuter
+            from src.executor.executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_ARDUINO:
-            from src.executer_arduino import ArduinoPassthroughExecuter
+            from src.executor.executer_arduino import ArduinoPassthroughExecuter
             self.executer = ArduinoPassthroughExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_PYAUTOGUI:
-            from src.executer_pyautogui import PyAutoGuiExecuter
+            from src.executor.executer_pyautogui import PyAutoGuiExecuter
             self.executer = PyAutoGuiExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
-            from src.executer_xdotool import XdotoolExecuter
+            from src.executor.executer_xdotool import XdotoolExecuter
             self.executer = XdotoolExecuter(self)
         else:
             raise ModuleNotFoundError

@@ -4,7 +4,6 @@
 
 import constants
 import json
-import utilities
 
 class SettingsManager:
 

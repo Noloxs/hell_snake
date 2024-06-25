@@ -1,7 +1,6 @@
 import constants
-from src.loadouts import LoadoutManager,Loadout
+from src.loadouts import LoadoutManager
 from src.settings import SettingsManager
-import utilities
 import json
 from src.stratagem import Stratagem
 

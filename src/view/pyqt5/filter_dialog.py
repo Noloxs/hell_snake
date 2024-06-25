@@ -4,7 +4,6 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
 from src.view.view_utilities import filter_stratagems, sort_stratagems
-from src.view.pyqt5.util import PyQT5Settings
 
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):

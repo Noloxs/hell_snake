@@ -2,7 +2,6 @@ from src.settings import SettingsManager
 
 # Mocking and other utilities
 import json
-import pytest
 import constants
 from unittest.mock import patch, mock_open, MagicMock
 

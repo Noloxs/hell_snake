@@ -1,5 +1,3 @@
-from src.settings import SettingsManager
-
 
 class Stratagem:
   def __init__(self, name, category, command, icon_name):
