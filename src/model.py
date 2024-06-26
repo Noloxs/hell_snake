@@ -14,10 +14,10 @@ class Model:
           or self.settingsManager.currentLoadoutId not in self.loadoutsManager.loadouts:
             self.settingsManager.currentLoadoutId = next(iter(self.loadoutsManager.loadouts))
 
-        self.currentLoadoutId = settingsManager.currentLoadoutId
+        self.current_loadout_id = settingsManager.currentLoadoutId
 
         # Handle armed state
-        self.isArmed = False
+        self.is_armed = False
 
         # List of stratagems, and the respective macro definition
         self._stratagems = self.loadStratagemsFromFile()
@@ -33,22 +33,17 @@ class Model:
 
         return stratagems
 
+    def get_current_loadout_macros(self):
+        current_loadout = self.loadoutsManager.loadouts.get(self.settingsManager.currentLoadoutId, None)
+        macros = {key: self._stratagems[stratagemId] for key, stratagemId in current_loadout.macroKeys.items()}
+        return macros
+
     def update_macro_binding(self, key, stratagemId):
-        stratagem = self._stratagems[stratagemId]
-        self.currentLoadout.macroKeys[key] = stratagemId
-        self.macros.update({key:stratagem})
+        current_loadout = self.loadoutsManager.loadouts.get(self.settingsManager.currentLoadoutId, None)
+        current_loadout.macroKeys[key] = stratagemId
 
     def set_active_loadout(self, id):
-        self.currentLoadoutId = id
-        self.macros = {}
-        if id is None:
-            self.currentLoadout = None
-            self.macroKeys = None
-        else:
-            self.currentLoadout = self.loadoutsManager.loadouts.get(id)
-            self.macroKeys = self.currentLoadout.macroKeys
-            for key, stratagemId in self.macroKeys.items():
-                self.macros.update({key:self._stratagems[stratagemId]})      
+        self.current_loadout_id = id
 
-    def set_armed(self, isArmed):
-        self.isArmed = isArmed
+    def set_armed(self, is_armed):
+        self.is_armed = is_armed

@@ -57,7 +57,7 @@ class FilteredListDialog(QDialog):
         self.list_widget.clear()
 
         # Filter and sort items
-        stratagem_list = filter_stratagems(self.controller.model.stratagems, text)
+        stratagem_list = filter_stratagems(self.controller.get_stratagems(), text)
         stratagem_list = sort_stratagems(stratagem_list)
 
         # Add all items to the QListWidget

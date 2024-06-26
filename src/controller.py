@@ -14,6 +14,9 @@ class Controller:
     def get_loadouts_manager(self):
         return self._model.loadoutsManager
 
+    def get_stratagems(self):
+        return self._model._stratagems
+
     # Executer initializiation
     def get_executor(self):
         return self.executer
@@ -55,7 +58,7 @@ class Controller:
 
     # Arming and disarming
     def toggle_armed(self):
-        self.set_armed(not self._model.isArmed)
+        self.set_armed(not self._model.is_armed)
     
     def set_armed(self, isArmed):
         self._model.set_armed(isArmed)
@@ -64,7 +67,7 @@ class Controller:
         self.view.update_armed()
     
     def is_armed(self):
-        return self._model.isArmed
+        return self._model.is_armed
 
     # Hotkey selection of loadouts
     def cycle_loadout(self, offset):
@@ -116,7 +119,7 @@ class Controller:
     def set_active_loadout(self, loadoutId):
         if loadoutId in self._model.loadoutsManager.loadouts:
             self._model.set_active_loadout(loadoutId)
-            for key, stratagem in self._model.macros.items():
+            for key, stratagem in self._model.get_current_loadout_macros().items():
                 stratagem.prepare_stratagem(self)
             self._model.settingsManager.currentLoadoutId = loadoutId
             self.view.update_current_loadout()
@@ -126,10 +129,10 @@ class Controller:
     
     # Macros
     def getMacroForKey(self, key):
-        return self._model.macros.get(key, None)
+        return self._model.get_current_loadout_macros().get(key, None)
     
     def getAllMacros(self):
-        return self._model.macros.items()
+        return self._model.get_current_loadout_macros().items()
 
     # This is where 99% of the magic happens
     def trigger_macro(self, stratagem):
