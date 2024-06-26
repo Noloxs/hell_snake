@@ -9,11 +9,18 @@ class Model:
         self.loadoutsManager = loadoutsManager
         self.settingsManager = settingsManager
 
+        # Ensure current loadout is valid
+        if not hasattr(self.settingsManager, "currentLoadoutId") \
+          or self.settingsManager.currentLoadoutId not in self.loadoutsManager.loadouts:
+            self.settingsManager.currentLoadoutId = next(iter(self.loadoutsManager.loadouts))
+
+        self.currentLoadoutId = settingsManager.currentLoadoutId
+
         # Handle armed state
         self.isArmed = False
 
         # List of stratagems, and the respective macro definition
-        self.stratagems = self.loadStratagemsFromFile()
+        self._stratagems = self.loadStratagemsFromFile()
 
     def loadStratagemsFromFile(self):
         with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
@@ -27,7 +34,7 @@ class Model:
         return stratagems
 
     def update_macro_binding(self, key, stratagemId):
-        stratagem = self.stratagems[stratagemId]
+        stratagem = self._stratagems[stratagemId]
         self.currentLoadout.macroKeys[key] = stratagemId
         self.macros.update({key:stratagem})
 
@@ -41,7 +48,7 @@ class Model:
             self.currentLoadout = self.loadoutsManager.loadouts.get(id)
             self.macroKeys = self.currentLoadout.macroKeys
             for key, stratagemId in self.macroKeys.items():
-                self.macros.update({key:self.stratagems[stratagemId]})      
+                self.macros.update({key:self._stratagems[stratagemId]})      
 
     def set_armed(self, isArmed):
         self.isArmed = isArmed

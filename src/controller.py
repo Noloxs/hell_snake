@@ -6,10 +6,6 @@ class Controller:
     def __init__(self, model: Model):
         self._model = model
         self.loadouts_updated = False
-        # Ensure current loadout is valid
-        if not hasattr(self._model.settingsManager, "currentLoadoutId") \
-          or self._model.settingsManager.currentLoadoutId not in self._model.loadoutsManager.loadouts:
-            self._model.settingsManager.currentLoadoutId = next(iter(self._model.loadoutsManager.loadouts))
 
     # Allow view direct access to model components
     def get_settings_manager(self):
@@ -91,7 +87,7 @@ class Controller:
         self.view.show_change_macro_dialog(key)
 
     def update_macro_binding(self, key, stratagemId):
-        stratagem = self._model.stratagems[stratagemId]
+        stratagem = self._model._stratagems[stratagemId]
         stratagem.prepare_stratagem(self)
         self._model.update_macro_binding(key, stratagemId)
         self.loadouts_updated = True
