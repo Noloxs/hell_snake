@@ -3,13 +3,14 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
+from src.controller import Controller
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
 
 class MainWindow(QMainWindow):
-    def __init__(self, controller):
+    def __init__(self, controller : Controller):
         super().__init__()
         self.controller = controller
         self.setWindowTitle("Hell snake")
@@ -91,7 +92,7 @@ class MainWindow(QMainWindow):
     def update_macros(self):
         self.listwidget.clear()
 
-        for index, (key, value) in enumerate(self.controller.model.macros.items()):
+        for index, (key, value) in enumerate(self.controller.getAllMacros()):
             listAdapter = QLoadoutListAdapter()
             listAdapter.setKey(key)
             listAdapter.setStyleSheet("background-color: transparent")
@@ -103,11 +104,11 @@ class MainWindow(QMainWindow):
             self.listwidget.addItem(listAdapterItem)
             self.listwidget.setItemWidget(listAdapterItem, listAdapter)
 
-        height = 115 + (len(self.controller.model.macros)*55)
+        height = 115 + (len(self.controller.getAllMacros())*55)
         self.resize(self.geometry().width(), height)
 
     def update_armed(self):
-        if self.controller.model.isArmed:
+        if self.controller.is_armed():
             self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"armed.png"))
             self.armedBar.setStyleSheet("background-color: red")
             self.arm_action.setText("Disarm")
@@ -126,7 +127,7 @@ class MainWindow(QMainWindow):
             self.loadout_desc.setVisible(True)
 
     def update_current_loadout(self):
-        currentLoadout = self.controller.model.currentLoadout
+        currentLoadout = self.controller.get_active_loadout()
         if currentLoadout is not None:
             self.loadout.setText(currentLoadout.name) 
         else:
@@ -166,7 +167,7 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        for loadoutId, loadout in self.controller.model.loadoutsManager.loadouts.items():
+        for loadoutId, loadout in self.controller.get_loadouts_manager().loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)

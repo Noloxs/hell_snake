@@ -4,19 +4,21 @@ from src.model import Model
     
 class Controller:
     def __init__(self, model: Model):
-        self.model = model
+        self._model = model
         self.loadouts_updated = False
         # Ensure current loadout is valid
-        if self.model.settingsManager.currentLoadoutId not in self.model.loadoutsManager.loadouts:
-            self.model.settingsManager.currentLoadoutId = next(iter(self.model.loadoutsManager.loadouts))
+        if not hasattr(self._model.settingsManager, "currentLoadoutId") \
+          or self._model.settingsManager.currentLoadoutId not in self._model.loadoutsManager.loadouts:
+            self._model.settingsManager.currentLoadoutId = next(iter(self._model.loadoutsManager.loadouts))
 
-    # Helper for view classes
+    # Allow view direct access to model components
     def get_settings_manager(self):
-        return self.model.settingsManager
+        return self._model.settingsManager
 
     def get_loadouts_manager(self):
-        return self.model.loadoutsManager
+        return self._model.loadoutsManager
 
+    # Executer initializiation
     def get_executor(self):
         return self.executer
 
@@ -24,7 +26,7 @@ class Controller:
         if hasattr(self, "executer"):
             self.executer.stop()
 
-        selectedExecutor = self.model.settingsManager.selectedExecutor
+        selectedExecutor = self._model.settingsManager.selectedExecutor
         if selectedExecutor == constants.EXECUTOR_PYNPUT:
             from src.executor.executer_pynput import PynputExecuter
             self.executer = PynputExecuter(self)
@@ -48,26 +50,31 @@ class Controller:
     def on_settings_changed(self):
         self.view.on_settings_changed()
 
+    # Dependency injecting the view
     def set_view(self, view):
         self.view = view
         self.set_executor()
-        if hasattr(self.model.settingsManager, "currentLoadoutId"):
-            self.set_active_loadout(self.model.settingsManager.currentLoadoutId)
+        self.set_active_loadout(self._model.settingsManager.currentLoadoutId)
         self.view.show_interface()
 
+    # Arming and disarming
     def toggle_armed(self):
-        self.set_armed(not self.model.isArmed)
+        self.set_armed(not self._model.isArmed)
     
     def set_armed(self, isArmed):
-        self.model.set_armed(isArmed)
+        self._model.set_armed(isArmed)
         if isArmed:
             self.executer.prepare()
         self.view.update_armed()
+    
+    def is_armed(self):
+        return self._model.isArmed
 
+    # Hotkey selection of loadouts
     def cycle_loadout(self, offset):
         # Get current active loadout ID and available loadout IDs
-        current_loadout_id = self.model.settingsManager.currentLoadoutId
-        loadout_ids = list(self.model.loadoutsManager.loadouts.keys())
+        current_loadout_id = self._model.settingsManager.currentLoadoutId
+        loadout_ids = list(self._model.loadoutsManager.loadouts.keys())
         
         # Calculate the index of the next loadout
         current_index = loadout_ids.index(current_loadout_id)
@@ -76,6 +83,7 @@ class Controller:
         # Set the next loadout as active
         self.set_active_loadout(loadout_ids[new_index])
 
+    # Presentation and interactions with macro selection
     def update_title_description(self, description):
         self.view.update_title_description(description)
 
@@ -83,44 +91,58 @@ class Controller:
         self.view.show_change_macro_dialog(key)
 
     def update_macro_binding(self, key, stratagemId):
-        stratagem = self.model.stratagems[stratagemId]
+        stratagem = self._model.stratagems[stratagemId]
         stratagem.prepare_stratagem(self)
-        self.model.update_macro_binding(key, stratagemId)
+        self._model.update_macro_binding(key, stratagemId)
         self.loadouts_updated = True
         self.view.update_macros()
 
+    # Loadout list manipulation
     def add_loadout(self, loadoutName):
-        loadoutId = self.model.loadoutsManager.addLoadout(loadoutName)
+        loadoutId = self._model.loadoutsManager.addLoadout(loadoutName)
         self.set_active_loadout(loadoutId)
         self.loadouts_updated = True
         self.view.on_loadout_changed()
     
     def delete_loadout(self, loadoutId):
-        self.model.loadoutsManager.deleteLoadout(loadoutId)
-        self.set_active_loadout(next(iter(self.model.loadoutsManager.loadouts)))
+        self._model.loadoutsManager.deleteLoadout(loadoutId)
+        self.set_active_loadout(next(iter(self._model.loadoutsManager.loadouts)))
         self.loadouts_updated = True
         self.view.on_loadout_changed()
 
     def update_loadout(self, id, loadout):
-        self.model.loadoutsManager.updateLoadout(id, loadout)
+        self._model.loadoutsManager.updateLoadout(id, loadout)
         self.set_active_loadout(id)
         self.loadouts_updated = True
         self.view.on_loadout_changed()
     
+    # Active loadout
     def set_active_loadout(self, loadoutId):
-        if loadoutId in self.model.loadoutsManager.loadouts:
-            self.model.set_active_loadout(loadoutId)
-            for key, stratagem in self.model.macros.items():
+        if loadoutId in self._model.loadoutsManager.loadouts:
+            self._model.set_active_loadout(loadoutId)
+            for key, stratagem in self._model.macros.items():
                 stratagem.prepare_stratagem(self)
-            self.model.settingsManager.currentLoadoutId = loadoutId
+            self._model.settingsManager.currentLoadoutId = loadoutId
             self.view.update_current_loadout()
     
+    def get_active_loadout(self):
+        return self._model.loadoutsManager.loadouts.get(self._model.settingsManager.currentLoadoutId, None)
+    
+    # Macros
+    def getMacroForKey(self, key):
+        return self._model.macros.get(key, None)
+    
+    def getAllMacros(self):
+        return self._model.macros.items()
+
+    # This is where 99% of the magic happens
     def trigger_macro(self, stratagem):
         self.executer.on_macro_triggered(stratagem)
     
+    # Exit hook
     def on_exit(self):
         if self.loadouts_updated:
             if self.view.confirm_save_loadouts():
-                self.model.loadoutsManager.saveToFile()
-        self.model.settingsManager.saveToFile()
+                self._model.loadoutsManager.saveToFile()
+        self._model.settingsManager.saveToFile()
         sys.exit(0)

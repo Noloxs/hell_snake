@@ -24,7 +24,7 @@ class PynputKeyListener:
     def handle_global_arm_press(self, key):
         if (self.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
             self.controller.toggle_armed()
-        elif (self.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
+        elif (self.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.controller.is_armed()):
             self.controller.set_armed(True)
     def handle_global_arm_release(self, key):
         if (self.settings.globalArmMode == constants.ARM_MODE_PUSH):
@@ -32,10 +32,10 @@ class PynputKeyListener:
 
     # Loadout browser
     def handle_next_loadout(self, key):
-        if(not self.model.isArmed):
+        if(not self.controller.is_armed()):
             self.controller.cycle_loadout(+1)
     def handle_prev_loadout(self, key):
-        if(not self.model.isArmed):
+        if(not self.controller.is_armed()):
             self.controller.cycle_loadout(-1)
 
     ### Helpers ###
@@ -70,8 +70,8 @@ class PynputKeyListener:
         if entry in self.key_press_handlers:
             self.key_press_handlers[entry](key)
 
-        if(self.model.isArmed):
-            macro = self.model.getMacroForKey(entry)
+        if(self.controller.is_armed()):
+            macro = self.controller.getMacroForKey(entry)
             if macro is not None:
                 self.controller.trigger_macro(macro)
     

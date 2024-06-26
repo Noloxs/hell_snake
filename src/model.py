@@ -5,8 +5,8 @@ import json
 from src.stratagem import Stratagem
 
 class Model:
-    def __init__(self, loaddoutsManager: LoadoutManager, settingsManager: SettingsManager):
-        self.loadoutManger = loaddoutsManager
+    def __init__(self, loadoutsManager: LoadoutManager, settingsManager: SettingsManager):
+        self.loadoutsManager = loadoutsManager
         self.settingsManager = settingsManager
 
         # Handle armed state
@@ -30,9 +30,6 @@ class Model:
         stratagem = self.stratagems[stratagemId]
         self.currentLoadout.macroKeys[key] = stratagemId
         self.macros.update({key:stratagem})
-
-    def getMacroForKey(self, key):
-        return self.macros.get(key, None)
 
     def set_active_loadout(self, id):
         self.currentLoadoutId = id
