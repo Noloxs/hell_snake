@@ -149,7 +149,7 @@ class EditLoadoutDialog(QDialog):
 
     def set_loadout_dropdown_items(self):
         self.dropdown.clear()
-        for id, loadout in self.controller.model.loadoutManager.loadouts.items():
+        for id, loadout in self.controller.get_loadouts_manager().loadouts.items():
             self.dropdown.addItem(loadout.name, id)
         if self.dropdown.count() > 0:
             self.dropdown.setCurrentIndex(0)
@@ -164,7 +164,7 @@ class EditLoadoutDialog(QDialog):
             self.update_macros()
             return
         
-        self.editLoadout = deepcopy(self.controller.model.loadoutManager.loadouts[self.loadoutId])
+        self.editLoadout = deepcopy(self.controller.get_loadouts_manager().loadouts[self.loadoutId])
         self.edit_field.setText(self.editLoadout.name)
         self.update_macros()
 

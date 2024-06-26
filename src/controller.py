@@ -9,6 +9,9 @@ class Controller:
 
         self.loadouts_updated = False
 
+        if self.model.settingsManager.currentLoadoutId not in self.model.loadoutsManager.loadouts:
+            self.model.settingsManager.currentLoadoutId = next(iter(self.model.loadoutsManager.loadouts))
+
         self.keyListener = PynputKeyListener(self.model, self)
 
     # Helper for view classes
@@ -91,29 +94,30 @@ class Controller:
         self.view.update_macros()
 
     def add_loadout(self, loadoutName):
-        self.model.loadoutsManager.addLoadout(loadoutName)
-        self.set_active_loadout(self.model.loadoutsManager.getCurrentLoadout())
+        loadoutId = self.model.loadoutsManager.addLoadout(loadoutName)
+        self.set_active_loadout(loadoutId)
         self.loadouts_updated = True
-        self.view.update_loadout_menu_items()
+        self.view.on_loadout_changed()
     
     def delete_loadout(self, loadoutId):
         self.model.loadoutsManager.deleteLoadout(loadoutId)
-        self.set_active_loadout(self.model.loadoutsManager.getCurrentLoadout())
+        self.set_active_loadout(next(iter(self.model.loadoutsManager.loadouts)))
         self.loadouts_updated = True
-        self.view.update_loadout_menu_items()
+        self.view.on_loadout_changed()
 
     def update_loadout(self, id, loadout):
         self.model.loadoutsManager.updateLoadout(id, loadout)
         self.set_active_loadout(id)
         self.loadouts_updated = True
-        self.view.update_loadout_menu_items()
+        self.view.on_loadout_changed()
     
     def set_active_loadout(self, loadoutId):
-        self.model.set_active_loadout(loadoutId)
-        for key, stratagem in self.model.macros.items():
-            stratagem.prepare_stratagem(self)
-        self.model.settingsManager.currentLoadoutId = loadoutId
-        self.view.update_current_loadout()
+        if loadoutId in self.model.loadoutsManager.loadouts:
+            self.model.set_active_loadout(loadoutId)
+            for key, stratagem in self.model.macros.items():
+                stratagem.prepare_stratagem(self)
+            self.model.settingsManager.currentLoadoutId = loadoutId
+            self.view.update_current_loadout()
     
     def trigger_macro(self, stratagem):
         self.executer.on_macro_triggered(stratagem)

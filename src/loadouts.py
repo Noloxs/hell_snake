@@ -19,15 +19,29 @@ class Loadout:
 class LoadoutManager:
     def __init__(self):
         self._observers = []
-        self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
+        self.loadouts = {utilities.generateUuid(): self.generateDefaultLoadout("Default")}
         # Load settings from file, overriding defaults as needed
         self.loadFromFile()
         print("Loadouts initialized")
 
+    def generateDefaultLoadout(self, name):
+        # Sensible first loadout
+        return Loadout( name, {
+                        "1": "51", # Eagle Airstrike
+                        "2": "56", # Orbital Precision Strike
+                        "3": "41", # Machinegun Sentry
+                        "4": "9",  # MG43 Machine gun 
+                        "5": "32", # Resupply
+                        "6": "0",  # Eagle Rearm
+                        "7": "1",  # Reinforce
+                        "8": "34", # SEAF Arty
+                        "9": "7"   # Hellbomb
+                        })
+
     # Loadout list functions
     def addLoadout(self, loadoutName) -> str:
         loadoutId = utilities.generateUuid()
-        newLoadout = Loadout(loadoutName, {})
+        newLoadout = self.generateDefaultLoadout(loadoutName)
         self.loadouts[loadoutId] = newLoadout
         return loadoutId
     

@@ -44,7 +44,7 @@ class Model:
             self.currentLoadout = None
             self.macroKeys = None
         else:
-            self.currentLoadout = self.loadoutsManager.loadouts[id]
+            self.currentLoadout = self.loadoutsManager.loadouts.get(id)
             self.macroKeys = self.currentLoadout.macroKeys
             for key, stratagemId in self.macroKeys.items():
                 self.macros.update({key:self.stratagems[stratagemId]})      
