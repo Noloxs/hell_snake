@@ -70,12 +70,12 @@ class LoadoutManager:
         except ValueError:
             pass
 
-    def notify_change(self):
+    def notify_change(self, **attrs):
         """
         Calls each callback in the list of observers.
         """
         for callback in self._observers:
-            callback()
+            callback(attrs)
 
     def __setattr__(self, name, value):
         """
@@ -83,14 +83,14 @@ class LoadoutManager:
         """
         self.__dict__[name] = value
         if not self.__dict__.get("_is_initializing", False):
-            self.notify_change()  # Notify on any attribute change
+            self.notify_change(type='setattr', name=name)  # Notify on any attribute change
 
     def __delattr__(self, name):
         """
         Deletes an attribute and notifies observers of the change. Probably not really used a lot.
         """
         del self.__dict__[name]
-        self.notify_change()
+        self.notify_change(type='delattr', name=name)
 
     # State persistance
     def loadFromFile(self):
@@ -115,4 +115,5 @@ class LoadoutManager:
             settings_as_json = json.dumps(loadouts_as_json, indent=2)
             file.write(settings_as_json)
             print("INFO: Loadouts saved.")
+            self.notify_change(type='save')
 

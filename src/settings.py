@@ -39,12 +39,15 @@ class SettingsManager:
         except ValueError:
             pass
 
-    def notify_change(self):
+    def notify_change(self, **attrs):
         """
         Calls each callback in the list of observers.
+        The attrs parameter allows calling the notify method with additional arguments,
+        which are packed into an event dictionary. This allows for more specific notifications
+        to be sent to observers.
         """
         for callback in self._observers:
-            callback()
+            callback(attrs)
 
     def __setattr__(self, name, value):
         """
@@ -52,14 +55,14 @@ class SettingsManager:
         """
         self.__dict__[name] = value
         if not self.__dict__.get("_is_initializing", False):
-            self.notify_change()  # Notify on any attribute change
+            self.notify_change(type='setattr', name=name)  # Notify on any attribute change
 
     def __delattr__(self, name):
         """
         Deletes an attribute and notifies observers of the change. Probably not really used a lot.
         """
         del self.__dict__[name]
-        self.notify_change()
+        self.notify_change(type='delattr', name=name)
 
     def loadDefaults(self):
         """

@@ -7,6 +7,8 @@ class Controller:
         self._model = model
         self.loadouts_updated = False
 
+        self._model.loadoutsManager.attach_change_listener(self.on_loadout_saved)
+
     # Allow view direct access to model components
     def get_settings_manager(self):
         return self._model.settingsManager
@@ -134,6 +136,11 @@ class Controller:
     def trigger_macro(self, stratagem):
         self.executer.on_macro_triggered(stratagem)
     
+    # Hook to detect loadouts being saved
+    def on_loadout_saved(self, event):
+        if event['type'] == 'save':
+            self.loadouts_updated = False
+
     # Exit hook
     def on_exit(self):
         if self.loadouts_updated:
