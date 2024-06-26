@@ -33,7 +33,7 @@ class KeyListener(QObject):
         self.controller = controller
 
     def run_task(self):
-        self.controller.keyListener.get_next_key(self.on_next_key)
+        self.controller.keylistener.get_next_key(self.on_next_key)
         
         # Emit signal with result
     def on_next_key(self, key):

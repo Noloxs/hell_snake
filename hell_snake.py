@@ -17,7 +17,9 @@ def main():
     # Controller handles logic and communication between the model and view
     controller = Controller(model)
     # Key listener handles hotkey detection
-    PynputKeyListener(controller)
+    keylistener = PynputKeyListener(controller)
+    # Add keylisterner to controller to allow callbacks
+    controller.set_keylistener(keylistener)
 
     # Initialize our presentation
     if settingsManager.view_framework == constants.VIEW_PYQT5:

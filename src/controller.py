@@ -59,6 +59,10 @@ class Controller:
         self.set_active_loadout(self._model.settingsManager.currentLoadoutId)
         self.view.show_interface()
 
+    # ... and a keylistener callbacks
+    def set_keylistener(self, keylistener):
+        self.keylistener = keylistener
+
     # Arming and disarming
     def toggle_armed(self):
         self.set_armed(not self._model.is_armed)

@@ -16,7 +16,7 @@ class PynputKeyListener:
 
         # Attach a listener to notify us of changes to settings
         self.settings.attach_change_listener(self._on_settings_changed)
-        self._on_settings_changed()
+        self._on_settings_changed({'type': 'init'})
         
     ### Handlers ###
 
@@ -39,19 +39,20 @@ class PynputKeyListener:
             self.controller.cycle_loadout(-1)
 
     ### Helpers ###
-    def _on_settings_changed(self):
+    def _on_settings_changed(self, event):
         ''' This function is called when settings are updated, since we attach it as a listener in __init__ '''
-        self.globalArmKey = PynputKeyparser.parse_key(self.settings.globalArmKey)
-        self.nextLoadoutKey = PynputKeyparser.parse_key(self.settings.nextLoadoutKey)
-        self.prevLoadoutKey = PynputKeyparser.parse_key(self.settings.prevLoadoutKey)
-        self.key_press_handlers = {
-            self.globalArmKey: self.handle_global_arm_press,
-            self.nextLoadoutKey: self.handle_next_loadout,
-            self.prevLoadoutKey: self.handle_prev_loadout,
-        }
-        self.key_release_handlers = {
-            self.globalArmKey: self.handle_global_arm_release
-        }
+        if event['type']=='setattr':
+            self.globalArmKey = PynputKeyparser.parse_key(self.settings.globalArmKey)
+            self.nextLoadoutKey = PynputKeyparser.parse_key(self.settings.nextLoadoutKey)
+            self.prevLoadoutKey = PynputKeyparser.parse_key(self.settings.prevLoadoutKey)
+            self.key_press_handlers = {
+                self.globalArmKey: self.handle_global_arm_press,
+                self.nextLoadoutKey: self.handle_next_loadout,
+                self.prevLoadoutKey: self.handle_prev_loadout,
+            }
+            self.key_release_handlers = {
+                self.globalArmKey: self.handle_global_arm_release
+            }
 
 
     def on_press(self, key):
