@@ -1,12 +1,12 @@
 from pynput import keyboard
 import constants
+from src.controller import Controller
 from src.key_parser_pynput import PynputKeyparser
-from src.model import Model
 
 class PynputKeyListener:
-    def __init__(self, model : Model, controller):
-        self.model = model
+    def __init__(self, controller : Controller):
         self.controller = controller
+        self.settings = controller.get_settings_manager()
         self.getNextCallbacks = []
 
         # Initialize the actual keyboard event listener
@@ -15,19 +15,19 @@ class PynputKeyListener:
         self.listener.start()
 
         # Attach a listener to notify us of changes to settings
-        self.model.settingsManager.attach_change_listener(self._on_settings_changed)
+        self.settings.attach_change_listener(self._on_settings_changed)
         self._on_settings_changed()
         
     ### Handlers ###
 
     # Global arm handler
     def handle_global_arm_press(self, key):
-        if (self.model.settingsManager.globalArmMode == constants.ARM_MODE_TOGGLE):
+        if (self.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
             self.controller.toggle_armed()
-        elif (self.model.settingsManager.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
+        elif (self.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
             self.controller.set_armed(True)
     def handle_global_arm_release(self, key):
-        if (self.model.settingsManager.globalArmMode == constants.ARM_MODE_PUSH):
+        if (self.settings.globalArmMode == constants.ARM_MODE_PUSH):
             self.controller.set_armed(False)
 
     # Loadout browser
@@ -41,9 +41,9 @@ class PynputKeyListener:
     ### Helpers ###
     def _on_settings_changed(self):
         ''' This function is called when settings are updated, since we attach it as a listener in __init__ '''
-        self.globalArmKey = PynputKeyparser.parse_key(self.model.settingsManager.globalArmKey)
-        self.nextLoadoutKey = PynputKeyparser.parse_key(self.model.settingsManager.nextLoadoutKey)
-        self.prevLoadoutKey = PynputKeyparser.parse_key(self.model.settingsManager.prevLoadoutKey)
+        self.globalArmKey = PynputKeyparser.parse_key(self.settings.globalArmKey)
+        self.nextLoadoutKey = PynputKeyparser.parse_key(self.settings.nextLoadoutKey)
+        self.prevLoadoutKey = PynputKeyparser.parse_key(self.settings.prevLoadoutKey)
         self.key_press_handlers = {
             self.globalArmKey: self.handle_global_arm_press,
             self.nextLoadoutKey: self.handle_next_loadout,

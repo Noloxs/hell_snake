@@ -1,18 +1,14 @@
 import constants
 import sys
 from src.model import Model
-from src.listener_pynput import PynputKeyListener
     
 class Controller:
     def __init__(self, model: Model):
         self.model = model
-
         self.loadouts_updated = False
-
+        # Ensure current loadout is valid
         if self.model.settingsManager.currentLoadoutId not in self.model.loadoutsManager.loadouts:
             self.model.settingsManager.currentLoadoutId = next(iter(self.model.loadoutsManager.loadouts))
-
-        self.keyListener = PynputKeyListener(self.model, self)
 
     # Helper for view classes
     def get_settings_manager(self):
@@ -70,7 +66,7 @@ class Controller:
 
     def cycle_loadout(self, offset):
         # Get current active loadout ID and available loadout IDs
-        current_loadout_id = self.model.currentLoadoutId
+        current_loadout_id = self.model.settingsManager.currentLoadoutId
         loadout_ids = list(self.model.loadoutsManager.loadouts.keys())
         
         # Calculate the index of the next loadout

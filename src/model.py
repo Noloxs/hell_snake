@@ -5,18 +5,15 @@ import json
 from src.stratagem import Stratagem
 
 class Model:
-    def __init__(self):
+    def __init__(self, loaddoutsManager: LoadoutManager, settingsManager: SettingsManager):
+        self.loadoutManger = loaddoutsManager
+        self.settingsManager = settingsManager
+
+        # Handle armed state
         self.isArmed = False
 
         # List of stratagems, and the respective macro definition
         self.stratagems = self.loadStratagemsFromFile()
-
-        # Settings manager handles app configuration (e.g. hotkeys)
-        self.settingsManager = SettingsManager()
-
-        # Loadout manager handles persistance of loadouts.
-        self.loadoutsManager = LoadoutManager()
-        # a Loadout is a list of keys, and the respective stratagem to be activated        
 
     def loadStratagemsFromFile(self):
         with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
