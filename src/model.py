@@ -1,3 +1,4 @@
+from typing import Dict
 import constants
 from src.loadouts import LoadoutManager
 from src.settings import SettingsManager
@@ -14,36 +15,39 @@ class Model:
           or self.settingsManager.currentLoadoutId not in self.loadoutsManager.loadouts:
             self.settingsManager.currentLoadoutId = next(iter(self.loadoutsManager.loadouts))
 
-        self.current_loadout_id = settingsManager.currentLoadoutId
-
         # Handle armed state
         self.is_armed = False
 
         # List of stratagems, and the respective macro definition
-        self._stratagems = self.loadStratagemsFromFile()
+        self._stratagems: Dict[Stratagem] = {}
+        self._loadStratagemsFromFile()
 
-    def loadStratagemsFromFile(self):
+    def _loadStratagemsFromFile(self):
+        """Load stratagems from a JSON file and return a dictionary of Stratagem objects."""
         with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
             tmp = json.load(json_file)
         
-        stratagems = {}
+        self._stratagems = {}
         for index, item in tmp.items():
             stratagem = Stratagem(**item)
-            stratagems.update({index: stratagem})
+            self._stratagems.update({index: stratagem})
 
-        return stratagems
+    def prepare_stratagems(self, controller):
+        """Prepare stratagems for use in selected executer."""
+        for stratagem in self._stratagems.values():
+            stratagem.prepare(controller)
 
     def get_current_loadout_macros(self):
+        """Return a dictionary of macro definitions for the current loadout."""
         current_loadout = self.loadoutsManager.loadouts.get(self.settingsManager.currentLoadoutId, None)
         macros = {key: self._stratagems[stratagemId] for key, stratagemId in current_loadout.macroKeys.items()}
         return macros
 
     def update_macro_binding(self, key, stratagemId):
+        """Update the macro binding for the current loadout."""
         current_loadout = self.loadoutsManager.loadouts.get(self.settingsManager.currentLoadoutId, None)
         current_loadout.macroKeys[key] = stratagemId
 
-    def set_active_loadout(self, id):
-        self.current_loadout_id = id
-
     def set_armed(self, is_armed):
+        """Set the armed state."""
         self.is_armed = is_armed

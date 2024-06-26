@@ -1,7 +1,7 @@
 import pyautogui
 import constants
 import utilities
-from src.executer_base import BaseExecutor
+from src.executor.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem
 
 TRIGGER_DELAY = "pyautogui_triggerDelay"

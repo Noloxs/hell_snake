@@ -1,7 +1,7 @@
 import constants
 import utilities
 from pynput.keyboard import Controller
-from src.executer_base import BaseExecutor
+from src.executor.executer_base import BaseExecutor
 from src.key_parser_pynput import PynputKeyparser
 from src.view.view_base import SettingsItem
 

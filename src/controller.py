@@ -42,6 +42,7 @@ class Controller:
             raise ModuleNotFoundError
         self.view.update_executor_menu()
         self.executer.start()
+        self._model.prepare_stratagems(self)
 
     def update_executor_menu(self):
         self.view.update_executor_menu()
@@ -90,8 +91,6 @@ class Controller:
         self.view.show_change_macro_dialog(key)
 
     def update_macro_binding(self, key, stratagemId):
-        stratagem = self._model._stratagems[stratagemId]
-        stratagem.prepare_stratagem(self)
         self._model.update_macro_binding(key, stratagemId)
         self.loadouts_updated = True
         self.view.update_macros()
@@ -118,11 +117,8 @@ class Controller:
     # Active loadout
     def set_active_loadout(self, loadoutId):
         if loadoutId in self._model.loadoutsManager.loadouts:
-            self._model.set_active_loadout(loadoutId)
-            for key, stratagem in self._model.get_current_loadout_macros().items():
-                stratagem.prepare_stratagem(self)
             self._model.settingsManager.currentLoadoutId = loadoutId
-            self.view.update_current_loadout()
+        self.view.update_current_loadout()
     
     def get_active_loadout(self):
         return self._model.loadoutsManager.loadouts.get(self._model.settingsManager.currentLoadoutId, None)

@@ -9,7 +9,7 @@ class Stratagem:
     else:
       self.icon_name = icon_name
   
-  def prepare_stratagem(self, controller):
+  def prepare(self, controller):
     self.commandArray=[]
     for input in self.command:
       key = controller.get_settings_manager().stratagemKeys[input]
