@@ -1,7 +1,8 @@
 from src.executer_base import BaseExecutor
-from src import utilities, constants
+import utilities
+import constants
 from src.view.view_base import SettingsItem, MenuItem
-from src.classes.settings import Settings
+from src.settings import Settings
 import struct
 from src.executer_utilities import get_physical_addresses
 

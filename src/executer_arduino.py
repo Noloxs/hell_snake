@@ -1,4 +1,3 @@
-import serial.tools.list_ports
 import struct
 import constants
 import utilities
