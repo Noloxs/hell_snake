@@ -1,8 +1,10 @@
+import constants
+import utilities
 from pynput.keyboard import Controller
 from src.executer_base import BaseExecutor
-from src import utilities, key_parser_pynput, constants
+from src.key_parser_pynput import PynputKeyparser
 from src.view.view_base import SettingsItem
-from src.classes.settings import Settings
+from src.settings import Settings
 
 TRIGGER_DELAY = "pynput_triggerDelay"
 TRIGGER_DELAY_DEFAULT = 100
@@ -36,7 +38,7 @@ class PynputExecuter(BaseExecutor):
             pass
     
     def parse_macro_key(self, key):
-        return key_parser_pynput.parse_key(key)
+        return PynputKeyparser.parse_key(key)
     
     def get_settings_items(self):
         settings = []

@@ -1,8 +1,8 @@
+import constants
 from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
-from src import constants
-from src.classes.settings import Settings
+from src.settings import Settings
 from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog, PyQT5Settings
 
 class EditConfigDialog(QDialog):
@@ -184,20 +184,14 @@ class EditConfigDialog(QDialog):
                 self.add_settings_headline(grid_layout, item.title)
             else:
                 value = getattr(self.settings, item.key, item.default_value)
-                if i == 0 or previous_item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER:
-                    show_separator = False
-                else:
-                    show_separator = True
+                show_separator = False if i == 0 or previous_item.value_type == constants.SETTINGS_VALUE_TYPE_HEADER else True
 
                 if item.value_type == constants.SETTINGS_VALUE_TYPE_INT:
                     value_desc = str(value)
-                    callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(key, update_callback).on_next_value)
+                    callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(key, update_callback).on_next_value) # noqa: E731
                 elif item.value_type == constants.SETTINGS_VALUE_TYPE_BOOL:
-                    if value:
-                        value_desc = "Yes"
-                    else:
-                        value_desc = "No"
-                    callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(key, update_callback).on_next_value(not current_value)
+                    value_desc = "Yes" if value else "No"
+                    callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(key, update_callback).on_next_value(not current_value) # noqa: E731
                 
                 self.add_key_binding(grid_layout, item.title, value_desc, show_separator, callback)
             previous_item = item

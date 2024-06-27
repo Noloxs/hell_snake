@@ -1,8 +1,8 @@
+import constants
 from src.view.view_base import BaseView
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtCore import pyqtSignal, QObject
 from src.view.pyqt5.main import MainWindow
-from src import constants
 from src.view.view_base import SettingsItem
 from src.view.pyqt5.util import KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT
 

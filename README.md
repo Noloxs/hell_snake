@@ -13,133 +13,33 @@ Hell Snake simplifies the process of executing macros in the game Hell Divers 2,
 - **Customization**: Customize executors, delays macro triggers etc. to suit your playstyle and preferences.
 - **Increased democracy**: Enhances your gameplay with at least 17% more democracy.
 
-## Installation
+## Installation using make
 
 To get started with Hell Snake, follow these steps:
 
 1. Clone the repository to your local machine:
-
     ```
     git clone https://github.com/Noloxs/hell_snake.git
     ```
-
-2. Navigate to the project directory:
-
-    ```
-    cd hell-snake
-    ```
-
-3. __Optional:__ run in python virtual environment using:
-    
-    ```
-    python -m venv .venv
-    ```
-
-    and then activate it using:
-
-    ```
-    source .venv/bin/activate
-    ```
-
-4. Install the required dependencies:
-
-    ```
-    pip install -r requirements.txt
-    ```
-
-## Makefile usage (replaces other installation)
-
-1. Initialize using
+2. Initialize using
     ```
     make init
-    ```
-2. Run all QA using make
-    ```
-    make lint test
     ```
 3. Run HellSnake
     ```
     make run
     ```
 
-Look into the Makefile for the exact targets and what the do.
-
-## Configuration
-
-All the configuration options in hell snake is accessible through the interface it self.
-
-__NB: Currently settings changes are not saved automatically. To save changes to key bindings, loadouts etc. Go to Files -> Settings -> Save settings__
-
-### System settings
-To configure hell snake to your needs go to **Files** -> **Settings** -> **Edit settings**
-
-#### Key Bindings - Stratagem Bindings
-Here you can change the keys used in hell divers to call down stratagems
-
-__These should match your in game settings exactly__
-
-#### Key Bindings - Global arm bindings
-You can define a key which allows you to arm and disarm the macro execution. __This is default off__.
-
-You can us any of the valid input keys and switch between the two supported modes:
-
-- "**toggle**" Which toggles between armed and disarmed with each press
-- "**push**" Which arms the macros while the key is pressed down and disarmed when released
-
-#### Executor Settings
-Change the selected executor to one of the supported emulators:
-
-| Executor            | Windows | Linux | Mac OS | Notes                        |
-|---------------------|---------|-------|--------|------------------------------|
-| Pynput              | ?       | 🮱    | ?      |                              |
-| pyautogui           | ?       | 🮱    | ?      |                              |
-| Xdotool             | X       | 🮱    | X      |                              |
-| Arduino passthrough | 🮱      | 🮱    | ?      | Requires additional hardware |
-|
-
-- 🮱 Confirmed to work
-- X Not supported
-- ? Unconfirmed
-
-
-Each executor has their own settings to further customize them.
-Common among most executors are the trigger delays and stratagem delays
-
-**Trigger delay** Is the delay between holding the 'Open stratagem list' key and starting to activate the stratagems in milliseconds using:
-
-__E.g.: 100ms delay with 30ms of jitter, meaning a delay between 100ms and 130ms__
-
-You can also change the delay that is used between each stratagems key press in milliseconds using:
-
-__E.g.: 30ms delay with 20ms of jitter, meaning a delay between 30ms and 50ms__
-
-### Stratagem loadouts
-
-Your loadouts can all be managed through the GUI going to **Loadouts** -> **Edit loadouts**
-
-__The blue options are applied immediately, where as green are only applied after pressing the apply button (10)__
-
-#### Loadout options
-1) Add a new loadout to your configuration
-2) Change which loadout is being edited
-3) Rename the loadout
-4) Delete the loadout from your configuration
-5) Drag and drop to rearrange the macros
-6) Click on a macro to select one for editing
-7) Press to delete the selected macro from the loadout
-8) Press to change stratagem assigned to the selected macro
-9) Press to add a new macro key
-10) Press to apply changes to current loadout
-
-![Image of the edit loadouts menu](https://raw.githubusercontent.com/Noloxs/hell_snake/main/docs/edit_loadouts.png)
+For more information an alternative installation methods see: [Installation](https://github.com/Noloxs/hell_snake/wiki/Installation)
 
 ## Usage
 
-1. Ensure that you have completed the 'Installation' section.
-2. Configure Hell Snake to your preferences. See: 'Configuration'
-3. Launch the Hell Snake program by running `python hell_snake.py` or `./hell_snake.py` if using venv.
-4. Arm using the menu button or global key
-5. Enjoy the enhanced gaming experience with Hell Divers 2!
+1. Start by acknowledging that this might not work for you and/or trigger anti cheat, which will be your own responsibility!
+2. Ensure that you have Hell Snake installed. See: [Installation](https://github.com/Noloxs/hell_snake/wiki/Installation)
+3. Launch the Hell Snake program by running `make run` or `./hell_snake.py` if using venv.
+4. Configure Hell Snake to your preferences. See: [Configuration](https://github.com/Noloxs/hell_snake/wiki/Configuration)
+5. Arm using the menu button or global key
+6. Enjoy the enhanced gaming experience with Hell Divers 2!
 
 ## Contributing
 

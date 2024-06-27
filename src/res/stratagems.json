@@ -401,5 +401,11 @@
       "category": "Mission",
       "command": [3,3,1,1],
       "icon_name": "Orbital Illumination Flare.svg"
+    },
+    "67": {
+      "name": "Hive breaker drill",
+      "category": "Mission",
+      "command": [1,0,2,3,2,2],
+      "icon_name": "Prospecting Drill.svg"
     }
   }

@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLab
 from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
-from src import constants
-from src.classes.settings import Settings
+import constants
+from src.settings import Settings
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog

@@ -1,8 +1,10 @@
-from src.executer_base import BaseExecutor
-from src import utilities, constants
-from src.view.view_base import SettingsItem, MenuItem
-from src.classes.settings import Settings
+import serial.tools.list_ports
 import struct
+import constants
+import utilities
+from src.executer_base import BaseExecutor
+from src.view.view_base import SettingsItem, MenuItem
+from src.settings import Settings
 from src.executer_utilities import get_physical_addresses
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
