@@ -1,9 +1,9 @@
 from src.executer_base import BaseExecutor
-import serial.tools.list_ports
 from src import utilities, constants
 from src.view.view_base import SettingsItem, MenuItem
 from src.classes.settings import Settings
 import struct
+from src.executer_utilities import get_physical_addresses
 
 KEY_DELAY = "arduino_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
@@ -37,7 +37,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
 
     def attempt_auto_connect(self):
         if getattr(self.settings, KEY_LAST_CONNECTED, KEY_LAST_CONNECTED_DEFAULT) is not None:
-            ports = self.get_physical_addresses()
+            ports = get_physical_addresses()
             for port in ports:
                 id = str(port.vid)+"-"+str(port.pid)
                 if id == self.settings.arduino_lastConnectedDevice:
@@ -72,7 +72,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
 
         select_serial = MenuItem("Select serial", None, None, constants.MENU_TYPE_MENU)
         connection = self.get_current_connection()
-        physical_addresses = self.get_physical_addresses()
+        physical_addresses = get_physical_addresses()
         for port in sorted(physical_addresses):
             if port.device == connection:
                 icon = constants.ICON_BASE_PATH+"serial_connected"
@@ -121,10 +121,6 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         # Convert the packed bytes to hexadecimal representation for display (optional)
         hex_representation = packed_delay.hex()
         return hex_representation
-    
-    def get_physical_addresses(self):
-        ports = serial.tools.list_ports.comports()
-        return ports
     
     def get_current_connection(self):
         if self.arduino is None:

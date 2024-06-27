@@ -1,9 +1,9 @@
 from src.executer_base import BaseExecutor
-import serial.tools.list_ports
 from src import utilities, constants
 from src.view.view_base import SettingsItem, MenuItem
 from src.classes.settings import Settings
 import struct
+from src.executer_utilities import get_physical_addresses
 
 KEY_DELAY = "pico_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
@@ -38,7 +38,7 @@ class PicoPassthroughExecuter(BaseExecutor):
     def attempt_auto_connect(self):
         last_connected = getattr(self.settings, KEY_LAST_CONNECTED, KEY_LAST_CONNECTED_DEFAULT)
         if last_connected is not None:
-            ports = self.get_physical_addresses()
+            ports = get_physical_addresses()
             for port in ports:
                 id = str(port.vid)+"-"+str(port.pid)
                 if id == last_connected:
@@ -62,7 +62,7 @@ class PicoPassthroughExecuter(BaseExecutor):
         #Sending a negative number indicates that the key should be pressed but not released
         bytesToSend = bytes.fromhex(self.triggerKey) + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)*-1).to_bytes(2, 'big', signed = True) # Trigger stratagem
         for key in macro.commandArray:
-            bytesToSend += bytes.fromhex(self.parse_macro_key(key)) # Key press
+            bytesToSend += bytes.fromhex(key) # Key press
             bytesToSend += int(utilities.getDelayWithJitterMs(self.keyDelay, self.keyDelayJitter)).to_bytes(2,'big', signed = True) # Key press delay
         bytesToSend += bytes.fromhex(self.triggerKey) + int(utilities.getDelayWithJitterMs(self.triggerDelay, self.triggerDelayJitter)).to_bytes(2, 'big', signed = True) # Release trigger
 
@@ -73,7 +73,7 @@ class PicoPassthroughExecuter(BaseExecutor):
 
         select_serial = MenuItem("Select serial", None, None, constants.MENU_TYPE_MENU)
         connection = self.get_current_connection()
-        physical_addresses = self.get_physical_addresses()
+        physical_addresses = get_physical_addresses()
         for port in sorted(physical_addresses):
             if port.device == connection:
                 icon = constants.ICON_BASE_PATH+"serial_connected"
@@ -108,13 +108,6 @@ class PicoPassthroughExecuter(BaseExecutor):
         if self.pico is not None:
             self.pico.write(bytes)
     
-    def parse_to_hex(self, key):
-        return hex(ord(key))[2:]
-
-    def get_physical_addresses(self):
-        ports = serial.tools.list_ports.comports()
-        return ports
-    
     def get_current_connection(self):
         if self.pico is None:
             return None
@@ -125,7 +118,8 @@ class PicoPassthroughExecuter(BaseExecutor):
         if key in self.key_map:
             return self.key_map[key]
         else:
-            return self.parse_to_hex(key)
+            print("Does not support: "+str(key))
+            raise KeyError
 
     key_map = {
         "a":"04",
