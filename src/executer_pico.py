@@ -5,6 +5,7 @@ from src.view.view_base import SettingsItem, MenuItem
 from src.settings import Settings
 import struct
 from src.executer_utilities import get_physical_addresses
+import serial
 
 KEY_DELAY = "pico_stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
@@ -115,7 +116,7 @@ class PicoPassthroughExecuter(BaseExecutor):
         else:
             return self.pico.port
     
-    def parse_macro_key(self, key):   
+    def parse_macro_key(self, key):
         if key in self.key_map:
             return self.key_map[key]
         else:

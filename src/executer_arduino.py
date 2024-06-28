@@ -1,6 +1,7 @@
 import struct
 import constants
 import utilities
+import serial
 from src.executer_base import BaseExecutor
 from src.view.view_base import SettingsItem, MenuItem
 from src.settings import Settings
