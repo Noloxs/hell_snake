@@ -2,6 +2,7 @@ from src.controller import Controller
 from src.executor.executer_arduino import ArduinoPassthroughExecuter
 # from src.executor.executer_pyautogui import PyAutoGuiExecuter
 # from src.executor.executer_pynput import PynputExecuter
+from src.executor.executer_pico import PicoPassthroughExecuter
 from src.executor.executer_xdotool import XdotoolExecuter
 from src.loadouts import LoadoutManager
 from src.settings import SettingsManager
@@ -45,6 +46,7 @@ def test_controller_should_initialize_correctly(model_mock):
     ## Causes failure in Github due to missing display
     # (constants.EXECUTOR_PYAUTOGUI, PyAutoGuiExecuter),
     # (constants.EXECUTOR_PYNPUT, PynputExecuter),
+    (constants.EXECUTOR_PICO, PicoPassthroughExecuter),
     (constants.EXECUTOR_XDOTOOL, XdotoolExecuter)
 ])
 def test_controller_should_load_correct_executor(model_mock, view_mock, executor_constant, executor_class):

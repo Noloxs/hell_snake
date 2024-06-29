@@ -39,9 +39,9 @@ class Controller:
             self.executer = PyAutoGuiExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_XDOTOOL:
             from src.executor.executer_xdotool import XdotoolExecuter
-            self.executer = XdotoolExecuter()
+            self.executer = XdotoolExecuter(self)
         elif selectedExecutor == constants.EXECUTOR_PICO:
-            from src.executer_pico import PicoPassthroughExecuter
+            from src.executor.executer_pico import PicoPassthroughExecuter
             self.executer = PicoPassthroughExecuter(self)
         else:
             raise ModuleNotFoundError

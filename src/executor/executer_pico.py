@@ -1,10 +1,9 @@
-from src.executer_base import BaseExecutor
+from src.executor.executer_base import BaseExecutor
 import utilities
 import constants
 from src.view.view_base import SettingsItem, MenuItem
-from src.settings import Settings
 import struct
-from src.executer_utilities import get_physical_addresses
+from src.executor.executer_utilities import ExecuterUtilities
 import serial
 
 KEY_DELAY = "pico_stratagemKeyDelay"
@@ -22,10 +21,10 @@ KEY_AUTO_RECONNECT_DEFAULT = True
 
 class PicoPassthroughExecuter(BaseExecutor):
     def __init__(self, controller):
-        super().__init__()
+        super().__init__(controller)
         self.pico = None
-        self.settings = Settings.getInstance()
-        self.controller = controller
+        self.settings = controller.get_settings_manager()
+
 
     def start(self):
         if getattr(self.settings, KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
@@ -40,7 +39,7 @@ class PicoPassthroughExecuter(BaseExecutor):
     def attempt_auto_connect(self):
         last_connected = getattr(self.settings, KEY_LAST_CONNECTED, KEY_LAST_CONNECTED_DEFAULT)
         if last_connected is not None:
-            ports = get_physical_addresses()
+            ports = ExecuterUtilities.get_physical_addresses()
             for port in ports:
                 id = str(port.vid)+"-"+str(port.pid)
                 if id == last_connected:
@@ -75,7 +74,7 @@ class PicoPassthroughExecuter(BaseExecutor):
 
         select_serial = MenuItem("Select serial", None, None, constants.MENU_TYPE_MENU)
         connection = self.get_current_connection()
-        physical_addresses = get_physical_addresses()
+        physical_addresses = ExecuterUtilities.get_physical_addresses()
         for port in sorted(physical_addresses):
             if port.device == connection:
                 icon = constants.ICON_BASE_PATH+"serial_connected"
