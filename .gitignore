@@ -1,5 +1,6 @@
 #Hell snake specific ignores
 /settings.json
+!/pico_passthrough/lib/**
 /loadouts.json
 /*.json.bak
 
@@ -26,7 +27,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+lib/*
 lib64/
 parts/
 sdist/
