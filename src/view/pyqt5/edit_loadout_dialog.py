@@ -175,7 +175,7 @@ class EditLoadoutDialog(QDialog):
         self.editMacros = {}
         if self.editLoadout is not None:
             for key, stratagemId in self.editLoadout.macroKeys.items():
-                self.editMacros.update({key:self.controller.model.stratagems[stratagemId]})
+                self.editMacros.update({key:self.controller._model._stratagems[stratagemId]})
 
         for index, (key, value) in enumerate(self.editMacros.items()):
             listAdapter = QEditLoadoutListAdapter()
