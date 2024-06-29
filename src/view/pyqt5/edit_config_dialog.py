@@ -182,7 +182,7 @@ class EditConfigDialog(QDialog):
 
                 if item.value_type == constants.SETTINGS_VALUE_TYPE_INT:
                     value_desc = str(value)
-                    callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(key, update_callback).on_next_value) # noqa: E731
+                    callback = lambda checked, default_value=value, key=item.key: self.show_number_input_dialog(default_value, SettingsBindingHandler(self.settings, key, update_callback).on_next_value) # noqa: E731
                 elif item.value_type == constants.SETTINGS_VALUE_TYPE_BOOL:
                     value_desc = "Yes" if value else "No"
                     callback = lambda checked, current_value=value, key=item.key: SettingsBindingHandler(self.settings, key, update_callback).on_next_value(not current_value) # noqa: E731
