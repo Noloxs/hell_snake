@@ -3,6 +3,8 @@ from src.executor.executer_arduino import ArduinoPassthroughExecuter
 # from src.executor.executer_pyautogui import PyAutoGuiExecuter
 # from src.executor.executer_pynput import PynputExecuter
 from src.executor.executer_pico import PicoPassthroughExecuter
+from src.executor.executer_pyautogui import PyAutoGuiExecuter
+from src.executor.executer_pynput import PynputExecuter
 from src.executor.executer_xdotool import XdotoolExecuter
 from src.loadouts import LoadoutManager
 from src.settings import SettingsManager
@@ -43,9 +45,8 @@ def test_controller_should_initialize_correctly(model_mock):
 
 @pytest.mark.parametrize("executor_constant, executor_class", [
     (constants.EXECUTOR_ARDUINO, ArduinoPassthroughExecuter),
-    ## Causes failure in Github due to missing display
-    # (constants.EXECUTOR_PYAUTOGUI, PyAutoGuiExecuter),
-    # (constants.EXECUTOR_PYNPUT, PynputExecuter),
+    (constants.EXECUTOR_PYAUTOGUI, PyAutoGuiExecuter),
+    (constants.EXECUTOR_PYNPUT, PynputExecuter),
     (constants.EXECUTOR_PICO, PicoPassthroughExecuter),
     (constants.EXECUTOR_XDOTOOL, XdotoolExecuter)
 ])
