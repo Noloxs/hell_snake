@@ -3,6 +3,7 @@ from src.controller import Controller
 from src.view.view_base import BaseView
 from PyQt5.QtWidgets import QApplication,QMessageBox
 from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtGui import QFontDatabase, QFont
 from src.view.pyqt5.main import MainWindow
 from src.view.view_base import SettingsItem
 from src.view.pyqt5.util import KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT
@@ -12,6 +13,7 @@ class PyQT5View(BaseView):
         super().__init__()
         self.controller = controller
         self.gui = QApplication([])
+        self.load_fonts()
         self.window = MainWindow(controller)
         self.setup_ui_update_listener()
     
@@ -85,6 +87,19 @@ class PyQT5View(BaseView):
         # This method will be called when the application is about to quit
         # You can add your cleanup code here
         self.controller.on_exit()
+    
+    def load_fonts(self):
+        font_id = QFontDatabase.addApplicationFont(constants.FONT_BASE_PATH+'ChakraPetch-Medium.ttf')
+        if font_id == -1:
+            print("Failed to load font: ChakraPetch-Medium")
+        else:    
+            chakra_petch_medium = QFontDatabase.applicationFontFamilies(0)[0]
+            font = QFont(chakra_petch_medium, 12)
+            self.gui.setFont(font)
+        
+        font_id = QFontDatabase.addApplicationFont(constants.FONT_BASE_PATH+'ChakraPetch-Bold.ttf')
+        if font_id == -1:
+            print("Failed to load font: ChakraPetch-Bold")
 
 class UiUpdateListener(QObject):
     ui = pyqtSignal(str, list)
