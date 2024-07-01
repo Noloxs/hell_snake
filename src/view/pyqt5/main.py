@@ -15,8 +15,8 @@ class MainWindow(QMainWindow):
         self.controller = controller
         self.setWindowTitle("Hell snake")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
-        self.setMinimumSize(350, 225)
-        self.resize(350,225)
+        self.setMinimumSize(400, 225)
+        self.resize(400,225)
         self.update_view_settings()
 
         central_widget = QWidget()

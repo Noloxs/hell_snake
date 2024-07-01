@@ -12,7 +12,7 @@ class EditConfigDialog(QDialog):
 
         # Set up the dialog
         self.setWindowTitle("Edit settings")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 425, 300)
         
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -220,7 +220,7 @@ class EditConfigDialog(QDialog):
         headline.setContentsMargins(20,0,0,0)
         headline.setStyleSheet("background-color: "+constants.COLOR_SETTINGS_HEADLINE_BACKGROUND)
         chakra_petch_bold = QFontDatabase.applicationFontFamilies(1)[0]
-        font = QFont(chakra_petch_bold, 14)
+        font = QFont(chakra_petch_bold, 12)
         font.setBold(True)
         headline.setFont(font)
 

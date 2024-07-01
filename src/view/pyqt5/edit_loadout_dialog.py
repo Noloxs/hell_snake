@@ -15,8 +15,8 @@ class EditLoadoutDialog(QDialog):
         
         self.setWindowTitle("Edit loadouts")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
-        self.setMinimumSize(300, 300)
-        self.resize(300,600)
+        self.setMinimumSize(400, 300)
+        self.resize(400,600)
 
         iconSize = QSize(30, 30)
         # Layout
