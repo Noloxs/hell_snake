@@ -7,7 +7,10 @@ class PynputKeyListener:
     def __init__(self, controller : Controller):
         self.controller = controller
         self.settings = controller.get_settings_manager()
+
         self.getNextCallbacks = []
+        self.key_press_handlers = []
+        self.key_release_handlers = []
 
         # Initialize the actual keyboard event listener
         self.listener = None
