@@ -1,3 +1,4 @@
+
 class Stratagem:
   def __init__(self, name, category, command, icon_name):
     self.name = name
@@ -8,8 +9,8 @@ class Stratagem:
     else:
       self.icon_name = icon_name
   
-  def prepare_stratagem(self, model, executer):
+  def prepare(self, controller):
     self.commandArray=[]
     for input in self.command:
-      key = model.settings.stratagemKeys[input]
-      self.commandArray.append(executer.parse_macro_key(key))
+      key = controller.get_settings_manager().stratagemKeys[input]
+      self.commandArray.append(controller.get_executor().parse_macro_key(key))

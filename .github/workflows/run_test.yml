@@ -1,33 +1,36 @@
-name: Run Unit Test via Pytest  
-  
-on: [push]  
-  
-jobs:  
-  build:  
-    runs-on: ubuntu-latest  
-    strategy:  
-      matrix:  
-        python-version: ["3.10"]  
-  
-    steps:  
-      - uses: actions/checkout@v3  
-      - name: Set up Python ${{ matrix.python-version }}  
-        uses: actions/setup-python@v4  
-        with:  
-          python-version: ${{ matrix.python-version }}
+name: CI Pipeline
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
           cache: 'pip'
-      - name: Install dependencies  
-        run: |  
-          python -m pip install --upgrade pip  
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  
-      - name: Lint with Ruff  
-        run: |  
-          pip install ruff  
-          ruff -- --format=github --target-version=py310 .  
-        continue-on-error: true  
-      - name: Test with pytest  
-        run: |  
-          coverage run -m pytest  -v -s  
-      - name: Generate Coverage Report  
-        run: |  
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with Ruff
+        run: |
+          pip install ruff
+          ruff check --output-format github --target-version py310 .
+        continue-on-error: true
+      - name: Create virtual display for tests
+        run: |
+          pip install pyvirtualdisplay
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - name: Test with pytest
+        run: |
+          pip install pytest coverage
+          export DISPLAY=:99.0
+          coverage run -m pytest  -v -s
+      - name: Generate Coverage Report
+        run: |
           coverage report -m

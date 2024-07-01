@@ -1,6 +1,8 @@
 #Hell snake specific ignores
 /settings.json
 !/pico_passthrough/lib/**
+/loadouts.json
+/*.json.bak
 
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python

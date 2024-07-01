@@ -4,7 +4,6 @@ from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
 from PyQt5.QtSvg import QSvgWidget
 from src.view.view_utilities import filter_stratagems, sort_stratagems
-from src.view.pyqt5.util import PyQT5Settings
 
 class FilteredListDialog(QDialog):
     def __init__(self, controller, key, callback = None):
@@ -15,11 +14,6 @@ class FilteredListDialog(QDialog):
         self.key = key
         self.setMinimumSize(300, 300)
         self.resize(300,800)
-
-        if PyQT5Settings.isAlwaysOnTop():
-            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        else:
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
         self.setWindowTitle("Select new stratagem for: "+self.key)
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
@@ -63,7 +57,7 @@ class FilteredListDialog(QDialog):
         self.list_widget.clear()
 
         # Filter and sort items
-        stratagem_list = filter_stratagems(self.controller.model.stratagems, text)
+        stratagem_list = filter_stratagems(self.controller.get_stratagems(), text)
         stratagem_list = sort_stratagems(stratagem_list)
 
         # Add all items to the QListWidget

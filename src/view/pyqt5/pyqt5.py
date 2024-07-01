@@ -1,13 +1,14 @@
 import constants
+from src.controller import Controller
 from src.view.view_base import BaseView
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication,QMessageBox
 from PyQt5.QtCore import pyqtSignal, QObject
 from src.view.pyqt5.main import MainWindow
 from src.view.view_base import SettingsItem
 from src.view.pyqt5.util import KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT
 
 class PyQT5View(BaseView):
-    def __init__(self, controller):
+    def __init__(self, controller : Controller):
         super().__init__()
         self.controller = controller
         self.gui = QApplication([])
@@ -17,6 +18,7 @@ class PyQT5View(BaseView):
     def setup_ui_update_listener(self):
         self.ui_listener = UiUpdateListener()
         self.ui_listener.ui.connect(self.update_ui)
+        self.gui.aboutToQuit.connect(self.on_exit)
     
     def update_ui(self, method_name, arguments):
         if method_name == self.show_interface.__name__:
@@ -62,12 +64,27 @@ class PyQT5View(BaseView):
     def on_settings_changed(self):
         self.ui_listener.update(self.on_settings_changed.__name__, [])
     
+    def confirm_save_loadouts(self) -> bool:
+        # Show a confirmation dialog for saving settings
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Loadouts was changed. Do you want to save your loadouts?")
+        msg.setWindowTitle("Save Loadouts")
+        msg.setStandardButtons(QMessageBox.Save | QMessageBox.Discard)
+        result = msg.exec_()
+        return result == QMessageBox.Save
+
     def get_settings_items(self):
         settings = []
         settings.append(SettingsItem("PYQT5 Settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
         settings.append(SettingsItem("Always on top", KEY_ALWAYS_ON_TOP_DEFAULT, KEY_ALWAYS_ON_TOP, constants.SETTINGS_VALUE_TYPE_BOOL))
         
         return settings
+
+    def on_exit(self):
+        # This method will be called when the application is about to quit
+        # You can add your cleanup code here
+        self.controller.on_exit()
 
 class UiUpdateListener(QObject):
     ui = pyqtSignal(str, list)

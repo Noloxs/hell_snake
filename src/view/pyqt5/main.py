@@ -1,19 +1,18 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame, QApplication
 from PyQt5.QtGui import QIcon, QFont, QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
-from src.settings import Settings
+from src.controller import Controller
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
 
 class MainWindow(QMainWindow):
-    def __init__(self, controller):
+    def __init__(self, controller : Controller):
         super().__init__()
         self.controller = controller
-        self.settings = Settings.getInstance()
         self.setWindowTitle("Hell snake")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(350, 225)
@@ -85,7 +84,7 @@ class MainWindow(QMainWindow):
         dialog.exec_()
     
     def update_view_settings(self):
-        if PyQT5Settings.isAlwaysOnTop():
+        if PyQT5Settings.isAlwaysOnTop(self.controller.get_settings_manager()):
             self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         else:
             self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
@@ -93,7 +92,7 @@ class MainWindow(QMainWindow):
     def update_macros(self):
         self.listwidget.clear()
 
-        for index, (key, value) in enumerate(self.controller.model.macros.items()):
+        for index, (key, value) in enumerate(self.controller.getAllMacros()):
             listAdapter = QLoadoutListAdapter()
             listAdapter.setKey(key)
             listAdapter.setStyleSheet("background-color: transparent")
@@ -105,11 +104,11 @@ class MainWindow(QMainWindow):
             self.listwidget.addItem(listAdapterItem)
             self.listwidget.setItemWidget(listAdapterItem, listAdapter)
 
-        height = 115 + (len(self.controller.model.macros)*55)
+        height = 115 + (len(self.controller.getAllMacros())*55)
         self.resize(self.geometry().width(), height)
 
     def update_armed(self):
-        if self.controller.model.isArmed:
+        if self.controller.is_armed():
             self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"armed.png"))
             self.armedBar.setStyleSheet("background-color: red")
             self.arm_action.setText("Disarm")
@@ -128,7 +127,7 @@ class MainWindow(QMainWindow):
             self.loadout_desc.setVisible(True)
 
     def update_current_loadout(self):
-        currentLoadout = self.controller.model.currentLoadout
+        currentLoadout = self.controller.get_active_loadout()
         if currentLoadout is not None:
             self.loadout.setText(currentLoadout.name) 
         else:
@@ -139,24 +138,24 @@ class MainWindow(QMainWindow):
         self.toolbar = self.menuBar()
         files_menu = self.toolbar.addMenu("Files")
 
-        settingsOptions = files_menu.addMenu(QIcon(constants.ICON_BASE_PATH+"settings.svg"), "Settings")
-
         edit_config_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_edit_config.svg"), "Edit settings", self)
         edit_config_action.triggered.connect(self.open_edit_config_dialog)
-        settingsOptions.addAction(edit_config_action)
-
-        print_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_print.svg"), "Print settings", self)
-        print_action.triggered.connect(self.controller.print_settings)
-        settingsOptions.addAction(print_action)
+        files_menu.addAction(edit_config_action)
 
         save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save settings", self)
-        save_action.triggered.connect(self.controller.save_settings)
-        settingsOptions.addAction(save_action)
+        save_action.triggered.connect(self.controller.get_settings_manager().saveToFile)
+        files_menu.addAction(save_action)
+
+        files_menu.addSeparator()
+
+        save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save loadouts", self)
+        save_action.triggered.connect(self.controller.get_loadouts_manager().saveToFile)
+        files_menu.addAction(save_action)
 
         files_menu.addSeparator()
 
         exit_action = QAction(QIcon(constants.ICON_BASE_PATH+"exit.svg"),"Exit", self)
-        exit_action.triggered.connect(self.controller.exit)
+        exit_action.triggered.connect(QApplication.instance().quit)
         files_menu.addAction(exit_action)
 
         self.arm_action = QAction("Arm", self)
@@ -168,7 +167,7 @@ class MainWindow(QMainWindow):
     
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
-        for loadoutId, loadout in self.settings.loadouts.items():
+        for loadoutId, loadout in self.controller.get_loadouts_manager().loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             self.loadout_menu.addAction(loadout_action)

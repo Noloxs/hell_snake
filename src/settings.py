@@ -4,25 +4,8 @@
 
 import constants
 import json
-import utilities
 
-class Settings:
-    _instance = None  # Class variable to hold the singleton instance
-
-    @classmethod
-    def getInstance(cls):
-        """
-        Method to retrieve or create a singleton instance of the Settings class.
-
-        This method checks if an instance of the class has already been created (stored in `_instance`).
-        If not, it creates a new instance and stores it in `_instance`. It then returns this singleton instance.
-
-        Returns:
-            Settings: a singleton instance of the Settings class.
-        """
-        if cls._instance is None:
-            cls._instance = cls()  # Create a new instance if one doesn't exist
-        return cls._instance
+class SettingsManager:
 
     def __init__(self):
         self._observers = []
@@ -35,6 +18,8 @@ class Settings:
             self.migrate_1_to_2()
         if self.version == 2:
             self.migrate_2_to_3()
+        if self.version == 3:
+            self.migrate_3_to_4()
         print("Settings initialized")
 
     # Settings notifications
@@ -54,12 +39,15 @@ class Settings:
         except ValueError:
             pass
 
-    def notify_change(self):
+    def notify_change(self, **attrs):
         """
         Calls each callback in the list of observers.
+        The attrs parameter allows calling the notify method with additional arguments,
+        which are packed into an event dictionary. This allows for more specific notifications
+        to be sent to observers.
         """
         for callback in self._observers:
-            callback()
+            callback(attrs)
 
     def __setattr__(self, name, value):
         """
@@ -67,20 +55,19 @@ class Settings:
         """
         self.__dict__[name] = value
         if not self.__dict__.get("_is_initializing", False):
-            self.notify_change()  # Notify on any attribute change
+            self.notify_change(type='setattr', name=name)  # Notify on any attribute change
 
     def __delattr__(self, name):
         """
         Deletes an attribute and notifies observers of the change. Probably not really used a lot.
         """
         del self.__dict__[name]
-        self.notify_change()
+        self.notify_change(type='delattr', name=name)
 
     def loadDefaults(self):
         """
         We load a base set of settings, in case the user has no settings file.
         """
-        self.loadouts = {utilities.generateUuid(): Loadout("Loadout 1", {"1": "1"})}
         self.triggerKey = "ctrl"
         self.stratagemKeys = ["w", "a", "s", "d"]
         self.selectedExecutor = constants.EXECUTOR_PYNPUT
@@ -95,19 +82,11 @@ class Settings:
             with open(constants.SETTINGS_PATH) as json_file:
                 data = json.load(json_file)
                 if 'loadouts' in data:
-                    self.parseLoadouts(data['loadouts'])
+                    pass
                 self.parseSettings(data)
             return True
         except (OSError, json.JSONDecodeError):
             return False
-
-    def parseLoadouts(self, loadout_data):
-        # We expect the root loadouts element
-        loadouts = {}
-        for id, item in loadout_data.items():
-            loadout = Loadout(item['name'], item['macroKeys'])
-            loadouts[id] = loadout
-        self.loadouts = loadouts
 
     def parseSettings(self, settings_data):
         for attribute, value in settings_data.items():
@@ -155,12 +134,10 @@ class Settings:
             del self.stratagemKeyDelayJitter
         print("Settings migrated to version 3. Remember to save.")
 
-class Loadout:
-    """
-    Simple data class designed to handle the storage and management of different 
-    configurations of macro keys for a particular setup.
-    This class is used primarily in the settings.
-    """
-    def __init__(self, name, macroKeys):
-        self.name = name
-        self.macroKeys = macroKeys
+    def migrate_3_to_4(self):
+        self.version = 4
+    
+        if hasattr(self, 'loadouts'):
+            delattr(self, 'loadouts')
+
+        print("Settings migrated to version 4. Remember to save.")

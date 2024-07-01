@@ -21,6 +21,10 @@ def show_change_macro_dialog(self, key):
     raise NotImplementedError
 
 @abstractmethod
+def confirm_save_settings(self) -> bool:
+    raise NotImplementedError
+
+@abstractmethod
 def update_current_loadout(self):
     raise NotImplementedError
 

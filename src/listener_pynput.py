@@ -1,12 +1,16 @@
 from pynput import keyboard
 import constants
+from src.controller import Controller
 from src.key_parser_pynput import PynputKeyparser
 
 class PynputKeyListener:
-    def __init__(self, model, controller):
-        self.model = model
+    def __init__(self, controller : Controller):
         self.controller = controller
+        self.settings = controller.get_settings_manager()
+
         self.getNextCallbacks = []
+        self.key_press_handlers = []
+        self.key_release_handlers = []
 
         # Initialize the actual keyboard event listener
         self.listener = None
@@ -14,43 +18,44 @@ class PynputKeyListener:
         self.listener.start()
 
         # Attach a listener to notify us of changes to settings
-        self.model.settings.attach_change_listener(self._on_settings_changed)
-        self._on_settings_changed()
+        self.settings.attach_change_listener(self._on_settings_changed)
+        self._on_settings_changed({'type': 'init'})
         
     ### Handlers ###
 
     # Global arm handler
     def handle_global_arm_press(self, key):
-        if (self.model.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
+        if (self.settings.globalArmMode == constants.ARM_MODE_TOGGLE):
             self.controller.toggle_armed()
-        elif (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.model.isArmed):
+        elif (self.settings.globalArmMode == constants.ARM_MODE_PUSH and not self.controller.is_armed()):
             self.controller.set_armed(True)
     def handle_global_arm_release(self, key):
-        if (self.model.settings.globalArmMode == constants.ARM_MODE_PUSH):
+        if (self.settings.globalArmMode == constants.ARM_MODE_PUSH):
             self.controller.set_armed(False)
 
     # Loadout browser
     def handle_next_loadout(self, key):
-        if(not self.model.isArmed):
+        if(not self.controller.is_armed()):
             self.controller.cycle_loadout(+1)
     def handle_prev_loadout(self, key):
-        if(not self.model.isArmed):
+        if(not self.controller.is_armed()):
             self.controller.cycle_loadout(-1)
 
     ### Helpers ###
-    def _on_settings_changed(self):
+    def _on_settings_changed(self, event):
         ''' This function is called when settings are updated, since we attach it as a listener in __init__ '''
-        self.globalArmKey = PynputKeyparser.parse_key(self.model.settings.globalArmKey)
-        self.nextLoadoutKey = PynputKeyparser.parse_key(self.model.settings.nextLoadoutKey)
-        self.prevLoadoutKey = PynputKeyparser.parse_key(self.model.settings.prevLoadoutKey)
-        self.key_press_handlers = {
-            self.globalArmKey: self.handle_global_arm_press,
-            self.nextLoadoutKey: self.handle_next_loadout,
-            self.prevLoadoutKey: self.handle_prev_loadout,
-        }
-        self.key_release_handlers = {
-            self.globalArmKey: self.handle_global_arm_release
-        }
+        if event['type']=='setattr':
+            self.globalArmKey = PynputKeyparser.parse_key(self.settings.globalArmKey)
+            self.nextLoadoutKey = PynputKeyparser.parse_key(self.settings.nextLoadoutKey)
+            self.prevLoadoutKey = PynputKeyparser.parse_key(self.settings.prevLoadoutKey)
+            self.key_press_handlers = {
+                self.globalArmKey: self.handle_global_arm_press,
+                self.nextLoadoutKey: self.handle_next_loadout,
+                self.prevLoadoutKey: self.handle_prev_loadout,
+            }
+            self.key_release_handlers = {
+                self.globalArmKey: self.handle_global_arm_release
+            }
 
 
     def on_press(self, key):
@@ -69,8 +74,8 @@ class PynputKeyListener:
         if entry in self.key_press_handlers:
             self.key_press_handlers[entry](key)
 
-        if(self.model.isArmed):
-            macro = self.model.macros.get(entry, None)
+        if(self.controller.is_armed()):
+            macro = self.controller.getMacroForKey(entry)
             if macro is not None:
                 self.controller.trigger_macro(macro)
     

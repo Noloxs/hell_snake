@@ -5,7 +5,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtSvg import QSvgWidget
 from copy import deepcopy
 from src.view.pyqt5.filter_dialog import FilteredListDialog
-from src.view.pyqt5.util import show_capture_key_dialog, PyQT5Settings
+from src.view.pyqt5.util import show_capture_key_dialog
 
 class EditLoadoutDialog(QDialog):
     def __init__(self, controller):
@@ -17,11 +17,6 @@ class EditLoadoutDialog(QDialog):
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
         self.setMinimumSize(300, 300)
         self.resize(300,600)
-
-        if PyQT5Settings.isAlwaysOnTop():
-            self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
-        else:
-            self.setWindowFlags(self.windowFlags() & ~Qt.WindowStaysOnTopHint)
 
         iconSize = QSize(30, 30)
         # Layout
@@ -154,7 +149,7 @@ class EditLoadoutDialog(QDialog):
 
     def set_loadout_dropdown_items(self):
         self.dropdown.clear()
-        for id, loadout in self.controller.model.settings.loadouts.items():
+        for id, loadout in self.controller.get_loadouts_manager().loadouts.items():
             self.dropdown.addItem(loadout.name, id)
         if self.dropdown.count() > 0:
             self.dropdown.setCurrentIndex(0)
@@ -169,7 +164,7 @@ class EditLoadoutDialog(QDialog):
             self.update_macros()
             return
         
-        self.editLoadout = deepcopy(self.controller.model.settings.loadouts[self.loadoutId])
+        self.editLoadout = deepcopy(self.controller.get_loadouts_manager().loadouts[self.loadoutId])
         self.edit_field.setText(self.editLoadout.name)
         self.update_macros()
 
@@ -180,7 +175,7 @@ class EditLoadoutDialog(QDialog):
         self.editMacros = {}
         if self.editLoadout is not None:
             for key, stratagemId in self.editLoadout.macroKeys.items():
-                self.editMacros.update({key:self.controller.model.stratagems[stratagemId]})
+                self.editMacros.update({key:self.controller._model._stratagems[stratagemId]})
 
         for index, (key, value) in enumerate(self.editMacros.items()):
             listAdapter = QEditLoadoutListAdapter()
