@@ -407,5 +407,11 @@
       "category": "Mission",
       "command": [1,0,2,3,2,2],
       "icon_name": "Prospecting Drill.svg"
+    },
+    "68": {
+      "name": "MLS-4X Commando",
+      "category": "Support",
+      "command": [2,1,0,2,3],
+      "icon_name": "Spear.svg"
     }
   }
