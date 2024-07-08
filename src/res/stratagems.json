@@ -412,6 +412,6 @@
       "name": "MLS-4X Commando",
       "category": "Support",
       "command": [2,1,0,2,3],
-      "icon_name": "Spear.svg"
+      "icon_name": ""
     }
   }
