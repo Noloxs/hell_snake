@@ -1,10 +1,10 @@
 # Hell Snake
 
-Welcome to Hell Snake, a Python program designed for managing and running stratagem macros for the game Hell Divers 2.
+Welcome to Hell Snake, a Python program designed for managing and running stratagem macros for the game Helldivers 2.
 
 ## Overview
 
-Hell Snake simplifies the process of executing macros in the game Hell Divers 2, allowing players to automate calling stratagems within the game.
+Hell Snake simplifies the process of executing macros in the game Helldivers 2, allowing players to automate calling stratagems within the game.
 
 ## Features
 ### Current
@@ -51,7 +51,7 @@ Hell Snake is licensed under the [GNU General Public License v3.0](LICENSE.md).
 
 ## Acknowledgements
 
-- Special thanks to the developers of Hell Divers 2 for creating such an exciting game.
+- Special thanks to the developers of Helldivers 2 for creating such an exciting game.
 - Thank you to @nvigneux for creating and sharing the awesome stratagem icons. See his repository here: [Helldivers-2-Stratagems-icons-svg](https://github.com/nvigneux/Helldivers-2-Stratagems-icons-svg)
 - Thanks to all contributors who have helped improve Hell Snake.
 
@@ -61,4 +61,4 @@ If you encounter any issues or have any questions, feel free to [open an issue](
 
 ---
 
-**Note:** This project is not affiliated with or endorsed by Hell Divers 2 or its developers. It is an independent project created for educational and entertainment purposes only.
+**Note:** This project is not affiliated with or endorsed by Helldivers 2 or its developers. It is an independent project created for educational and entertainment purposes only.
