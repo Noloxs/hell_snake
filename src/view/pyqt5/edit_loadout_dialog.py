@@ -1,6 +1,6 @@
 import constants
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QComboBox, QHBoxLayout, QLineEdit, QPushButton, QListWidget, QAbstractItemView, QMenuBar, QAction, QWidget, QLabel, QListWidgetItem, QInputDialog
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtGui import QIcon, QFont, QFontDatabase
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtSvg import QSvgWidget
 from copy import deepcopy
@@ -15,8 +15,8 @@ class EditLoadoutDialog(QDialog):
         
         self.setWindowTitle("Edit loadouts")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
-        self.setMinimumSize(300, 300)
-        self.resize(300,600)
+        self.setMinimumSize(400, 300)
+        self.resize(400,600)
 
         iconSize = QSize(30, 30)
         # Layout
@@ -208,7 +208,8 @@ class QEditLoadoutListAdapter(QWidget):
         self.key = QLabel()
         self.key.setFixedSize(25, 25)
         self.key.setAlignment(Qt.AlignCenter)
-        font = QFont("Arial", 18)
+        chakra_petch_medium = QFontDatabase.applicationFontFamilies(0)[0]
+        font = QFont(chakra_petch_medium, 18)
         font.setBold(True)
         self.key.setFont(font)
         self.hBox.addWidget(self.key)
@@ -220,7 +221,7 @@ class QEditLoadoutListAdapter(QWidget):
         self.setLayout(self.hBox)
 
     def setStratagem(self, stratagem):
-        self.name.setText(stratagem.name)
+        self.name.setText(stratagem.name.upper())
         svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")

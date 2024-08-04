@@ -2,6 +2,7 @@
 RESOURCE_PATH = "src/res/"
 ICON_BASE_PATH = RESOURCE_PATH+"icons/"
 STRATAGEM_ICON_PATH = ICON_BASE_PATH+"stratagems/"
+FONT_BASE_PATH = RESOURCE_PATH+"fonts/"
 SETTINGS_PATH = "settings.json"
 LOADOUTS_PATH = "loadouts.json"
 

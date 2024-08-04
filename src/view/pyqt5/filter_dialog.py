@@ -12,8 +12,8 @@ class FilteredListDialog(QDialog):
  
         self.controller = controller
         self.key = key
-        self.setMinimumSize(300, 300)
-        self.resize(300,800)
+        self.setMinimumSize(325, 300)
+        self.resize(325,800)
 
         self.setWindowTitle("Select new stratagem for: "+self.key)
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))

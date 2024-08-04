@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame, QApplication
-from PyQt5.QtGui import QIcon, QFont, QPixmap
+from PyQt5.QtGui import QIcon, QFont, QPixmap, QFontDatabase
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
@@ -15,8 +15,8 @@ class MainWindow(QMainWindow):
         self.controller = controller
         self.setWindowTitle("Hell snake")
         self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
-        self.setMinimumSize(350, 225)
-        self.resize(350,225)
+        self.setMinimumSize(400, 225)
+        self.resize(400,225)
         self.update_view_settings()
 
         central_widget = QWidget()
@@ -42,7 +42,9 @@ class MainWindow(QMainWindow):
 
         self.loadout = QLabel()
         self.loadout.setAlignment(Qt.AlignVCenter|Qt.AlignLeft)
-        font = QFont("Arial", 24)
+
+        chakra_petch_bold = QFontDatabase.applicationFontFamilies(1)[0]
+        font = QFont(chakra_petch_bold, 24)
         font.setBold(True)
         self.loadout.setFont(font)
         self.title_box.addWidget(self.loadout)
@@ -55,8 +57,6 @@ class MainWindow(QMainWindow):
 
         self.loadout_desc = QLabel()
         self.loadout_desc.setAlignment(Qt.AlignTop|Qt.AlignLeft)
-        font = QFont("Arial", 12)
-        self.loadout_desc.setFont(font)
         self.loadout_desc.setVisible(False)
         self.title_box.addWidget(self.loadout_desc)
 
@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
     def update_current_loadout(self):
         currentLoadout = self.controller.get_active_loadout()
         if currentLoadout is not None:
-            self.loadout.setText(currentLoadout.name) 
+            self.loadout.setText(currentLoadout.name.upper()) 
         else:
             self.loadout.setText("")
 
@@ -232,7 +232,8 @@ class QLoadoutListAdapter(QWidget):
         self.key = QLabel()
         self.key.setFixedSize(50, 50)
         self.key.setAlignment(Qt.AlignCenter)
-        font = QFont("Arial", 24)
+        chakra_petch_medium = QFontDatabase.applicationFontFamilies(0)[0]
+        font = QFont(chakra_petch_medium, 24)
         font.setBold(True)
         self.key.setFont(font)
         self.hBox.addWidget(self.key)
@@ -244,7 +245,7 @@ class QLoadoutListAdapter(QWidget):
         self.setLayout(self.hBox)
 
     def setStratagem(self, stratagem):
-        self.name.setText(stratagem.name)
+        self.name.setText(stratagem.name.upper())
         svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
         svg_widget.setFixedSize(40,40)
         svg_widget.setStyleSheet("background-color: transparent")

@@ -1,6 +1,6 @@
 import constants
 from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont, QIcon, QFontDatabase
 from PyQt5.QtCore import Qt
 from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog
 
@@ -12,7 +12,7 @@ class EditConfigDialog(QDialog):
 
         # Set up the dialog
         self.setWindowTitle("Edit settings")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 425, 300)
         
         # Create a QTabWidget
         self.tabs = QTabWidget()
@@ -215,11 +215,12 @@ class EditConfigDialog(QDialog):
         grid_layout.addWidget(self.create_button(callback), row, 2)
 
     def add_settings_headline(self, grid_layout, headline):
-        headline = QLabel(headline)
+        headline = QLabel(headline.upper())
         headline.setFixedHeight(35)
         headline.setContentsMargins(20,0,0,0)
         headline.setStyleSheet("background-color: "+constants.COLOR_SETTINGS_HEADLINE_BACKGROUND)
-        font = QFont("Arial", 14)
+        chakra_petch_bold = QFontDatabase.applicationFontFamilies(1)[0]
+        font = QFont(chakra_petch_bold, 12)
         font.setBold(True)
         headline.setFont(font)
 
