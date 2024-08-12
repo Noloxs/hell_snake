@@ -189,7 +189,7 @@
     "31": {
       "name": "Upload Data",
       "category": "Mission",
-      "command": [0,0,2,2,2],
+      "command": [1,3,0,0,0],
       "icon_name": "Upload Data.svg"
     },
     "32": {
