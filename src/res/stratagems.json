@@ -413,5 +413,11 @@
       "category": "Support",
       "command": [2,1,0,2,3],
       "icon_name": "Commando.svg"
+    },
+    "69": {
+      "name": "Anti-tank mines",
+      "category": "Defensive",
+      "command": [2,1,0,0],
+      "icon_name": "Anti-Tank Mines.svg"
     }
   }
