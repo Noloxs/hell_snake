@@ -92,6 +92,11 @@ class MainWindow(QMainWindow):
     def update_macros(self):
         self.listwidget.clear()
 
+        header_height = 115  # Height of items above the macrolist
+        vertical_padding = 5 # Padding between items. This  seems to insist on being 5
+
+        # Initial window height
+        height = header_height
         for index, (key, value) in enumerate(self.controller.getAllMacros()):
             listAdapter = QLoadoutListAdapter()
             listAdapter.setKey(key)
@@ -101,10 +106,14 @@ class MainWindow(QMainWindow):
             listAdapterItem = QListWidgetItem(self.listwidget)
             listAdapterItem.setData(Qt.UserRole,key)
             listAdapterItem.setSizeHint(listAdapter.sizeHint())
+
+            # Add items to window height
+            height += int(listAdapter.sizeHint().height()) + vertical_padding
+
             self.listwidget.addItem(listAdapterItem)
             self.listwidget.setItemWidget(listAdapterItem, listAdapter)
 
-        height = 115 + (len(self.controller.getAllMacros())*55)
+        # Resize window
         self.resize(self.geometry().width(), height)
 
     def update_armed(self):
