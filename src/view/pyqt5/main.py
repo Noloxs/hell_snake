@@ -92,8 +92,10 @@ class MainWindow(QMainWindow):
     def update_macros(self):
         self.listwidget.clear()
 
-        header_height = 115  # Height of items above the macrolist
-        vertical_padding = 5 # Padding between items. This  seems to insist on being 5
+        # Calculate the height of items above the macrolist
+        header_height = self.hBox.sizeHint().height()
+        header_height += self.armedBar.sizeHint().height()
+        header_height += self.toolbar.sizeHint().height()
 
         # Initial window height
         height = header_height
@@ -108,7 +110,7 @@ class MainWindow(QMainWindow):
             listAdapterItem.setSizeHint(listAdapter.sizeHint())
 
             # Add items to window height
-            height += int(listAdapter.sizeHint().height()) + vertical_padding
+            height += int(listAdapter.sizeHint().height())
 
             self.listwidget.addItem(listAdapterItem)
             self.listwidget.setItemWidget(listAdapterItem, listAdapter)
