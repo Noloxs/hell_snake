@@ -195,7 +195,7 @@
     "32": {
       "name": "Eagle Rearm",
       "category": "Mission",
-      "command": [0,0,1,2,0,3],
+      "command": [0,0,1,0,3],
       "icon_name": "Eagle Rearm.svg"
     },
     "33": {
