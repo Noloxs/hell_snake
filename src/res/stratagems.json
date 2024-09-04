@@ -419,5 +419,11 @@
       "category": "Defensive",
       "command": [2,1,0,0],
       "icon_name": "Anti-Tank Mines.svg"
+    },
+    "70": {
+      "name": "Orbital Napalm Barrage",
+      "category": "Orbital",
+      "command": [3,3,2,1,3,0],
+      "icon_name": ""
     }
   }
