@@ -425,5 +425,41 @@
       "category": "Orbital",
       "command": [3,3,2,1,3,0],
       "icon_name": "Orbital Napalm Barrage.svg"
+    },
+    "71": {
+      "name": "MD-8 Gas Mines",
+      "category": "Defensive",
+      "command": [2,1,1,3],
+      "icon_name": ""
+    },
+    "72": {
+      "name": "SH-51 Directional Shield",
+      "category": "Urban Legends",
+      "command": [2,0,1,3,0,0],
+      "icon_name": "Directional Shield.svg"
+    },
+    "73": {
+      "name": "AX/TX-13 'Guard Dog' Dog Breath",
+      "category": "Chemical Agents",
+      "command": [2,0,1,2,3,0],
+      "icon_name": "Guard Dog Breath.svg"
+    },
+    "74": {
+      "name": "TX-41 Sterilizer",
+      "category": "Chemical Agents",
+      "command": [2,1,0,2,1],
+      "icon_name": "Sterilizer.svg"
+    },
+    "75": {
+      "name": "Flame Sentry",
+      "category": "Urban Legends",
+      "command": [2,0,3,2,0,0],
+      "icon_name": "Flame Sentry.svg"
+    },
+    "76": {
+      "name": "Anti-tank Emplacement",
+      "category": "Urban Legends",
+      "command": [2,0,1,3,3,3],
+      "icon_name": "Anti-Tank Emplacement.svg"
     }
   }
