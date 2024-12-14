@@ -178,7 +178,7 @@
       "name": "SSSD Delivery",
       "category": "Mission",
       "command": [2,2,2,0,0],
-      "icon_name": "Upload Data.svg"
+      "icon_name": "SSSD Delivery.svg"
     },
     "30": {
       "name": "Seismic Probe",
@@ -197,12 +197,6 @@
       "category": "Mission",
       "command": [0,0,1,0,3],
       "icon_name": "Eagle Rearm.svg"
-    },
-    "33": {
-      "name": "Illumination Flare",
-      "category": "Mission",
-      "command": [3,3,1,1],
-      "icon_name": "Orbital Illumination Flare.svg"
     },
     "34": {
       "name": "SEAF Artillery",
@@ -406,7 +400,7 @@
       "name": "Hive breaker drill",
       "category": "Mission",
       "command": [1,0,2,3,2,2],
-      "icon_name": "Prospecting Drill.svg"
+      "icon_name": "Hive Breaker Drill.svg"
     },
     "68": {
       "name": "MLS-4X Commando",
