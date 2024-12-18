@@ -1,61 +1,26 @@
 import struct
 import constants
 import utilities
-import serial
-from src.executor.executer_base import BaseExecutor
-from src.view.view_base import SettingsItem, MenuItem
-from src.executor.executer_utilities import ExecuterUtilities
+from src.executor.executer_base_serial import SerialBaseExecutor
+from src.view.view_base import SettingsItem
 
-KEY_DELAY = "arduino_stratagemKeyDelay"
+EXECUTOR_PREFIX="arduino_"
+KEY_DELAY = EXECUTOR_PREFIX+"stratagemKeyDelay"
 KEY_DELAY_DEFAULT = 30
-KEY_DELAY_JITTER = "arduino_stratagemKeyDelayJitter"
+KEY_DELAY_JITTER = EXECUTOR_PREFIX+"stratagemKeyDelayJitter"
 KEY_DELAY_JITTER_DEFAULT = 20
-TRIGGER_DELAY = "arduino_triggerKeyDelay"
+TRIGGER_DELAY = EXECUTOR_PREFIX+"triggerKeyDelay"
 TRIGGER_DELAY_DEFAULT = 100
-TRIGGER_DELAY_JITTER = "arduino_triggerKeyDelayJitter"
+TRIGGER_DELAY_JITTER = EXECUTOR_PREFIX+"triggerKeyDelayJitter"
 TRIGGER_DELAY_JITTER_DEFAULT = 30
-KEY_LAST_CONNECTED = "arduino_lastConnectedDevice"
-KEY_LAST_CONNECTED_DEFAULT = None
-KEY_AUTO_RECONNECT = "arduino_autoReconnect"
-KEY_AUTO_RECONNECT_DEFAULT = True
 
-class ArduinoPassthroughExecuter(BaseExecutor):
+class ArduinoPassthroughExecuter(SerialBaseExecutor):
     def __init__(self, controller):
         super().__init__(controller)
-        self.arduino = None
         self.settings = self.controller.get_settings_manager()
 
-    def start(self):
-        if getattr(self.settings, KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
-            self.attempt_auto_connect()
-        self.prepare()
-
-    def stop(self):
-        if self.arduino is not None:
-            self.arduino.close()
-            self.arduino = None
-
-    def attempt_auto_connect(self):
-        if getattr(self.settings, KEY_LAST_CONNECTED, KEY_LAST_CONNECTED_DEFAULT) is not None:
-            ports = ExecuterUtilities.get_physical_addresses()
-            for port in ports:
-                id = str(port.vid)+"-"+str(port.pid)
-                if id == self.settings.arduino_lastConnectedDevice:
-                    self.connect_to_arduino(port)
-                    return
-
-    def connect_to_arduino(self, port):
-        # Ensure any existing serial connection is properly closed before establishing a new one
-        if self.arduino is not None:
-            self.arduino.close()
-            self.arduino = None
-
-        self.arduino = serial.Serial(port.device, baudrate=115200, timeout=.1)
-        self.controller.update_executor_menu()
-        setattr(self.settings, KEY_LAST_CONNECTED, str(port.vid) + "-" + str(port.pid))
-        self.controller.update_title_description("Connected to: " + port.name)
-
-        # TODO Send connection test message
+    def get_executor_prefix(self):
+        return EXECUTOR_PREFIX
     
     def on_macro_triggered(self, macro):
         #Sending a negative number indicates that the key should be pressed but not released
@@ -67,23 +32,6 @@ class ArduinoPassthroughExecuter(BaseExecutor):
 
         self.send_bytes(bytes.fromhex(hexToSend))
 
-    def get_menu_items(self):
-        menu_items = []
-
-        select_serial = MenuItem("Select serial", None, None, constants.MENU_TYPE_MENU)
-        connection = self.get_current_connection()
-        physical_addresses = ExecuterUtilities.get_physical_addresses()
-        for port in sorted(physical_addresses):
-            if port.device == connection:
-                icon = constants.ICON_BASE_PATH+"serial_connected"
-            else:
-                icon = None
-            select_serial.children.append(MenuItem(port.description, icon, lambda checked, port=port: self.connect_to_arduino(port), constants.MENU_TYPE_ACTION))
-
-        menu_items.append(select_serial)
-
-        return menu_items
-
     def get_settings_items(self):
         settings = []
         settings.append(SettingsItem("Arduino passthrough settings", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
@@ -92,7 +40,7 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         settings.append(SettingsItem("Stratagem key delay", KEY_DELAY_DEFAULT, KEY_DELAY, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Stratagem key delay jitter", KEY_DELAY_JITTER_DEFAULT, KEY_DELAY_JITTER, constants.SETTINGS_VALUE_TYPE_INT))
         settings.append(SettingsItem("Hardware Connection", None, None, constants.SETTINGS_VALUE_TYPE_HEADER))
-        settings.append(SettingsItem("Auto re-connect to latest device", KEY_AUTO_RECONNECT_DEFAULT, KEY_AUTO_RECONNECT, constants.SETTINGS_VALUE_TYPE_BOOL))
+        settings.extend(SerialBaseExecutor.get_settings_items(self))
 
         return settings
 
@@ -102,10 +50,6 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, KEY_DELAY_JITTER_DEFAULT)
         self.triggerDelay = getattr(self.settings, TRIGGER_DELAY, TRIGGER_DELAY_DEFAULT)
         self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, TRIGGER_DELAY_JITTER_DEFAULT)
-
-    def send_bytes(self, bytes):
-        if self.arduino is not None:
-            self.arduino.write(bytes)
 
     def parse_to_hex(self, key):
         return hex(ord(key))[2:]
@@ -121,12 +65,6 @@ class ArduinoPassthroughExecuter(BaseExecutor):
         # Convert the packed bytes to hexadecimal representation for display (optional)
         hex_representation = packed_delay.hex()
         return hex_representation
-    
-    def get_current_connection(self):
-        if self.arduino is None:
-            return None
-        else:
-            return self.arduino.port # TODO How to get port from serial
     
     def parse_macro_key(self, key):   
         if key in self.key_map:

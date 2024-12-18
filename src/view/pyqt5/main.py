@@ -218,6 +218,9 @@ class MainWindow(QMainWindow):
             if menu_item.icon is not None:
                 action.setIcon(QIcon(menu_item.icon))
             parent.addAction(action)
+        
+        elif menu_item.menu_type == constants.MENU_TYPE_SEPARATOR:
+            parent.addSeparator()
 
     def open_edit_loadout_dialog(self):
         dialog = EditLoadoutDialog(self.controller)
