@@ -50,10 +50,6 @@ class PicoPassthroughExecuter(SerialBaseExecutor):
         self.keyDelayJitter = getattr(self.settings, KEY_DELAY_JITTER, KEY_DELAY_JITTER_DEFAULT)
         self.triggerDelay = getattr(self.settings, TRIGGER_DELAY, TRIGGER_DELAY_DEFAULT)
         self.triggerDelayJitter = getattr(self.settings, TRIGGER_DELAY_JITTER, TRIGGER_DELAY_JITTER_DEFAULT)
-
-    def send_bytes(self, bytes):
-        if self.pico is not None:
-            self.pico.write(bytes)
     
     def parse_macro_key(self, key):
         if key in self.key_map:

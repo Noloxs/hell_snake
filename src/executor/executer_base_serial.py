@@ -71,7 +71,7 @@ class SerialBaseExecutor(BaseExecutor):
 
         self.usb_device = serial.Serial(port.device, baudrate=115200, timeout=.1)
         self.controller.update_executor_menu()
-        setattr(self.settings, KEY_LAST_CONNECTED_DEFAULT, str(port.vid) + "-" + str(port.pid))
+        setattr(self.settings, self.KEY_LAST_CONNECTED_DEVICE, str(port.vid) + "-" + str(port.pid))
         self.controller.update_title_description("Connected to: " + port.name)
 
         # TODO Send connection test message
