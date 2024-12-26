@@ -459,7 +459,7 @@
     "77": {
       "name": "StA-X3 W.A.S.P. Launcher",
       "category": "Weapon",
-      "command": [2,2,0,2,0,3],
+      "command": [2,2,0,2,3],
       "icon_name": "StA-X3 W.A.S.P. Launcher.svg"
     },
     "78": {
