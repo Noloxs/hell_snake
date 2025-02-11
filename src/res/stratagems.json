@@ -467,5 +467,11 @@
       "category": "Support",
       "command": [1,2,3,2,3,2,0],
       "icon_name": "Fast Recon Vehicle.svg"
+    },
+    "79": {
+      "name": "B-100 Portable Hellbomb",
+      "category": "Support",
+      "command": [2,3,0,0,0],
+      "icon_name": "Hellbomb Portable.svg"
     }
   }
