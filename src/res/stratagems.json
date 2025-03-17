@@ -93,7 +93,7 @@
     "15": {
       "name": "AX/AR-23 'Guard Dog'",
       "category": "Support",
-      "command": [2,0,1,0,3,0],
+      "command": [2,0,1,0,3,2],
       "icon_name": "Guard Dog.svg"
     },
     "16": {
