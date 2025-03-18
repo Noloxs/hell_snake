@@ -435,7 +435,7 @@
     "73": {
       "name": "AX/TX-13 'Guard Dog' Dog Breath",
       "category": "Support",
-      "command": [2,0,1,2,3,0],
+      "command": [2,0,1,0,3,0],
       "icon_name": "Guard Dog Breath.svg"
     },
     "74": {
