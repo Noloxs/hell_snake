@@ -5,6 +5,7 @@ from src.executor.executer_base import BaseExecutor
 from src.view.view_base import MenuItem
 from src.executor.executer_utilities import ExecuterUtilities
 from src.view.view_base import SettingsItem
+from src.executor.exceptions import ExecutorErrorException
 
 KEY_LAST_CONNECTED_DEFAULT = None
 AUTO_RECONNECT = "autoReconnect"
@@ -69,7 +70,13 @@ class SerialBaseExecutor(BaseExecutor):
             self.usb_device.close()
             self.usb_device = None
 
-        self.usb_device = serial.Serial(port.device, baudrate=115200, timeout=.1)
+        try:
+            self.usb_device = serial.Serial(port.device, baudrate=115200, timeout=.1)
+        except serial.SerialException as e:
+            # Handle the exception, maybe log it or notify the user
+            raise ExecutorErrorException("Failed to open serial port: " + str(e))
+
+        # If no exception occurred, proceed with updating the executor menu
         self.controller.update_executor_menu()
         setattr(self.settings, self.KEY_LAST_CONNECTED_DEVICE, str(port.vid) + "-" + str(port.pid))
         self.controller.update_title_description("Connected to: " + port.name)
