@@ -23,7 +23,13 @@ class SerialBaseExecutor(BaseExecutor):
     def start(self):
         if getattr(self.settings, self.KEY_AUTO_RECONNECT, KEY_AUTO_RECONNECT_DEFAULT):
             self.attempt_auto_connect()
+            self.send_wakeup()
         self.prepare()
+
+    def send_wakeup(self):
+        # Send a wakeup command
+        cmd = bytearray([0x00, 0x01, 0x00])
+        self.send_bytes(cmd)
 
     def stop(self):
         if self.usb_device is not None:
@@ -71,7 +77,8 @@ class SerialBaseExecutor(BaseExecutor):
             self.usb_device = None
 
         try:
-            self.usb_device = serial.Serial(port.device, baudrate=115200, timeout=.1)
+            self.usb_device = serial.Serial(port.device, baudrate=115200, timeout=.1, write_timeout=0.2)
+            print("Connected to: " + port.name)
         except serial.SerialException as e:
             # Handle the exception, maybe log it or notify the user
             raise ExecutorErrorException("Failed to open serial port: " + str(e))
