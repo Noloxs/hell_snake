@@ -38,7 +38,11 @@ class SerialBaseExecutor(BaseExecutor):
 
     def send_bytes(self, bytes):
         if self.usb_device is not None:
-            self.usb_device.write(bytes)
+            try:
+                self.usb_device.write(bytes)
+            except serial.SerialException as e:
+                # Handle the exception, maybe log it or notify the user
+                raise ExecutorErrorException("Timeout sending bytes to serial port: " + str(e))
 
     def get_menu_items(self):
         menu_items = []
