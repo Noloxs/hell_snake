@@ -5,7 +5,7 @@ const int ledPin = LED_BUILTIN; // LED pin for activity indication
 
 unsigned long lastKeyPressTime = 0;  // Track when the key was last pressed
 unsigned long keyTimeout = 5000;  // Timeout to release the key if something goes wrong (in milliseconds)
-unsigned long inactivityThreshold = 120000;  // 120 seconds before entering idle state
+unsigned long inactivityThreshold = 900000;  // 15 min. before entering idle state
 
 // Initializes serial communication, keyboard, and checks reset pin
 void setup() {
