@@ -6,6 +6,7 @@ const int ledPin = LED_BUILTIN; // LED pin for activity indication
 unsigned long lastKeyPressTime = 0;  // Track when the key was last pressed
 unsigned long keyTimeout = 5000;  // Timeout to release the key if something goes wrong (in milliseconds)
 unsigned long inactivityThreshold = 900000;  // 15 min. before entering idle state
+bool isSleeping = true;
 
 // Initializes serial communication, keyboard, and checks reset pin
 void setup() {
@@ -28,9 +29,10 @@ void setup() {
       delay(1250);
     }
   }
-  // Initially active
-  digitalWrite(ledPin, HIGH);
-  lastKeyPressTime = millis();
+  // Initially sleep
+  digitalWrite(ledPin, LOW);
+  lastKeyPressTime = millis() - inactivityThreshold - 1;
+  isSleeping = true;
 
 }
 
@@ -38,9 +40,13 @@ void setup() {
 void handleIdleState() {
   if (millis() - lastKeyPressTime > inactivityThreshold) {
     digitalWrite(ledPin, LOW); // Turn off LED in idle state
-    Keyboard.releaseAll();
+    if (!isSleeping) {
+      Keyboard.releaseAll();
+      isSleeping = true;
+    }
     delay(5000); // Enter low-power idle state
   } else {
+    isSleeping = false;
     delay(5); // Short delay during operation
   }
 }
