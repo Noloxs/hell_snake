@@ -158,8 +158,12 @@ class Controller:
 
     # This is where 99% of the magic happens
     def trigger_macro(self, stratagem):
-        self.executer.on_macro_triggered(stratagem)
-    
+        try:
+            self.executer.on_macro_triggered(stratagem)
+        except ExecutorErrorException as e:
+            print("Error sending to serial port: " + str(e))
+            # TODO: Add UI error dialog here.
+
     # Hook to detect loadouts being saved
     def on_loadout_saved(self, event):
         if event['type'] == 'save':
