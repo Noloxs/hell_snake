@@ -473,5 +473,11 @@
       "category": "Support",
       "command": [2,3,0,0,0],
       "icon_name": "Hellbomb Portable.svg"
+    },
+    "80": {
+      "name": "E/GL-21 Grenadier Battlement",
+      "category": "Defensive",
+      "command": [2,3,2,1,3],
+      "icon_name": ""
     }
   }
