@@ -1,7 +1,10 @@
 import constants
 import sys
 from src.model import Model
-    
+from src.executor.exceptions import ExecutorErrorException
+from PyQt5.QtWidgets import QMessageBox
+
+# The rest of your SerialBaseExecutor code...
 class Controller:
     def __init__(self, model: Model):
         self._model = model
@@ -58,13 +61,27 @@ class Controller:
     # Dependency injecting the view
     def set_view(self, view):
         self.view = view
-        self.set_executor()
-        self.set_active_loadout(self._model.settingsManager.currentLoadoutId)
-        self.view.show_interface()
+        try:
+            self.set_executor()
+        except ExecutorErrorException as e:
+            self.display_executor_error(e)
+            self.on_exit()
+        else:
+            self.set_active_loadout(self._model.settingsManager.currentLoadoutId)
+            self.view.show_interface()
 
     # ... and a keylistener callbacks
     def set_keylistener(self, keylistener):
         self.keylistener = keylistener
+
+    def display_executor_error(self, error):
+        error_message = f"Failed to set executor: {str(error)}"
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText(error_message)
+        msg.setWindowTitle("Executor Error")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
     # Arming and disarming
     def toggle_armed(self):
@@ -141,8 +158,12 @@ class Controller:
 
     # This is where 99% of the magic happens
     def trigger_macro(self, stratagem):
-        self.executer.on_macro_triggered(stratagem)
-    
+        try:
+            self.executer.on_macro_triggered(stratagem)
+        except ExecutorErrorException as e:
+            print("Error sending to serial port: " + str(e))
+            # TODO: Add UI error dialog here.
+
     # Hook to detect loadouts being saved
     def on_loadout_saved(self, event):
         if event['type'] == 'save':
