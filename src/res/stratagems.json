@@ -478,6 +478,18 @@
       "name": "E/GL-21 Grenadier Battlement",
       "category": "Defensive",
       "command": [2,3,2,1,3],
-      "icon_name": ""
+      "icon_name": "Grenadier Battlement.svg"
+    },
+    "81": {
+      "name": "LIFT-860 Hover Pack",
+      "category": "Support",
+      "command": [2,0,0,2,1,3],
+      "icon_name": "Hover Pack.svg"
+    },
+    "82": {
+      "name": "CQC-1 One True Flag",
+      "category": "Weapon",
+      "command": [2,1,3,3,0],
+      "icon_name": "One True Flag.svg"
     }
   }
