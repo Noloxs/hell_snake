@@ -507,7 +507,7 @@
     "85": {
       "name": "Plas-45 Epoch",
       "category": "Weapon",
-      "command": [2,1,0,2,3],
+      "command": [2,1,0,1,3],
       "icon_name": "Epoch.svg"
     },
     "86": {
