@@ -148,6 +148,9 @@ class Controller:
     
     def get_active_loadout(self):
         return self._model.loadoutsManager.loadouts.get(self._model.settingsManager.currentLoadoutId, None)
+
+    def get_active_loadout_id(self):
+        return self._model.settingsManager.currentLoadoutId
     
     # Macros
     def getMacroForKey(self, key):
