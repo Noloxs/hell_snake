@@ -88,7 +88,8 @@ def test_import_from_json_should_replace_loadouts_on_valid_file():
         # Ensure initial loadouts are present
         assert len(loadout_manager.loadouts) > 0
         
-        result = loadout_manager.importLoadoutsFromJson("/tmp/imported_loadouts.json")
+        mock_settings_manager = MagicMock()
+        result = loadout_manager.importLoadoutsFromJson("/tmp/imported_loadouts.json", mock_settings_manager)
         assert result is True
         assert len(loadout_manager.loadouts) == 2
         assert loadout_manager.loadouts["3"].name == "Imported Loadout 3"
@@ -98,7 +99,8 @@ def test_import_from_json_should_return_false_on_invalid_json():
     with patch("builtins.open", mock_open(read_data="invalid json")):
         loadout_manager = LoadoutManager()
         initial_loadouts_count = len(loadout_manager.loadouts)
-        result = loadout_manager.importLoadoutsFromJson("/tmp/invalid.json")
+        mock_settings_manager = MagicMock()
+        result = loadout_manager.importLoadoutsFromJson("/tmp/invalid.json", mock_settings_manager)
         assert result is False
         assert len(loadout_manager.loadouts) == initial_loadouts_count # Loadouts should not change
 
@@ -110,6 +112,7 @@ def test_import_from_json_should_return_false_on_invalid_data_structure():
     with patch("builtins.open", mock_open(read_data=json.dumps(mock_data))):
         loadout_manager = LoadoutManager()
         initial_loadouts_count = len(loadout_manager.loadouts)
-        result = loadout_manager.importLoadoutsFromJson("/tmp/invalid_structure.json")
+        mock_settings_manager = MagicMock()
+        result = loadout_manager.importLoadoutsFromJson("/tmp/invalid_structure.json", mock_settings_manager)
         assert result is False
         assert len(loadout_manager.loadouts) == initial_loadouts_count # Loadouts should not change
