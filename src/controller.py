@@ -173,6 +173,15 @@ class Controller:
             self.view.update_loadout_menu_items()
             self.view.update_current_loadout()
 
+    # New methods for import/export
+    def export_all_loadouts(self, filePath):
+        """Export all loadouts to file."""
+        self._model.export_all_loadouts(filePath)
+
+    def import_all_loadouts(self, filePath):
+        """Import all loadouts from file."""
+        return self._model.import_all_loadouts(filePath)
+
     # Exit hook
     def on_exit(self):
         if self.loadouts_updated:
