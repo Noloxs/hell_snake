@@ -170,8 +170,7 @@ class Controller:
             self.loadouts_updated = False
         elif event['type'] == 'import':
             self.loadouts_updated = True
-            self.view.update_loadout_menu_items()
-            self.view.update_current_loadout()
+            self.view.on_loadout_changed()
 
     # New methods for import/export
     def export_all_loadouts(self, filePath):
