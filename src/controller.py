@@ -168,6 +168,10 @@ class Controller:
     def on_loadout_saved(self, event):
         if event['type'] == 'save':
             self.loadouts_updated = False
+        elif event['type'] == 'import':
+            self.loadouts_updated = True
+            self.view.update_loadout_menu_items()
+            self.view.update_current_loadout()
 
     # Exit hook
     def on_exit(self):
