@@ -11,8 +11,7 @@ class Model:
         self.settingsManager = settingsManager
 
         # Ensure current loadout is valid
-        if not hasattr(self.settingsManager, "currentLoadoutId") \
-          or self.settingsManager.currentLoadoutId not in self.loadoutsManager.loadouts:
+        if not hasattr(self.settingsManager, "currentLoadoutId")           or self.settingsManager.currentLoadoutId not in self.loadoutsManager.loadouts:
             self.settingsManager.currentLoadoutId = next(iter(self.loadoutsManager.loadouts))
 
         # Handle armed state
@@ -51,3 +50,60 @@ class Model:
     def set_armed(self, is_armed):
         """Set the armed state."""
         self.is_armed = is_armed
+
+
+    def get_stratagem_by_id(self, stratagemId):
+        """Return a stratagem by its ID."""
+        return self._stratagems.get(stratagemId)
+
+    def get_all_stratagems(self):
+        """Return all stratagems."""
+        return self._stratagems
+
+    def get_all_loadouts(self):
+        """Return all loadouts."""
+        return self.loadoutsManager.loadouts
+
+    def get_loadout_by_id(self, loadoutId):
+        """Return a loadout by its ID."""
+        return self.loadoutsManager.loadouts.get(loadoutId)
+
+    def get_current_loadout(self):
+        """Return the current loadout."""
+        return self.loadoutsManager.loadouts.get(self.settingsManager.currentLoadoutId)
+
+    def get_current_loadout_id(self):
+        """Return the current loadout ID."""
+        return self.settingsManager.currentLoadoutId
+
+    def set_current_loadout_id(self, loadoutId):
+        """Set the current loadout ID."""
+        self.settingsManager.currentLoadoutId = loadoutId
+
+    def add_loadout(self, loadoutName):
+        """Add a new loadout."""
+        return self.loadoutsManager.addLoadout(loadoutName)
+
+    def delete_loadout(self, loadoutId):
+        """Delete a loadout."""
+        self.loadoutsManager.deleteLoadout(loadoutId)
+
+    def update_loadout(self, loadoutId, loadout):
+        """Update a loadout."""
+        self.loadoutsManager.updateLoadout(loadoutId, loadout)
+
+    def save_loadouts(self):
+        """Save loadouts to file."""
+        self.loadoutsManager.saveToFile()
+
+    def export_all_loadouts(self, filePath):
+        """Export all loadouts to file."""
+        self.loadoutsManager.exportLoadoutsToJson(filePath)
+
+    def import_all_loadouts(self, filePath):
+        """Import all loadouts from file."""
+        return self.loadoutsManager.importLoadoutsFromJson(filePath, self.settingsManager)
+
+    def load_loadouts(self):
+        """Load loadouts from file."""
+        self.loadoutsManager.loadFromFile()

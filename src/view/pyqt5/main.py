@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame, QApplication
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QListWidget, QAbstractItemView, QAction, QListWidgetItem, QFrame, QApplication, QFileDialog
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QFontDatabase
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -163,6 +163,14 @@ class MainWindow(QMainWindow):
         save_action.triggered.connect(self.controller.get_loadouts_manager().saveToFile)
         files_menu.addAction(save_action)
 
+        export_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Export loadouts", self)
+        export_action.triggered.connect(self.export_loadouts_action)
+        files_menu.addAction(export_action)
+
+        import_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_add.svg"), "Import loadouts", self)
+        import_action.triggered.connect(self.import_loadouts_action)
+        files_menu.addAction(import_action)
+
         files_menu.addSeparator()
 
         exit_action = QAction(QIcon(constants.ICON_BASE_PATH+"exit.svg"),"Exit", self)
@@ -176,6 +184,18 @@ class MainWindow(QMainWindow):
         self.loadout_menu = self.toolbar.addMenu("Loadouts")
         self.update_loadout_menu_items()
     
+    def export_loadouts_action(self):
+        file_path, _ = QFileDialog.getSaveFileName(self, "Export Loadouts", "loadouts.json", "JSON Files (*.json)")
+        if file_path:
+            self.controller.export_all_loadouts(file_path)
+
+    def import_loadouts_action(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Import Loadouts", "", "JSON Files (*.json)")
+        if file_path:
+            if self.controller.import_all_loadouts(file_path):
+                self.update_loadout_menu_items()
+                self.update_current_loadout()
+
     def update_loadout_menu_items(self):
         self.loadout_menu.clear()
         for loadoutId, loadout in self.controller.get_loadouts_manager().loadouts.items():
