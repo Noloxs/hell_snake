@@ -130,7 +130,7 @@ class LoadoutManager:
             file.write(settings_as_json)
             print(f"INFO: Loadouts exported to {filePath}.")
 
-    def importLoadoutsFromJson(self, filePath):
+    def importLoadoutsFromJson(self, filePath, settingsManager):
         try:
             with open(filePath) as json_file:
                 data = json.load(json_file)
@@ -146,6 +146,12 @@ class LoadoutManager:
                     imported_loadouts[id] = loadout
                 
                 self.loadouts = imported_loadouts
+                # Update currentLoadoutId to the first available loadout
+                if self.loadouts:
+                    settingsManager.currentLoadoutId = next(iter(self.loadouts))
+                else:
+                    settingsManager.currentLoadoutId = None # Or handle as appropriate for no loadouts
+
                 self.notify_change(type='import')
                 print(f"INFO: Loadouts imported from {filePath}.")
                 return True

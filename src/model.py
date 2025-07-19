@@ -102,7 +102,7 @@ class Model:
 
     def import_all_loadouts(self, filePath):
         """Import all loadouts from file."""
-        self.loadoutsManager.importLoadoutsFromJson(filePath)
+        return self.loadoutsManager.importLoadoutsFromJson(filePath, self.settingsManager)
 
     def load_loadouts(self):
         """Load loadouts from file."""
