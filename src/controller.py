@@ -171,6 +171,18 @@ class Controller:
     def on_loadout_saved(self, event):
         if event['type'] == 'save':
             self.loadouts_updated = False
+        elif event['type'] == 'import':
+            self.loadouts_updated = True
+            self.view.on_loadout_changed()
+
+    # New methods for import/export
+    def export_all_loadouts(self, filePath):
+        """Export all loadouts to file."""
+        self._model.export_all_loadouts(filePath)
+
+    def import_all_loadouts(self, filePath):
+        """Import all loadouts from file."""
+        return self._model.import_all_loadouts(filePath)
 
     # Exit hook
     def on_exit(self):

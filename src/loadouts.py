@@ -99,6 +99,9 @@ class LoadoutManager:
                 data = json.load(json_file)
                 self.loadouts = {}
                 for id, item in data.items():
+                    if not isinstance(item, dict) or 'name' not in item or 'macroKeys' not in item:
+                        print(f"WARNING: Invalid loadout entry with ID {id} found in file. Skipping.")
+                        continue
                     loadout = Loadout(item['name'], item['macroKeys'])
                     self.loadouts[id] = loadout
             print("INFO: Loadouts loaded.")
@@ -116,4 +119,43 @@ class LoadoutManager:
             file.write(settings_as_json)
             print("INFO: Loadouts saved.")
             self.notify_change(type='save')
+
+    def exportLoadoutsToJson(self, filePath):
+        loadouts_as_json = {}
+        for id, loadout in self.loadouts.items():
+            item = {"name": loadout.name,'macroKeys': loadout.macroKeys}
+            loadouts_as_json[id] = item
+        with open(filePath, "w") as file:
+            settings_as_json = json.dumps(loadouts_as_json, indent=2)
+            file.write(settings_as_json)
+            print(f"INFO: Loadouts exported to {filePath}.")
+
+    def importLoadoutsFromJson(self, filePath, settingsManager):
+        try:
+            with open(filePath) as json_file:
+                data = json.load(json_file)
+                # Basic validation: check if data is a dictionary and contains expected keys
+                if not isinstance(data, dict):
+                    raise ValueError("Invalid loadout file format: Not a dictionary.")
+                
+                imported_loadouts = {}
+                for id, item in data.items():
+                    if not isinstance(item, dict) or 'name' not in item or 'macroKeys' not in item:
+                        raise ValueError(f"Invalid loadout entry for ID {id}.")
+                    loadout = Loadout(item['name'], item['macroKeys'])
+                    imported_loadouts[id] = loadout
+                
+                self.loadouts = imported_loadouts
+                # Update currentLoadoutId to the first available loadout
+                if self.loadouts:
+                    settingsManager.currentLoadoutId = next(iter(self.loadouts))
+                else:
+                    settingsManager.currentLoadoutId = None # Or handle as appropriate for no loadouts
+
+                self.notify_change(type='import')
+                print(f"INFO: Loadouts imported from {filePath}.")
+                return True
+        except (OSError, json.JSONDecodeError, ValueError) as e:
+            print(f"ERROR: Failed to import loadouts from {filePath}: {e}")
+            return False
 
