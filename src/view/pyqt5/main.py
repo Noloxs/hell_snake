@@ -143,6 +143,7 @@ class MainWindow(QMainWindow):
             self.loadout.setText(currentLoadout.name.upper()) 
         else:
             self.loadout.setText("")
+        self.update_loadout_menu_items()
 
     def setup_toolbar_menu(self):
         # Create a Files menu
