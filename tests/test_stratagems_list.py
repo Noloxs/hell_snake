@@ -16,7 +16,7 @@ def test_unique_stratagem_icons(stratagems):
     # Check if the length of the list matches the length of the set (unique values)
     assert len(icon_names) == len(set(icon_names)), "Duplicate icon names found"
 
-def test_unique_stratagem_icons(stratagems):
+def test_unique_stratagem_commands(stratagems):
     # Dictionary to track occurrences of command arrays
     command_occurrences = defaultdict(list)
     
