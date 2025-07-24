@@ -143,6 +143,7 @@ class MainWindow(QMainWindow):
             self.loadout.setText(currentLoadout.name.upper()) 
         else:
             self.loadout.setText("")
+        self.update_loadout_menu_items()
 
     def setup_toolbar_menu(self):
         # Create a Files menu
@@ -181,6 +182,8 @@ class MainWindow(QMainWindow):
         for loadoutId, loadout in self.controller.get_loadouts_manager().loadouts.items():
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
+            if self.controller.get_active_loadout_id() == loadoutId:
+                loadout_action.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected.svg"))
             self.loadout_menu.addAction(loadout_action)
         
         self.loadout_menu.addSeparator()
