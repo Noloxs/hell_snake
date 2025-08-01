@@ -25,6 +25,9 @@ def main():
     if settingsManager.view_framework == constants.VIEW_PYQT5:
         from src.view.pyqt5.pyqt5 import PyQT5View
         view = PyQT5View(controller)
+    elif settingsManager.view_framework == constants.VIEW_TEXTUAL:
+        from src.view.textual.textual import TextualView
+        view = TextualView(controller)
     else:
         # If the view framework is not supported or recognized, print an error and exit.
         print(f"Error: Unsupported view framework '{settingsManager.view_framework}'.", file=sys.stderr)

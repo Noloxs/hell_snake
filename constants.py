@@ -9,6 +9,7 @@ LOADOUTS_PATH = "loadouts.json"
 # FACTORY CONSTANTS
 ## VIEWS
 VIEW_PYQT5 = "pyqt5"
+VIEW_TEXTUAL = "textual"
 
 ## EXECUTORS
 EXECUTOR_PYNPUT = "pynput"

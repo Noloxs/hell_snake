@@ -3,6 +3,7 @@ Pillow==11.0.0
 pyserial==3.5
 PyAutoGUI==0.9.54
 PyQt5==5.15.10
+textual==0.58.0
 
 ## Tests and linting
 pytest==8.2.0
