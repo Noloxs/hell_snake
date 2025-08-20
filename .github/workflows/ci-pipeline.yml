@@ -2,8 +2,6 @@ name: CI Pipeline
 
 on:
   push:
-  release:
-    types: [created]
 
 jobs:
   test:
@@ -62,10 +60,3 @@ jobs:
         with:
           name: hellsnake-windows.exe
           path: dist/hell_snake.exe
-      - name: Upload to release
-        if: github.event_name == 'release' && github.event.release.target_commitish == 'main'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/hell_snake.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
