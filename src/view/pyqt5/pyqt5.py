@@ -1,4 +1,5 @@
 import constants
+from src.utilities.resource_manager import ResourceManager
 from src.controller import Controller
 from src.view.view_base import BaseView
 from PyQt5.QtWidgets import QApplication,QMessageBox
@@ -89,7 +90,7 @@ class PyQT5View(BaseView):
         self.controller.on_exit()
     
     def load_fonts(self):
-        font_id = QFontDatabase.addApplicationFont(constants.FONT_BASE_PATH+'ChakraPetch-Medium.ttf')
+        font_id = QFontDatabase.addApplicationFont(ResourceManager.get_font_path('ChakraPetch-Medium.ttf'))
         if font_id == -1:
             print("Failed to load font: ChakraPetch-Medium")
         else:    
@@ -97,7 +98,7 @@ class PyQT5View(BaseView):
             font = QFont(chakra_petch_medium, 12)
             self.gui.setFont(font)
         
-        font_id = QFontDatabase.addApplicationFont(constants.FONT_BASE_PATH+'ChakraPetch-Bold.ttf')
+        font_id = QFontDatabase.addApplicationFont(ResourceManager.get_font_path('ChakraPetch-Bold.ttf'))
         if font_id == -1:
             print("Failed to load font: ChakraPetch-Bold")
 

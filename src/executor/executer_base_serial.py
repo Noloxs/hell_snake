@@ -1,4 +1,5 @@
 import constants
+from src.utilities.resource_manager import ResourceManager
 from abc import abstractmethod
 import serial
 from src.executor.executer_base import BaseExecutor
@@ -52,14 +53,14 @@ class SerialBaseExecutor(BaseExecutor):
         physical_addresses = ExecuterUtilities.get_physical_addresses()
         for port in sorted(physical_addresses):
             if port.device == connection:
-                icon = constants.ICON_BASE_PATH+"serial_connected"
+                icon = ResourceManager.get_icon_path("serial_connected.svg")
             else:
                 icon = None
             select_serial.children.append(MenuItem(port.description, icon, lambda checked, port=port: self.connect_to_device(port), constants.MENU_TYPE_ACTION))
         
         #Add re-scan for serial button
         select_serial.children.append(MenuItem("","","",constants.MENU_TYPE_SEPARATOR))
-        select_serial.children.append(MenuItem("Scan for devices", constants.ICON_BASE_PATH+"settings_refresh_devices", lambda checked : self.controller.update_executor_menu(), constants.MENU_TYPE_ACTION))
+        select_serial.children.append(MenuItem("Scan for devices", ResourceManager.get_icon_path("settings_refresh_devices.svg"), lambda checked : self.controller.update_executor_menu(), constants.MENU_TYPE_ACTION))
 
         menu_items.append(select_serial)
         return menu_items
