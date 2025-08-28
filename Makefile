@@ -25,6 +25,10 @@ test:
 run: requirements
 	${VENV}/python hell_snake.py
 
+# Build executable
+build: requirements
+	${VENV}/pyinstaller hellsnake.spec
+
 # Use make init to initialize venv
 init: requirements
 .venv:
