@@ -1,5 +1,4 @@
 import os
-import pytest
 from src.utilities.resource_manager import ResourceManager
 
 class TestResourceManager:
