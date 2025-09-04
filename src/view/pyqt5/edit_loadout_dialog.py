@@ -1,4 +1,5 @@
 import constants
+from src.utilities.resource_manager import ResourceManager
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QComboBox, QHBoxLayout, QLineEdit, QPushButton, QListWidget, QAbstractItemView, QMenuBar, QAction, QWidget, QLabel, QListWidgetItem, QInputDialog
 from PyQt5.QtGui import QIcon, QFont, QFontDatabase
 from PyQt5.QtCore import QSize, Qt
@@ -14,7 +15,7 @@ class EditLoadoutDialog(QDialog):
         self.controller = controller
         
         self.setWindowTitle("Edit loadouts")
-        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
+        self.setWindowIcon(QIcon(ResourceManager.get_icon_path("hell_snake.png")))
         self.setMinimumSize(400, 300)
         self.resize(400,600)
 
@@ -37,7 +38,7 @@ class EditLoadoutDialog(QDialog):
         loadout_buttons_layout.addWidget(self.edit_field)
 
         delete_loadout_button = QPushButton("")
-        delete_loadout_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_delete"))
+        delete_loadout_button.setIcon(QIcon(ResourceManager.get_icon_path("settings_delete.svg")))
         delete_loadout_button.setFixedSize(30,30)
         delete_loadout_button.clicked.connect(self.delete_current_loadout)
         loadout_buttons_layout.addWidget(delete_loadout_button)
@@ -52,19 +53,19 @@ class EditLoadoutDialog(QDialog):
         buttons_layout = QHBoxLayout()
         
         delete_button = QPushButton("")
-        delete_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_delete"))
+        delete_button.setIcon(QIcon(ResourceManager.get_icon_path("settings_delete.svg")))
         delete_button.setIconSize(iconSize)
         delete_button.clicked.connect(self.delete_current_macro)
         buttons_layout.addWidget(delete_button)
         
         change_button = QPushButton("")
-        change_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_swap"))
+        change_button.setIcon(QIcon(ResourceManager.get_icon_path("settings_swap.svg")))
         change_button.setIconSize(iconSize)
         change_button.clicked.connect(self.change_current_macro)
         buttons_layout.addWidget(change_button)
 
         add_button = QPushButton("")
-        add_button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_add"))
+        add_button.setIcon(QIcon(ResourceManager.get_icon_path("settings_add.svg")))
         add_button.setIconSize(iconSize)
         add_button.clicked.connect(self.add_macro)
         buttons_layout.addWidget(add_button)
@@ -222,7 +223,7 @@ class QEditLoadoutListAdapter(QWidget):
 
     def setStratagem(self, stratagem):
         self.name.setText(stratagem.name.upper())
-        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
+        svg_widget = QSvgWidget(ResourceManager.get_stratagem_icon_path(stratagem.icon_name))
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  

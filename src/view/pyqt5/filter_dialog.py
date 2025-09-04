@@ -1,4 +1,5 @@
 import constants
+from src.utilities.resource_manager import ResourceManager
 from PyQt5.QtWidgets import QDialog, QWidget, QVBoxLayout, QLineEdit, QListWidget, QAbstractItemView, QHBoxLayout, QLabel, QListWidgetItem
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import QEvent, Qt
@@ -16,7 +17,7 @@ class FilteredListDialog(QDialog):
         self.resize(325,800)
 
         self.setWindowTitle("Select new stratagem for: "+self.key)
-        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
+        self.setWindowIcon(QIcon(ResourceManager.get_icon_path("hell_snake.png")))
 
         # Create a layout for the dialog
         layout = QVBoxLayout(self)
@@ -94,7 +95,7 @@ class QFilterListAdapter(QWidget):
 
     def setStratagem(self, stratagem):
         self.name.setText(stratagem.name)
-        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
+        svg_widget = QSvgWidget(ResourceManager.get_stratagem_icon_path(stratagem.icon_name))
         svg_widget.setFixedSize(20,20)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())

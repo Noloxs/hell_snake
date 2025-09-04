@@ -1,12 +1,12 @@
 import pytest
-import constants
+from src.utilities.resource_manager import ResourceManager
 import json
 from collections import defaultdict
 
 @pytest.fixture
 def stratagems():
     """Load stratagems from a JSON file and return a dictionary of Stratagem objects."""
-    with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
+    with open(ResourceManager.get_data_path("stratagems.json")) as json_file:
         stratagems = json.load(json_file)
 
     return stratagems

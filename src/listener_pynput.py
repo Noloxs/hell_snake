@@ -70,6 +70,8 @@ class PynputKeyListener:
 
         entry = self.parse_key(key)
 
+        # print('Key pressed ' + str(entry))
+
         # Call key handler
         if entry in self.key_press_handlers:
             self.key_press_handlers[entry](key)

@@ -1,5 +1,5 @@
 from typing import Dict
-import constants
+from src.utilities.resource_manager import ResourceManager
 from src.loadouts import LoadoutManager
 from src.settings import SettingsManager
 import json
@@ -24,7 +24,7 @@ class Model:
 
     def _loadStratagemsFromFile(self):
         """Load stratagems from a JSON file and return a dictionary of Stratagem objects."""
-        with open(constants.RESOURCE_PATH+"stratagems.json") as json_file:
+        with open(ResourceManager.get_data_path("stratagems.json")) as json_file:
             tmp = json.load(json_file)
         
         self._stratagems = {}

@@ -1,4 +1,5 @@
 import constants
+from src.utilities.resource_manager import ResourceManager
 from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton, QWidget, QFrame
 from PyQt5.QtGui import QFont, QIcon, QFontDatabase
 from PyQt5.QtCore import Qt
@@ -240,7 +241,7 @@ class EditConfigDialog(QDialog):
     def create_button(self, callback):
         button = QPushButton("")
         button.setFixedWidth(30)
-        button.setIcon(QIcon(constants.ICON_BASE_PATH+"settings_swap.svg"))
+        button.setIcon(QIcon(ResourceManager.get_icon_path("settings_swap.svg")))
         button.clicked.connect(callback)
         return button
 

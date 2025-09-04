@@ -3,6 +3,7 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap, QFontDatabase
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 import constants
+from src.utilities.resource_manager import ResourceManager
 from src.controller import Controller
 from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
@@ -14,7 +15,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.controller = controller
         self.setWindowTitle("Hell snake")
-        self.setWindowIcon(QIcon(constants.ICON_BASE_PATH+"hell_snake.png"))
+        self.setWindowIcon(QIcon(ResourceManager.get_icon_path("hell_snake.png")))
         self.setMinimumSize(400, 225)
         self.resize(400,225)
         self.update_view_settings()
@@ -120,11 +121,11 @@ class MainWindow(QMainWindow):
 
     def update_armed(self):
         if self.controller.is_armed():
-            self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"armed.png"))
+            self.armedIcon.setPixmap(QPixmap(ResourceManager.get_icon_path("armed.png")))
             self.armedBar.setStyleSheet("background-color: red")
             self.arm_action.setText("Disarm")
         else: 
-            self.armedIcon.setPixmap(QPixmap(constants.ICON_BASE_PATH+"disarmed.png"))     
+            self.armedIcon.setPixmap(QPixmap(ResourceManager.get_icon_path("disarmed.png")))     
             self.armedBar.setStyleSheet("background-color: gray")
             self.arm_action.setText("Arm")
     
@@ -150,23 +151,23 @@ class MainWindow(QMainWindow):
         self.toolbar = self.menuBar()
         files_menu = self.toolbar.addMenu("Files")
 
-        edit_config_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_edit_config.svg"), "Edit settings", self)
+        edit_config_action = QAction(QIcon(ResourceManager.get_icon_path("settings_edit_config.svg")), "Edit settings", self)
         edit_config_action.triggered.connect(self.open_edit_config_dialog)
         files_menu.addAction(edit_config_action)
 
-        save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save settings", self)
+        save_action = QAction(QIcon(ResourceManager.get_icon_path("settings_save.svg")), "Save settings", self)
         save_action.triggered.connect(self.controller.get_settings_manager().saveToFile)
         files_menu.addAction(save_action)
 
         files_menu.addSeparator()
 
-        save_action = QAction(QIcon(constants.ICON_BASE_PATH+"settings_save.svg"), "Save loadouts", self)
+        save_action = QAction(QIcon(ResourceManager.get_icon_path("settings_save.svg")), "Save loadouts", self)
         save_action.triggered.connect(self.controller.get_loadouts_manager().saveToFile)
         files_menu.addAction(save_action)
 
         files_menu.addSeparator()
 
-        exit_action = QAction(QIcon(constants.ICON_BASE_PATH+"exit.svg"),"Exit", self)
+        exit_action = QAction(QIcon(ResourceManager.get_icon_path("exit.svg")),"Exit", self)
         exit_action.triggered.connect(QApplication.instance().quit)
         files_menu.addAction(exit_action)
 
@@ -183,12 +184,12 @@ class MainWindow(QMainWindow):
             loadout_action = QAction(loadout.name, self)
             loadout_action.triggered.connect(lambda checked, loadoutId=loadoutId: self.controller.set_active_loadout(loadoutId))
             if self.controller.get_active_loadout_id() == loadoutId:
-                loadout_action.setIcon(QIcon(constants.ICON_BASE_PATH+"serial_connected.svg"))
+                loadout_action.setIcon(QIcon(ResourceManager.get_icon_path("serial_connected.svg")))
             self.loadout_menu.addAction(loadout_action)
         
         self.loadout_menu.addSeparator()
 
-        loadout_edit_action = QAction(QIcon(constants.ICON_BASE_PATH+"edit_loadout.svg"), "Edit loadouts", self)
+        loadout_edit_action = QAction(QIcon(ResourceManager.get_icon_path("edit_loadout.svg")), "Edit loadouts", self)
         loadout_edit_action.triggered.connect(self.open_edit_loadout_dialog)
         self.loadout_menu.addAction(loadout_edit_action)
 
@@ -263,7 +264,7 @@ class QLoadoutListAdapter(QWidget):
 
     def setStratagem(self, stratagem):
         self.name.setText(stratagem.name.upper())
-        svg_widget = QSvgWidget(constants.STRATAGEM_ICON_PATH+stratagem.icon_name)
+        svg_widget = QSvgWidget(ResourceManager.get_stratagem_icon_path(stratagem.icon_name))
         svg_widget.setFixedSize(40,40)
         svg_widget.setStyleSheet("background-color: transparent")
         self.icon.setPixmap(svg_widget.grab())  
