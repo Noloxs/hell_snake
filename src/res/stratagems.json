@@ -521,5 +521,23 @@
       "category": "Support",
       "command": [2, 1, 3, 2, 1, 3],
       "icon_name": "Warp Pack.svg"
+    },
+    "88": {
+      "name": "S-11 Speargun",
+      "category": "Weapon",
+      "command": [2,3,2,1,0,3],
+      "icon_name": "Speargun.svg"
+    },
+    "89": {
+      "name": "EAT-700 Expendable Napalm",
+      "category": "Weapon",
+      "command": [2,2,1,0,1],
+      "icon_name": "Expendable Napalm.svg"
+    },
+    "90": {
+      "name": "MS-11 Solo Silo",
+      "category": "Weapon",
+      "command": [2,0,3,2,2],
+      "icon_name": "Solo Silo.svg"
     }
   }
