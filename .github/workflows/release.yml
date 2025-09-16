@@ -1,32 +1,29 @@
-name: Manual Release
+name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'The tag for the new release (e.g., v1.0.1)'
-        required: true
-      branch:
-        description: 'The branch to release from'
-        required: true
-        default: 'main'
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ci-pipeline.yml
-          branch: ${{ github.event.inputs.branch }}
+          commit: ${{ github.sha }}
           name: hellsnake-windows.exe
           path: .
-          
+      - name: Rename artifact
+        run: mv hellsnake-windows.exe hellsnake.exe
       - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.event.inputs.tag }}
-          files: hellsnake-windows.exe
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: hellsnake.exe
+          generate_release_notes: true
