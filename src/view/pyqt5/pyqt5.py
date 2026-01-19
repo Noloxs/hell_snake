@@ -8,6 +8,7 @@ from PyQt5.QtGui import QFontDatabase, QFont
 from src.view.pyqt5.main import MainWindow
 from src.view.view_base import SettingsItem
 from src.view.pyqt5.util import KEY_ALWAYS_ON_TOP, KEY_ALWAYS_ON_TOP_DEFAULT
+from src.view.pyqt5.theme import ThemeManager
 
 class PyQT5View(BaseView):
     def __init__(self, controller : Controller):
@@ -15,6 +16,8 @@ class PyQT5View(BaseView):
         self.controller = controller
         self.gui = QApplication([])
         self.load_fonts()
+        # Initialize theme manager with settings
+        ThemeManager.initialize(self.gui, controller.get_settings_manager())
         self.window = MainWindow(controller)
         self.setup_ui_update_listener()
     
