@@ -9,6 +9,7 @@ from src.view.pyqt5.util import PyQT5Settings
 from src.view.pyqt5.filter_dialog import FilteredListDialog
 from src.view.pyqt5.edit_config_dialog import EditConfigDialog
 from src.view.pyqt5.edit_loadout_dialog import EditLoadoutDialog
+from src.view.pyqt5.theme import ThemeManager
 
 class MainWindow(QMainWindow):
     def __init__(self, controller : Controller):
@@ -21,7 +22,6 @@ class MainWindow(QMainWindow):
         self.update_view_settings()
 
         central_widget = QWidget()
-        central_widget.setStyleSheet("background-color: white")
         self.vBox = QVBoxLayout()
         self.vBox.setSpacing(0)
         self.vBox.setContentsMargins(0,0,0,0)
@@ -120,13 +120,14 @@ class MainWindow(QMainWindow):
         self.resize(self.geometry().width(), height)
 
     def update_armed(self):
+        theme = ThemeManager.get_current_theme()
         if self.controller.is_armed():
             self.armedIcon.setPixmap(QPixmap(ResourceManager.get_icon_path("armed.png")))
-            self.armedBar.setStyleSheet("background-color: red")
+            self.armedBar.setStyleSheet(f"background-color: {theme.colors['armed_bar']}")
             self.arm_action.setText("Disarm")
-        else: 
-            self.armedIcon.setPixmap(QPixmap(ResourceManager.get_icon_path("disarmed.png")))     
-            self.armedBar.setStyleSheet("background-color: gray")
+        else:
+            self.armedIcon.setPixmap(QPixmap(ResourceManager.get_icon_path("disarmed.png")))
+            self.armedBar.setStyleSheet(f"background-color: {theme.colors['disarmed_bar']}")
             self.arm_action.setText("Arm")
     
     def update_title_description(self, description):
