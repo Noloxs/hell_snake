@@ -124,6 +124,24 @@ class EditConfigDialog(QDialog):
         settings_items = self.controller.view.get_settings_items()
         self.populateSettingsItems(self.view_grid_layout, settings_items, self.update_view_settings)
 
+        self.add_settings_headline(self.view_grid_layout, "Input settings (restart required)")
+
+        listener_name = "evdev (Wayland)" if self.settings.key_listener == constants.LISTENER_EVDEV else "pynput (X11)"
+        self.add_key_binding(self.view_grid_layout, "Key listener", listener_name, False, self.open_listener_selector_dialog)
+
+    def open_listener_selector_dialog(self):
+        items = {
+            constants.LISTENER_PYNPUT: 'pynput (X11)',
+            constants.LISTENER_EVDEV: 'evdev (Wayland/Linux)'
+        }
+
+        dialog = DropdownDialog(items, self.change_selected_listener)
+        dialog.exec_()
+
+    def change_selected_listener(self, listener):
+        self.settings.key_listener = listener
+        self.update_view_settings()
+
     def open_view_selector_dialog(self):
         items = {
             constants.VIEW_PYQT5: 'PYQT5'

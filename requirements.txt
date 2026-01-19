@@ -4,6 +4,7 @@ pyserial==3.5
 PyAutoGUI==0.9.54
 PyQt5==5.15.10
 pyinstaller
+evdev==1.7.1
 
 ## Tests and linting
 pytest==8.2.0
