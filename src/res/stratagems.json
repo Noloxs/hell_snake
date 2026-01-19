@@ -539,5 +539,23 @@
       "category": "Weapon",
       "command": [2,0,3,2,2],
       "icon_name": "Solo Silo.svg"
+    },
+    "91": {
+      "name": "M-1000 Maxigun",
+      "category": "Weapon",
+      "command": [2,1,3,2,0,0],
+      "icon_name": "Maxigun.svg"
+    },
+    "92": {
+      "name": "AX/FLAM-75 'Guard Dog' Hot Dog",
+      "category": "Support",
+      "command": [2,0,1,0,1,1],
+      "icon_name": "Guard Dog Hot Dog.svg"
+    },
+    "93": {
+      "name": "CQC-9 Defoliation Tool",
+      "category": "Weapon",
+      "command": [2,1,3,3,2],
+      "icon_name": "Defoliation Tool.svg"
     }
   }
