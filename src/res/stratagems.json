@@ -557,5 +557,47 @@
       "category": "Weapon",
       "command": [2,1,3,3,2],
       "icon_name": "Defoliation Tool.svg"
+    },
+    "94": {
+      "name": "B/MD C4 Pack",
+      "category": "Weapon",
+      "command": [2,3,0,0,3,0],
+      "icon_name": "C4 Pack.svg"
+    },
+    "95": {
+      "name": "GL-28 Belf-fed Grenade Launcher",
+      "category": "Weapon",
+      "command": [2,1,0,1,0,0],
+      "icon_name": "GL-28.svg"
+    },
+    "96": {
+      "name": "EAT-411 Leveller",
+      "category": "Weapon",
+      "command": [2,2,1,0,2],
+      "icon_name": "EAT-411.svg"
+    },
+    "97": {
+      "name": "CQC-20 Breaching Hammer",
+      "category": "Weapon",
+      "command": [2,1,3,1,0],
+      "icon_name": "CQC-20.svg"
+    },
+    "98": {
+      "name": "TD-220 Bastion MK XVI",
+      "category": "Weapon",
+      "command": [1,2,3,2,1,2,0,2,0],
+      "icon_name": "Bastion MK XVI.svg"
+    },
+    "99": {
+      "name": "Call In Super Destroyer",
+      "category": "Mission",
+      "command": [0,0,2,2,1,3,1,3],
+      "icon_name": "Call In Super Destroyer.svg"
+    },
+    "100": {
+      "name": "Cargo Container",
+      "category": "Mission",
+      "command": [0,0,2,2,3,2],
+      "icon_name": "Cargo Container.svg"
     }
   }
