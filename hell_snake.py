@@ -2,7 +2,6 @@
 import constants
 import sys
 from src.controller import Controller
-from src.listener_pynput import PynputKeyListener
 from src.loadouts import LoadoutManager
 from src.model import Model
 from src.settings import SettingsManager
@@ -16,8 +15,16 @@ def main():
     model = Model(loadoutsManager, settingsManager)
     # Controller handles logic and communication between the model and view
     controller = Controller(model)
+
     # Key listener handles hotkey detection
-    keylistener = PynputKeyListener(controller)
+    # Select listener based on settings (evdev for Wayland, pynput for X11)
+    if settingsManager.key_listener == constants.LISTENER_EVDEV:
+        from src.listener_evdev import EvdevKeyListener
+        keylistener = EvdevKeyListener(controller)
+    else:
+        from src.listener_pynput import PynputKeyListener
+        keylistener = PynputKeyListener(controller)
+
     # Add keylisterner to controller to allow callbacks
     controller.set_keylistener(keylistener)
 
