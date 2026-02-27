@@ -20,6 +20,8 @@ class SettingsManager:
             self.migrate_2_to_3()
         if self.version == 3:
             self.migrate_3_to_4()
+        if self.version == 4:
+            self.migrate_4_to_5()
         print("Settings initialized")
 
     # Settings notifications
@@ -71,6 +73,8 @@ class SettingsManager:
         self.triggerKey = "ctrl"
         self.stratagemKeys = ["w", "a", "s", "d"]
         self.selectedExecutor = constants.EXECUTOR_PYNPUT
+        self.key_listener = constants.LISTENER_PYNPUT
+        self.theme = constants.THEME_AUTO
         self.globalArmKey = None
         self.globalArmMode = constants.ARM_MODE_TOGGLE
         self.view_framework = constants.VIEW_PYQT5
@@ -136,8 +140,21 @@ class SettingsManager:
 
     def migrate_3_to_4(self):
         self.version = 4
-    
+
         if hasattr(self, 'loadouts'):
             delattr(self, 'loadouts')
 
         print("Settings migrated to version 4. Remember to save.")
+
+    def migrate_4_to_5(self):
+        self.version = 5
+
+        # Add key_listener setting if not present (default to pynput for backwards compat)
+        if not hasattr(self, 'key_listener'):
+            self.key_listener = constants.LISTENER_PYNPUT
+
+        # Add theme setting if not present (default to auto)
+        if not hasattr(self, 'theme'):
+            self.theme = constants.THEME_AUTO
+
+        print("Settings migrated to version 5. Remember to save.")
