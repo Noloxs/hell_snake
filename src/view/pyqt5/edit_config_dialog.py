@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QDialog, QTabWidget, QVBoxLayout, QLabel, QGridLayou
 from PyQt5.QtGui import QFont, QIcon, QFontDatabase
 from PyQt5.QtCore import Qt
 from src.view.pyqt5.util import show_capture_key_dialog, DropdownDialog, NumberInputDialog
+from src.view.pyqt5.theme import ThemeManager
 
 class EditConfigDialog(QDialog):
     def __init__(self, controller):
@@ -124,6 +125,38 @@ class EditConfigDialog(QDialog):
         settings_items = self.controller.view.get_settings_items()
         self.populateSettingsItems(self.view_grid_layout, settings_items, self.update_view_settings)
 
+        self.add_settings_headline(self.view_grid_layout, "Appearance")
+
+        theme_names = {
+            constants.THEME_AUTO: "Auto (System)",
+            constants.THEME_LIGHT: "Light",
+            constants.THEME_DARK: "Dark",
+            constants.THEME_CATPPUCCIN_LATTE: "Catppuccin Latte",
+            constants.THEME_CATPPUCCIN_FRAPPE: "Catppuccin Frappé",
+            constants.THEME_CATPPUCCIN_MACCHIATO: "Catppuccin Macchiato",
+            constants.THEME_CATPPUCCIN_MOCHA: "Catppuccin Mocha",
+        }
+        theme_name = theme_names.get(self.settings.theme, "Auto (System)")
+        self.add_key_binding(self.view_grid_layout, "Theme", theme_name, False, self.open_theme_selector_dialog)
+
+    def open_theme_selector_dialog(self):
+        items = {
+            constants.THEME_AUTO: 'Auto (System)',
+            constants.THEME_LIGHT: 'Light',
+            constants.THEME_DARK: 'Dark',
+            constants.THEME_CATPPUCCIN_LATTE: 'Catppuccin Latte',
+            constants.THEME_CATPPUCCIN_FRAPPE: 'Catppuccin Frappé',
+            constants.THEME_CATPPUCCIN_MACCHIATO: 'Catppuccin Macchiato',
+            constants.THEME_CATPPUCCIN_MOCHA: 'Catppuccin Mocha',
+        }
+
+        dialog = DropdownDialog(items, self.change_theme)
+        dialog.exec_()
+
+    def change_theme(self, theme):
+        ThemeManager.set_theme(theme)
+        self.update_view_settings()
+
     def open_view_selector_dialog(self):
         items = {
             constants.VIEW_PYQT5: 'PYQT5'
@@ -216,10 +249,11 @@ class EditConfigDialog(QDialog):
         grid_layout.addWidget(self.create_button(callback), row, 2)
 
     def add_settings_headline(self, grid_layout, headline):
+        theme = ThemeManager.get_current_theme()
         headline = QLabel(headline.upper())
         headline.setFixedHeight(35)
         headline.setContentsMargins(20,0,0,0)
-        headline.setStyleSheet("background-color: "+constants.COLOR_SETTINGS_HEADLINE_BACKGROUND)
+        headline.setStyleSheet(f"background-color: {theme.colors['header_bg']}; color: {theme.colors['header_fg']}")
         chakra_petch_bold = QFontDatabase.applicationFontFamilies(1)[0]
         font = QFont(chakra_petch_bold, 12)
         font.setBold(True)

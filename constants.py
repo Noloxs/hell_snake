@@ -12,6 +12,15 @@ EXECUTOR_ARDUINO = "arduino"
 EXECUTOR_XDOTOOL = "xdotool"
 EXECUTOR_PICO = "pico"
 
+## THEMES
+THEME_AUTO = "auto"
+THEME_LIGHT = "light"
+THEME_DARK = "dark"
+THEME_CATPPUCCIN_LATTE = "catppuccin-latte"
+THEME_CATPPUCCIN_FRAPPE = "catppuccin-frappe"
+THEME_CATPPUCCIN_MACCHIATO = "catppuccin-macchiato"
+THEME_CATPPUCCIN_MOCHA = "catppuccin-mocha"
+
 # SETTINGS CONSTANTS
 ## GLOBAL ARM
 ARM_MODE_PUSH = "push"
