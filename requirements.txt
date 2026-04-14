@@ -1,12 +1,12 @@
 pynput==1.7.6
-Pillow==12.1.1
+Pillow==12.2.0
 pyserial==3.5
 PyAutoGUI==0.9.54
 PyQt5==5.15.10
 pyinstaller
 
 ## Tests and linting
-pytest==8.2.0
+pytest==9.0.3
 pytest-cov==5.0.0
 ruff==0.4.4
 coverage-badge==1.1.1
