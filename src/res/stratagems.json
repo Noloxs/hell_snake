@@ -565,7 +565,7 @@
       "icon_name": "C4 Pack.svg"
     },
     "95": {
-      "name": "GL-28 Belf-fed Grenade Launcher",
+      "name": "GL-28 Belt-fed Grenade Launcher",
       "category": "Weapon",
       "command": [2,1,0,1,0,0],
       "icon_name": "GL-28.svg"
@@ -594,10 +594,34 @@
       "command": [0,0,2,2,1,3,1,3],
       "icon_name": "Call In Super Destroyer.svg"
     },
-    "100": {
-      "name": "Cargo Container",
-      "category": "Mission",
-      "command": [0,0,2,2,3,2],
-      "icon_name": "Cargo Container.svg"
+    "101": {
+      "name": "A/GM-17 Gas Mortar Sentry",
+      "category": "Defensive",
+      "command": [2,0,3,2,1],
+      "icon_name": "Gas Mortar Sentry.svg"
+    },
+    "102": {
+      "name": "B/FLAM-80 Cremator",
+      "category": "Weapon",
+      "command": [2,2,3,2,0,0],
+      "icon_name": "Cremator.svg"
+    },
+    "103": {
+      "name": "MGX-42 Bullet Storm",
+      "category": "Weapon",
+      "command": [2,1,2,3,0,1],
+      "icon_name": "Bullet Storm.svg"
+    },
+    "104": {
+      "name": "EXO-51 Lumberer Exosuit",
+      "category": "Weapon",
+      "command": [1,2,3,0,3,1,0],
+      "icon_name": "Lumberer Exosuit.svg"
+    },
+    "105": {
+      "name": "EXO-55 Breakthrough Exosuit",
+      "category": "Weapon",
+      "command": [1,2,3,1,3,2,0],
+      "icon_name": "Breakthrough Exosuit.svg"
     }
   }
