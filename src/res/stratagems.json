@@ -623,5 +623,17 @@
       "category": "Weapon",
       "command": [1,2,3,1,3,2,0],
       "icon_name": "Breakthrough Exosuit.svg"
+    },
+    "106": {
+      "name": "M-104 Incinerator FRV",
+      "category": "Support",
+      "command": [1,2,3,1,2,0,0],
+      "icon_name": "Incinerator FRV.svg"
+    },
+    "107": {
+      "name": "M-103 Supply FRV",
+      "category": "Support",
+      "command": [1,2,1,1,2,0,3],
+      "icon_name": "Supply FRV.svg"
     }
   }
